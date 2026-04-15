@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ce66baab633ab84ab3f6cc32da6bd0c, type: 3}
   m_Name: WorkerTEST
   m_EditorClassIdentifier: Assembly-CSharp::NPCStatsSO
-  antName: Worker
+  antName: Weak Ah Worker
   role: 0
   moveSpeed: 5
   alarmedSpeedMultiplier: 1.5
@@ -26,7 +26,5 @@ MonoBehaviour:
   thirstDecayRate: 1
   sleepDecayRate: 1
   carryCapacity: 4
-  pathWanderRadius: 3
-  pathPreferenceWeight: 3
   threatResponse: 1
   alertRadius: 5
