@@ -9,6 +9,10 @@ public class PlayerAntMovement : MonoBehaviour
     [SerializeField] private float runSpeed = 5f;
     [SerializeField] private float turnSpeed = 180f;
 
+    [Header("Carrying")]
+    [SerializeField] private float weightFactor = 0.5f;
+    [SerializeField] private bool weightSlowsTurn = true;
+
     private Rigidbody2D rb;
 
     private void Awake()
@@ -34,7 +38,11 @@ public class PlayerAntMovement : MonoBehaviour
             || keyboard.leftCtrlKey.isPressed || keyboard.rightCtrlKey.isPressed;
         float currentSpeed = isRunning ? runSpeed : moveSpeed;
 
-        float newRotation = rb.rotation + turnInput * turnSpeed * Time.fixedDeltaTime;
+        float weightMultiplier = 1f / (1f + Pickupable.HeldWeight * weightFactor);
+        currentSpeed *= weightMultiplier;
+        float currentTurnSpeed = weightSlowsTurn ? turnSpeed * weightMultiplier : turnSpeed;
+
+        float newRotation = rb.rotation + turnInput * currentTurnSpeed * Time.fixedDeltaTime;
         rb.MoveRotation(newRotation);
 
         Vector2 forward = (Vector2)transform.up;
