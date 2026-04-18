@@ -174,7 +174,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0cda945a6d4314c79a0010a0805cc6e1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2069370707}
   m_SourcePrefab: {fileID: 100100000, guid: 0cda945a6d4314c79a0010a0805cc6e1, type: 3}
 --- !u!1 &1452563114
 GameObject:
@@ -238,7 +241,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 51.17
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -263,7 +266,7 @@ Transform:
   m_GameObject: {fileID: 1452563114}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: 16.2, z: -43.84}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -313,6 +316,26 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!1 &2069370706 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0cda945a6d4314c79a0010a0805cc6e1, type: 3}
+  m_PrefabInstance: {fileID: 1085385992}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2069370707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069370706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76222c8b17cf84254a9ff0a16ad62222, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Formicary
+  logTexture: {fileID: 2800000, guid: 04c4a5dfc75ff48bbbf229faa60e8cc7, type: 3}
+  leafTexture: {fileID: 2800000, guid: f7890264c463c4e1c936c7f2623f2960, type: 3}
+  wallR: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
