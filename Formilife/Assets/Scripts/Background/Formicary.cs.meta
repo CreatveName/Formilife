@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 76222c8b17cf84254a9ff0a16ad62222
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - logTexture: {fileID: 2800000, guid: 04c4a5dfc75ff48bbbf229faa60e8cc7, type: 3}
+  - leafTexture: {fileID: 2800000, guid: f7890264c463c4e1c936c7f2623f2960, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
