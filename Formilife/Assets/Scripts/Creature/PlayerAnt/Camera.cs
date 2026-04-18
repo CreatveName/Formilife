@@ -4,26 +4,19 @@ using UnityEngine.InputSystem;
 
 public class TopDownCamera : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created 
     [Header("Player")]
     public Transform player;
 
     [Header("Zoom")]
     public float zoomSpeed = 5f;
-    public float zoomSmoothing = 5f;
+    public float zoomSmoothing = 2f;
     public float minZoom = 5f;
     public float maxZoom = 15f;
-
-    //Header("Deadzone")
-
 
     //Private
 
     private Camera _camera;
     private float _targetZoom;
-    private Vector3 _targetPosition;
-    private Vector3 _dragOrigin;
-    private bool _isDragging;
 
     private void Awake()
     {
@@ -54,8 +47,6 @@ public class TopDownCamera : MonoBehaviour
     void LateUpdate()
     {
         HandleZoom();
-        HandleDeadzoneFollow();
-        HandleDragPan();
         ApplyTransform();
     }
 
@@ -65,20 +56,9 @@ public class TopDownCamera : MonoBehaviour
 
         if (Mathf.Abs(scrollInput) > 0.01f)
         {
-            print("Zoom input: " + scrollInput);
             _targetZoom -= scrollInput * zoomSpeed;
             _targetZoom = Mathf.Clamp(_targetZoom, minZoom, maxZoom);
         }
-    }
-
-    void HandleDeadzoneFollow()
-    {
-        
-    }
-
-    void HandleDragPan()
-    {
-        
     }
 
     void ApplyTransform()
