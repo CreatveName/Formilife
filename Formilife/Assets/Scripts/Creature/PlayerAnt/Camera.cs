@@ -65,6 +65,7 @@ public class TopDownCamera : MonoBehaviour
 
         if (Mathf.Abs(scrollInput) > 0.01f)
         {
+            print("Zoom input: " + scrollInput);
             _targetZoom -= scrollInput * zoomSpeed;
             _targetZoom = Mathf.Clamp(_targetZoom, minZoom, maxZoom);
         }
@@ -82,6 +83,29 @@ public class TopDownCamera : MonoBehaviour
 
     void ApplyTransform()
     {
-        
+        Vector3 smoothed = Vector3.Lerp(
+            transform.position,
+            new Vector3(player.position.x, player.position.y, transform.position.z),
+            Time.deltaTime * zoomSmoothing
+        );
+        transform.position = smoothed;
+
+        if (_camera.orthographic)
+        {
+            _camera.orthographicSize = Mathf.Lerp(
+                _camera.orthographicSize, 
+                _targetZoom,
+                Time.deltaTime * zoomSmoothing
+            );
+        }
+        else
+        {
+            float newY = Mathf.Lerp(
+                transform.position.y,
+                _targetZoom,
+                Time.deltaTime * zoomSmoothing
+            );
+            transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+        }
     }
 }
