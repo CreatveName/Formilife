@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class TopDownCamera : MonoBehaviour
 {
@@ -50,9 +51,23 @@ public class TopDownCamera : MonoBehaviour
         }
     }
 
+    void LateUpdate()
+    {
+        HandleZoom();
+        HandleDeadzoneFollow();
+        HandleDragPan();
+        ApplyTransform();
+    }
+
     void HandleZoom()
     {
-        
+        float scrollInput = Mouse.current.scroll.ReadValue().y;
+
+        if (Mathf.Abs(scrollInput) > 0.01f)
+        {
+            _targetZoom -= scrollInput * zoomSpeed;
+            _targetZoom = Mathf.Clamp(_targetZoom, minZoom, maxZoom);
+        }
     }
 
     void HandleDeadzoneFollow()
