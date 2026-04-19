@@ -198,7 +198,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Formicary
   logTexture: {fileID: 2800000, guid: 04c4a5dfc75ff48bbbf229faa60e8cc7, type: 3}
   leafTexture: {fileID: 2800000, guid: f7890264c463c4e1c936c7f2623f2960, type: 3}
+  lightWoodTexture: {fileID: 2800000, guid: b8da809e783514b7a8c44e5636462f57, type: 3}
+  darkWoodTexture: {fileID: 2800000, guid: e7ba49ed7e6d94ae2aa92d4b375946c4, type: 3}
   wallR: {fileID: 716998580}
+  backgroundPlane: {fileID: 0}
 --- !u!23 &716998580 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 5c100e7c6d7e0db419c033288b921516, type: 3}
