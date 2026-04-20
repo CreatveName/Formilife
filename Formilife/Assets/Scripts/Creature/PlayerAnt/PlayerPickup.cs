@@ -5,9 +5,15 @@ public class PlayerPickup : MonoBehaviour
 {
     [SerializeField] private float pickupRange = 1f;
     [SerializeField] private Transform holdPoint;
+    private AntNeeds needs;
 
     private IPickupable heldItem;
     public IPickupable HeldItem => heldItem;
+
+    private void Awake() 
+    {
+        needs = GetComponent<AntNeeds>();
+    }
 
     public float CurrentCarryWeight
     {
@@ -30,6 +36,21 @@ public class PlayerPickup : MonoBehaviour
                 TryFindPickup();
             }
         }
+        if (Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            if (heldItem != null)
+            {
+                GameObject obj = heldItem.GameObject;
+
+                FoodEffect food = obj.GetComponent<FoodEffect>();
+
+                if (food != null)
+                {
+                    food.Consume(gameObject);
+                    DestroyHeldItem();
+                }
+            }
+        }
     }
 
     private void TryFindPickup()
@@ -50,6 +71,16 @@ public class PlayerPickup : MonoBehaviour
     private void Drop()
     {
         heldItem.OnDrop();
+        heldItem = null;
+    }
+    public void DestroyHeldItem()
+    {
+        if (heldItem == null) return;
+
+        heldItem.OnDrop();
+
+        Object.Destroy(heldItem.GameObject);
+
         heldItem = null;
     }
 
