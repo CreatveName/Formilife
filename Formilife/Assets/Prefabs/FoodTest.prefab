@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0244823e0403a334881f67fd3f8920ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pickupable
-  weight: 10
+  weight: 1
 --- !u!114 &9067157772492826818
 MonoBehaviour:
   m_ObjectHideFlags: 0
