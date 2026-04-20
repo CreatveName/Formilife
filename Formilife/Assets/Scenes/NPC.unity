@@ -119,6 +119,63 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &188432068
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 934439360892739704, guid: fd83a326128959743993570290c92569, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.42667
+      objectReference: {fileID: 0}
+    - target: {fileID: 934439360892739704, guid: fd83a326128959743993570290c92569, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.16031
+      objectReference: {fileID: 0}
+    - target: {fileID: 934439360892739704, guid: fd83a326128959743993570290c92569, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 934439360892739704, guid: fd83a326128959743993570290c92569, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 934439360892739704, guid: fd83a326128959743993570290c92569, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 934439360892739704, guid: fd83a326128959743993570290c92569, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 934439360892739704, guid: fd83a326128959743993570290c92569, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 934439360892739704, guid: fd83a326128959743993570290c92569, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 934439360892739704, guid: fd83a326128959743993570290c92569, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 934439360892739704, guid: fd83a326128959743993570290c92569, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7005911649146616721, guid: fd83a326128959743993570290c92569, type: 3}
+      propertyPath: m_Name
+      value: FoodTest
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fd83a326128959743993570290c92569, type: 3}
 --- !u!1001 &200849088
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -188,6 +245,8 @@ GameObject:
   - component: {fileID: 651374496}
   - component: {fileID: 651374499}
   - component: {fileID: 651374498}
+  - component: {fileID: 651374502}
+  - component: {fileID: 651374503}
   - component: {fileID: 651374501}
   - component: {fileID: 651374500}
   m_Layer: 0
@@ -285,8 +344,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AntNPC
   antDefinition: {fileID: 11400000, guid: 5c2686b7bdeed9e448c50004959d9c6a, type: 2}
+  needs: {fileID: 651374502}
   arriveDistance: 0.1
   maxMoveTime: 3
+  eatDistance: 0.2
+  currentState: 0
 --- !u!50 &651374499
 Rigidbody2D:
   serializedVersion: 5
@@ -363,6 +425,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCAntPickup
   holdPoint: {fileID: 986681489}
+--- !u!114 &651374502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 651374495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3782802b3a4d62c46ace3341e55d0074, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AntNeeds
+  definition: {fileID: 11400000, guid: 5c2686b7bdeed9e448c50004959d9c6a, type: 2}
+  hunger: 0
+  thirst: 0
+  energy: 0
+--- !u!114 &651374503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 651374495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5487c8f9e3187034f8985d310b006205, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AntPerception
+  detectionRadius: 6.14
+  foodLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &986681488
 GameObject:
   m_ObjectHideFlags: 0
@@ -388,7 +482,7 @@ Transform:
   m_GameObject: {fileID: 986681488}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.37, y: 0, z: 0}
+  m_LocalPosition: {x: 2.07, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -493,3 +587,4 @@ SceneRoots:
   - {fileID: 1499973924}
   - {fileID: 651374497}
   - {fileID: 200849088}
+  - {fileID: 188432068}
