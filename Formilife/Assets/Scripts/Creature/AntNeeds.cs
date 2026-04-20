@@ -11,7 +11,13 @@ public class AntNeeds : MonoBehaviour
 
     private void Start()
     {
-        // initialize from ScriptableObject
+        if (definition == null)
+        {
+            Debug.LogError($"{name} is missing an AntDefinition on AntNeeds.", this);
+            enabled = false;
+            return;
+        }
+
         hunger = definition.maxHunger;
         thirst = definition.maxThirst;
         energy = definition.maxEnergy;
@@ -19,6 +25,7 @@ public class AntNeeds : MonoBehaviour
 
     private void Update()
     {
+        if (definition == null) return;
         ApplyDecay();
         ClampValues();
     }

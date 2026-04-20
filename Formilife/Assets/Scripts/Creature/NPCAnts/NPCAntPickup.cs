@@ -22,8 +22,8 @@ public class NPCAntPickup : MonoBehaviour
         heldItem = item;
         item.OnPickup(holdPoint);
 
-        // NEW: auto-clear if item was consumed instantly
-        if (heldItem == null || ((MonoBehaviour)heldItem) == null)
+        // auto-clear if item was consumed/destroyed instantly
+        if (heldItem != null && heldItem.GameObject == null)
         {
             heldItem = null;
         }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4786251619962655345}
   - component: {fileID: 617204550674470791}
   - component: {fileID: 8000670757646340256}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pickupable Object 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0244823e0403a334881f67fd3f8920ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pickupable
-  holdOffset: {x: 0, y: 0.5}
   weight: 1
 --- !u!50 &617204550674470791
 Rigidbody2D:

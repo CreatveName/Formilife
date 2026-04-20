@@ -6,7 +6,7 @@ public class FoodEffect : MonoBehaviour
 
     public void Consume(GameObject consumer)
     {
-        AntNeeds needs = consumer.GetComponentInParent<AntNeeds>();
+        AntNeeds needs = consumer.GetComponent<AntNeeds>();
 
         if (needs != null)
         {

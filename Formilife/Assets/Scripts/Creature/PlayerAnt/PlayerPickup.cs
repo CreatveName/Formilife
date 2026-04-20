@@ -5,15 +5,10 @@ public class PlayerPickup : MonoBehaviour
 {
     [SerializeField] private float pickupRange = 1f;
     [SerializeField] private Transform holdPoint;
-    private AntNeeds needs;
+    [SerializeField] private LayerMask pickupMask;
 
     private IPickupable heldItem;
     public IPickupable HeldItem => heldItem;
-
-    private void Awake() 
-    {
-        needs = GetComponent<AntNeeds>();
-    }
 
     public float CurrentCarryWeight
     {
@@ -55,7 +50,7 @@ public class PlayerPickup : MonoBehaviour
 
     private void TryFindPickup()
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, pickupRange);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, pickupRange, pickupMask);
 
         foreach (var hit in hits)
         {

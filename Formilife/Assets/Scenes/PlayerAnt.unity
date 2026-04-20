@@ -287,7 +287,7 @@ GameObject:
   - component: {fileID: 1205329207}
   - component: {fileID: 1205329211}
   - component: {fileID: 1205329210}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pickupable Object 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -600,6 +600,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerPickup
   pickupRange: 1
   holdPoint: {fileID: 1992627928}
+  pickupMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!70 &1411996641
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -666,7 +669,7 @@ GameObject:
   - component: {fileID: 1848248002}
   - component: {fileID: 1848248006}
   - component: {fileID: 1848248005}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pickupable Object 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
