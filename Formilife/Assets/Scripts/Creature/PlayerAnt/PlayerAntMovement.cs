@@ -13,6 +13,10 @@ public class PlayerAntMovement : MonoBehaviour
     [SerializeField] private float weightFactor = 0.5f;
     [SerializeField] private bool weightSlowsTurn = true;
 
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private float walkAnimReferenceSpeed = 3f;
+
     private Rigidbody2D rb;
     private PlayerPickup carrier; // for new pickup system
 
@@ -22,6 +26,8 @@ public class PlayerAntMovement : MonoBehaviour
         rb.gravityScale = 0f;
 
         carrier = GetComponent<PlayerPickup>();
+
+        if (animator == null) animator = GetComponentInChildren<Animator>();
     }
 
     private void FixedUpdate()
@@ -63,5 +69,11 @@ public class PlayerAntMovement : MonoBehaviour
 
         Vector2 forward = (Vector2)transform.up;
         rb.MovePosition(rb.position + forward * (moveInput * currentSpeed * Time.fixedDeltaTime));
+
+        if (animator != null)
+        {
+            float locomotion = Mathf.Abs(moveInput) * currentSpeed + Mathf.Abs(turnInput) * 0.5f;
+            animator.speed = locomotion / Mathf.Max(0.0001f, walkAnimReferenceSpeed);
+        }
     }
 }
