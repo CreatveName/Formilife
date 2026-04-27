@@ -1,24 +1,25 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AntPerception : MonoBehaviour
 {
     [Header("Sensing")]
     [SerializeField] private float detectionRadius = 3f;
-    [SerializeField] private LayerMask foodLayer;
+    [SerializeField] private LayerMask pickupLayer;
 
-    public Transform GetClosestFood()
+    public Transform GetClosestPickupable()
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius, foodLayer);
-
-        if (hits.Length == 0)
-            return null;
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius, pickupLayer);
 
         Transform closest = null;
         float closestDist = Mathf.Infinity;
 
-        foreach (var hit in hits)
+        foreach (Collider2D hit in hits)
         {
+            IPickupable pickupable = hit.GetComponent<IPickupable>();
+
+            if (pickupable == null || !pickupable.CanBePickedUp)
+                continue;
+
             float dist = Vector2.Distance(transform.position, hit.transform.position);
 
             if (dist < closestDist)

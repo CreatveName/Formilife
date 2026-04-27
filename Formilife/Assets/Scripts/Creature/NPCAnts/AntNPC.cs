@@ -1,43 +1,48 @@
-using System.Runtime.Serialization;
 using UnityEngine;
+using UnityEngine.AI;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class AntNPC : MonoBehaviour
 {
     private enum AntState
     {
         Idle,
-        Moving,
-        SeekingFood,
-        //SeekingWater,
-        Resting
+        Wandering,
+        GoingToTargetZone,
+        SearchingForPickup,
+        GoingToPickup,
+        ReturningToStartZone
     }
 
     [Header("Definition")]
     [SerializeField] private AntDefinition antDefinition;
-    [SerializeField] private AntNeeds needs;
 
-    [Header("Movement")]
-    [SerializeField] private float arriveDistance = 0.1f;
-    [SerializeField] private float maxMoveTime = 3f;
-    [SerializeField] private float eatDistance = 0.2f;
+    [Header("Route Work")]
+    [SerializeField] private float arriveDistance = 0.25f;
+    [SerializeField] private float pickupDistance = 0.25f;
+    [SerializeField] private float searchTimeAtTarget = 2f;
 
-    private Rigidbody2D rb;
-    private Vector2 homePosition;
-    private Vector2 targetPosition;
-    private float idleTimer;
-    private float moveTimer;
+    [Header("Debug")]
+    [SerializeField] private AntState currentState;
+
+    private NavMeshAgent agent;
     private AntPerception perception;
     private NPCAntPickup pickup;
+
+    private Vector2 homePosition;
     private Transform currentTarget;
-    [SerializeField]private AntState currentState;
-    
+    private float idleTimer;
+    private float searchTimer;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        agent = GetComponent<NavMeshAgent>();
         perception = GetComponent<AntPerception>();
         pickup = GetComponent<NPCAntPickup>();
+
+        // Important for 2D NavMesh
+        agent.updateRotation = false;
+        agent.updateUpAxis = false;
     }
 
     private void Start()
@@ -49,133 +54,138 @@ public class AntNPC : MonoBehaviour
             return;
         }
 
-        homePosition = rb.position;
+        homePosition = transform.position;
+        agent.speed = antDefinition.moveSpeed;
+
         BeginIdle();
     }
 
     private void Update()
     {
-        if (needs != null && needs.IsHungry())
-        {
-            if (currentState != AntState.SeekingFood)
-            {
-                currentState = AntState.SeekingFood;
-            }
-        }
+        PheromoneRoute route = PheromoneRouteManager.Instance != null
+            ? PheromoneRouteManager.Instance.ActiveRoute
+            : null;
+
         switch (currentState)
         {
             case AntState.Idle:
-                HandleIdle();
+                HandleIdle(route);
                 break;
 
-            case AntState.Moving:
-                //UpdateFoodTargeting();
+            case AntState.Wandering:
+                if (HasArrived())
+                    BeginIdle();
                 break;
 
-            case AntState.SeekingFood:
-                UpdateFoodTargeting();
+            case AntState.GoingToTargetZone:
+                if (route == null || !route.IsValid)
+                {
+                    BeginIdle();
+                    return;
+                }
+
+                if (HasArrived())
+                {
+                    BeginSearchingForPickup();
+                }
                 break;
 
-            //case AntState.SeekingWater:
-                //HandleWaterTargeting(); // placeholder
-            //    break;
+            case AntState.SearchingForPickup:
+                HandleSearchingForPickup(route);
+                break;
 
-            case AntState.Resting:
-                HandleIdle();
+            case AntState.GoingToPickup:
+                HandleGoingToPickup(route);
+                break;
+
+            case AntState.ReturningToStartZone:
+                HandleReturningToStart(route);
                 break;
         }
     }
 
-    private void FixedUpdate()
-    {
-        if (currentState == AntState.Moving)
-        {
-            HandleMovement();
-        }
-    }
-
-    private void DecideNextAction()
-    {
-        if (needs != null)
-        {
-            if (needs.IsHungry())
-            {
-                currentState = AntState.SeekingFood;
-                return;
-            }
-
-            if (needs.IsThirsty())
-            {
-                //currentState = AntState.SeekingWater;
-                return;
-            }
-
-        }
-
-        currentState = AntState.Idle;
-        BeginIdle();
-    }
-
-    private void HandleIdle()
+    private void HandleIdle(PheromoneRoute route)
     {
         idleTimer -= Time.deltaTime;
 
-        if (idleTimer <= 0f)
+        if (idleTimer > 0f)
+            return;
+
+        if (route != null && route.IsValid)
         {
-            DecideNextAction();
-        }
-    }
-
-    private void HandleMovement()
-    {
-        moveTimer -= Time.fixedDeltaTime;
-
-        Vector2 destination;
-
-        // If we have food, follow it dynamically
-        if (currentTarget != null)
-        {
-            destination = currentTarget.position;
+            GoToTargetZone(route);
         }
         else
         {
-            destination = targetPosition;
-        }
-
-        Vector2 currentPosition = rb.position;
-
-        Vector2 nextPosition = Vector2.MoveTowards(
-            currentPosition,
-            destination,
-            antDefinition.moveSpeed * Time.fixedDeltaTime
-        );
-
-        rb.MovePosition(nextPosition);
-
-        float dist = Vector2.Distance(currentPosition, destination);
-
-        if (dist <= eatDistance)
-        {
-            TryConsumeFood();
-            return;
-        }
-
-        if (dist <= arriveDistance || moveTimer <= 0f)
-        {
-            currentTarget = null;
-            BeginIdle();
+            PickRandomWanderTarget();
         }
     }
 
-    private void TryConsumeFood()
+    private void GoToTargetZone(PheromoneRoute route)
     {
-        if (currentTarget == null)
+        currentTarget = null;
+        agent.SetDestination(route.TargetPosition);
+        currentState = AntState.GoingToTargetZone;
+    }
+
+    private void BeginSearchingForPickup()
+    {
+        searchTimer = searchTimeAtTarget;
+        currentState = AntState.SearchingForPickup;
+    }
+
+    private void HandleSearchingForPickup(PheromoneRoute route)
+    {
+        if (route == null || !route.IsValid)
         {
             BeginIdle();
             return;
         }
 
-        // Try pickup system first (keeps your architecture intact)
+        searchTimer -= Time.deltaTime;
+
+        Transform foundPickup = perception.GetClosestPickupable();
+
+        if (foundPickup != null)
+        {
+            currentTarget = foundPickup;
+            agent.SetDestination(currentTarget.position);
+            currentState = AntState.GoingToPickup;
+            return;
+        }
+
+        if (searchTimer <= 0f)
+        {
+            GoToTargetZone(route);
+        }
+    }
+
+    private void HandleGoingToPickup(PheromoneRoute route)
+    {
+        if (route == null || !route.IsValid)
+        {
+            BeginIdle();
+            return;
+        }
+
+        if (currentTarget == null)
+        {
+            BeginSearchingForPickup();
+            return;
+        }
+
+        agent.SetDestination(currentTarget.position);
+
+        float dist = Vector2.Distance(transform.position, currentTarget.position);
+
+        if (dist <= pickupDistance)
+        {
+            TryPickUpTarget(route);
+        }
+    }
+
+    private void TryPickUpTarget(PheromoneRoute route)
+    {
         IPickupable item = currentTarget.GetComponent<IPickupable>();
 
         if (item != null)
@@ -184,68 +194,55 @@ public class AntNPC : MonoBehaviour
 
             if (success)
             {
-                FoodEffect effect = currentTarget.GetComponent<FoodEffect>();
-
-                if (effect != null)
-                {
-                    effect.Consume(gameObject);
-                }
+                currentTarget = null;
+                agent.SetDestination(route.StartPosition);
+                currentState = AntState.ReturningToStartZone;
+                return;
             }
         }
 
         currentTarget = null;
-        BeginIdle();
+        BeginSearchingForPickup();
+    }
+
+    private void HandleReturningToStart(PheromoneRoute route)
+    {
+        if (route == null || !route.IsValid)
+        {
+            BeginIdle();
+            return;
+        }
+
+        agent.SetDestination(route.StartPosition);
+
+        if (HasArrived())
+        {
+            pickup.Drop();
+            GoToTargetZone(route);
+        }
     }
 
     private void BeginIdle()
     {
         idleTimer = Random.Range(antDefinition.minIdleTime, antDefinition.maxIdleTime);
-
+        currentTarget = null;
         currentState = AntState.Idle;
-
-        // small chance to re-wander
-        if (Random.value < 0.5f)
-        {
-            PickRandomTarget();
-        }
     }
 
-    private void PickRandomTarget()
+    private void PickRandomWanderTarget()
     {
         Vector2 randomOffset = Random.insideUnitCircle * antDefinition.wanderRadius;
-        targetPosition = homePosition + randomOffset;
+        Vector2 destination = homePosition + randomOffset;
 
-        moveTimer = maxMoveTime;
-        currentState = AntState.Moving;
+        agent.SetDestination(destination);
+        currentState = AntState.Wandering;
     }
 
-    private void UpdateFoodTargeting()
+    private bool HasArrived()
     {
-        Transform foundFood = perception.GetClosestFood();
+        if (agent.pathPending)
+            return false;
 
-        if (foundFood != null)
-        {
-            currentTarget = foundFood;
-            targetPosition = foundFood.position;
-
-            moveTimer = maxMoveTime;
-
-            currentState = AntState.Moving;
-        }
-        else
-        {
-            // No food found → fall back to wandering
-            currentTarget = null;
-            PickRandomTarget();
-        }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-
-        Vector3 center = Application.isPlaying ? (Vector3)homePosition : transform.position;
-        float radius = antDefinition != null ? antDefinition.wanderRadius : 3f;
-        Gizmos.DrawWireSphere(center, radius);
+        return agent.remainingDistance <= arriveDistance;
     }
 }
