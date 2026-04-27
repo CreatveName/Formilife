@@ -110,12 +110,6 @@ public class AntNPC : MonoBehaviour
                 return;
             }
 
-            if (needs.IsTired())
-            {
-                currentState = AntState.Resting;
-                BeginIdle();
-                return;
-            }
         }
 
         currentState = AntState.Idle;

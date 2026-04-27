@@ -24,11 +24,15 @@ public class AntDefinition : ScriptableObject
     public float maxThirst = 100f;
     public float thirstDecayRate = 3f;
 
-    public float maxEnergy = 100f;
-    public float energyDecayRate = 1f;
-
     [Header("Behavior Thresholds")]
     public float lowHungerThreshold = 40f;
     public float lowThirstThreshold = 40f;
-    public float tiredThreshold = 30f;
+
+    [Header("Health")]
+    public float maxHealth = 100f;
+    public float starvationDamageRate = 5f;
+    public float dehydrationDamageRate = 8f;
+
+    [Header("Corpse")]
+    public GameObject corpsePrefab;
 }

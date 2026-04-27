@@ -62,8 +62,9 @@ public class PlayerPickup : MonoBehaviour
         }
     }
 
-    private void Drop()
+    public void Drop()
     {
+        if (heldItem == null) return;
         heldItem.OnDrop();
         heldItem = null;
     }
