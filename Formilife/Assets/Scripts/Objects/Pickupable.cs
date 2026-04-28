@@ -11,13 +11,29 @@ public class Pickupable : MonoBehaviour, IPickupable
 
     private Rigidbody2D rb;
 
+    public static double stackCount = 1.0;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Pickupable other = collision.gameObject.GetComponent<Pickupable>();
+        if (other != null && transform.parent == null && other.transform.parent == null)
+        {
+            stackCount +=0.5;
+            //Destroy(other.gameObject);
+            Debug.Log("stack size: " + stackCount);
+        }
+    }
     public void OnPickup(Transform holder)
     {
+        if (stackCount > 1)
+        {
+            stackCount = 1;
+        }
         transform.SetParent(holder);
         transform.localPosition = Vector3.zero;
 
@@ -27,6 +43,7 @@ public class Pickupable : MonoBehaviour, IPickupable
             rb.linearVelocity = Vector2.zero;
             rb.angularVelocity = 0f;
         }
+        Debug.Log("stack size: " + stackCount);
     }
 
     public void OnDrop()
@@ -37,5 +54,6 @@ public class Pickupable : MonoBehaviour, IPickupable
         {
             rb.simulated = true;
         }
+        Debug.Log("stack size: " + stackCount);
     }
 }
