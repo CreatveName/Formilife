@@ -12,7 +12,7 @@ public class Formicary : MonoBehaviour
     {
         //Transform formicaryWalls = transform.Find("Assets/3D Models/Formicary.fbx");
         ChangeTexture(wallR, logTexture);
-        PickRandomSandGrain();
+        //PickRandomSandGrain();
 
     }
 
@@ -25,7 +25,7 @@ public class Formicary : MonoBehaviour
         }
         int index = Random.Range(0,sandGrainOptions.Length);
         chosenSandGrain = sandGrainOptions[index];
-        Instantiate(chosenSandGrain, transform.position, Quaternion.identity);
+        //Instantiate(chosenSandGrain, transform.position, Quaternion.identity);
     }
 
     void ChangeTexture(Renderer part, Texture2D newTexture)
