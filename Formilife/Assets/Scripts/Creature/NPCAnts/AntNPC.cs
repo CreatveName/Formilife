@@ -154,9 +154,11 @@ public class AntNPC : MonoBehaviour
             return;
         }
 
+        // If nothing found, return to start anyway
         if (searchTimer <= 0f)
         {
-            GoToTargetZone(route);
+            agent.SetDestination(route.StartPosition);
+            currentState = AntState.ReturningToStartZone;
         }
     }
 
@@ -213,12 +215,21 @@ public class AntNPC : MonoBehaviour
             return;
         }
 
-        agent.SetDestination(route.StartPosition);
+        if (pickup != null && pickup.IsHoldingSomething)
+        {
+            agent.SetDestination(route.StartPosition);
+        }
 
         if (HasArrived())
         {
-            pickup.Drop();
-            GoToTargetZone(route);
+            if (pickup != null && pickup.IsHoldingSomething)
+            {
+                pickup.Drop();
+            }
+
+            // Go back to target zone again
+            agent.SetDestination(route.TargetPosition);
+            currentState = AntState.GoingToTargetZone;
         }
     }
 

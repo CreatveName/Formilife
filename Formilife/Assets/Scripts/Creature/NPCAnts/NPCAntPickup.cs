@@ -6,6 +6,7 @@ public class NPCAntPickup : MonoBehaviour
 
     private IPickupable heldItem;
     public IPickupable HeldItem => heldItem;
+    public bool IsHoldingSomething => heldItem != null;
 
     public float CurrentCarryWeight
     {
