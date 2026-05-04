@@ -2,22 +2,20 @@ using UnityEngine;
 
 public class AntPerception : MonoBehaviour
 {
-    [Header("Sensing")]
-    [SerializeField] private float detectionRadius = 3f;
-    [SerializeField] private LayerMask pickupLayer;
+    [SerializeField] private float detectionRadius = 2f;
+    [SerializeField] private LayerMask seedLayer;
+    [SerializeField] private LayerMask foodStorageLayer;
 
-    public Transform GetClosestPickupable()
+    public Transform GetClosestSeedInsidePheromone()
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius, pickupLayer);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius, seedLayer);
 
         Transform closest = null;
         float closestDist = Mathf.Infinity;
 
         foreach (Collider2D hit in hits)
         {
-            IPickupable pickupable = hit.GetComponent<IPickupable>();
-
-            if (pickupable == null || !pickupable.CanBePickedUp)
+            if (!PheromoneManager.Instance.IsInsidePheromone(hit.transform.position))
                 continue;
 
             float dist = Vector2.Distance(transform.position, hit.transform.position);
@@ -32,9 +30,27 @@ public class AntPerception : MonoBehaviour
         return closest;
     }
 
-    private void OnDrawGizmosSelected()
+    public Transform GetClosestFoodStorageInsidePheromone()
     {
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 999f, foodStorageLayer);
+
+        Transform closest = null;
+        float closestDist = Mathf.Infinity;
+
+        foreach (Collider2D hit in hits)
+        {
+            if (!PheromoneManager.Instance.IsInsidePheromone(hit.transform.position))
+                continue;
+
+            float dist = Vector2.Distance(transform.position, hit.transform.position);
+
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                closest = hit.transform;
+            }
+        }
+
+        return closest;
     }
 }

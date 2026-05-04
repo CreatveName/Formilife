@@ -7,20 +7,17 @@ public class AntNPC : MonoBehaviour
     private enum AntState
     {
         Idle,
-        Wandering,
-        GoingToTargetZone,
-        SearchingForPickup,
-        GoingToPickup,
-        ReturningToStartZone
+        WanderingInPheromone,
+        GoingToSeed,
+        GoingToFoodStorage
     }
 
     [Header("Definition")]
     [SerializeField] private AntDefinition antDefinition;
 
-    [Header("Route Work")]
+    [Header("Pheromone Work")]
     [SerializeField] private float arriveDistance = 0.25f;
     [SerializeField] private float pickupDistance = 0.25f;
-    [SerializeField] private float searchTimeAtTarget = 2f;
 
     [Header("Debug")]
     [SerializeField] private AntState currentState;
@@ -29,10 +26,8 @@ public class AntNPC : MonoBehaviour
     private AntPerception perception;
     private NPCAntPickup pickup;
 
-    private Vector2 homePosition;
     private Transform currentTarget;
     private float idleTimer;
-    private float searchTimer;
 
     private void Awake()
     {
@@ -40,7 +35,6 @@ public class AntNPC : MonoBehaviour
         perception = GetComponent<AntPerception>();
         pickup = GetComponent<NPCAntPickup>();
 
-        // Important for 2D NavMesh
         agent.updateRotation = false;
         agent.updateUpAxis = false;
     }
@@ -54,125 +48,109 @@ public class AntNPC : MonoBehaviour
             return;
         }
 
-        homePosition = transform.position;
         agent.speed = antDefinition.moveSpeed;
-
         BeginIdle();
     }
 
     private void Update()
     {
-        PheromoneRoute route = PheromoneRouteManager.Instance != null
-            ? PheromoneRouteManager.Instance.ActiveRoute
-            : null;
+        if (!CanUseAgent())
+            return;
 
         switch (currentState)
         {
             case AntState.Idle:
-                HandleIdle(route);
+                HandleIdle();
                 break;
 
-            case AntState.Wandering:
-                if (HasArrived())
-                    BeginIdle();
+            case AntState.WanderingInPheromone:
+                HandleWanderingInPheromone();
                 break;
 
-            case AntState.GoingToTargetZone:
-                if (route == null || !route.IsValid)
-                {
-                    BeginIdle();
-                    return;
-                }
-
-                if (HasArrived())
-                {
-                    BeginSearchingForPickup();
-                }
+            case AntState.GoingToSeed:
+                HandleGoingToSeed();
                 break;
 
-            case AntState.SearchingForPickup:
-                HandleSearchingForPickup(route);
-                break;
-
-            case AntState.GoingToPickup:
-                HandleGoingToPickup(route);
-                break;
-
-            case AntState.ReturningToStartZone:
-                HandleReturningToStart(route);
+            case AntState.GoingToFoodStorage:
+                HandleGoingToFoodStorage();
                 break;
         }
     }
 
-    private void HandleIdle(PheromoneRoute route)
+    private void HandleIdle()
     {
         idleTimer -= Time.deltaTime;
 
         if (idleTimer > 0f)
             return;
 
-        if (route != null && route.IsValid)
-        {
-            GoToTargetZone(route);
-        }
-        else
-        {
-            PickRandomWanderTarget();
-        }
-    }
-
-    private void GoToTargetZone(PheromoneRoute route)
-    {
-        currentTarget = null;
-        agent.SetDestination(route.TargetPosition);
-        currentState = AntState.GoingToTargetZone;
-    }
-
-    private void BeginSearchingForPickup()
-    {
-        searchTimer = searchTimeAtTarget;
-        currentState = AntState.SearchingForPickup;
-    }
-
-    private void HandleSearchingForPickup(PheromoneRoute route)
-    {
-        if (route == null || !route.IsValid)
+        if (PheromoneManager.Instance == null || !PheromoneManager.Instance.HasAnyTrail())
         {
             BeginIdle();
             return;
         }
 
-        searchTimer -= Time.deltaTime;
-
-        Transform foundPickup = perception.GetClosestPickupable();
-
-        if (foundPickup != null)
+        // If holding item, find storage
+        if (pickup != null && pickup.IsHoldingSomething)
         {
-            currentTarget = foundPickup;
+            Debug.Log($"{name} is holding something, looking for food storage.");
+            TryGoToFoodStorage();
+            return;
+        }
+
+        // If not holding, look for seed
+        Transform seed = perception.GetClosestSeedInsidePheromone();
+
+        if (seed != null)
+        {
+            Debug.Log($"{name} found seed: {seed.name}");
+            currentTarget = seed;
             agent.SetDestination(currentTarget.position);
-            currentState = AntState.GoingToPickup;
+            currentState = AntState.GoingToSeed;
             return;
         }
 
-        // If nothing found, return to start anyway
-        if (searchTimer <= 0f)
-        {
-            agent.SetDestination(route.StartPosition);
-            currentState = AntState.ReturningToStartZone;
-        }
+        // If nothing useful found, wander
+        Debug.Log($"{name} found no seed, wandering in pheromone.");
+        WanderToRandomPheromonePoint();
     }
 
-    private void HandleGoingToPickup(PheromoneRoute route)
+    private void HandleWanderingInPheromone()
     {
-        if (route == null || !route.IsValid)
+        if (PheromoneManager.Instance == null || !PheromoneManager.Instance.HasAnyTrail())
         {
             BeginIdle();
             return;
         }
 
+        Transform seed = perception.GetClosestSeedInsidePheromone();
+
+        if (seed != null && pickup != null && !pickup.IsHoldingSomething)
+        {
+            currentTarget = seed;
+            agent.SetDestination(currentTarget.position);
+            currentState = AntState.GoingToSeed;
+            return;
+        }
+
+        if (HasArrived())
+        {
+            BeginIdle();
+        }
+    }
+
+    private void HandleGoingToSeed()
+    {
         if (currentTarget == null)
         {
-            BeginSearchingForPickup();
+            BeginIdle();
+            return;
+        }
+
+        if (!PheromoneManager.Instance.IsInsidePheromone(currentTarget.position))
+        {
+            currentTarget = null;
+            BeginIdle();
             return;
         }
 
@@ -182,55 +160,77 @@ public class AntNPC : MonoBehaviour
 
         if (dist <= pickupDistance)
         {
-            TryPickUpTarget(route);
-        }
-    }
+            IPickupable item = currentTarget.GetComponent<IPickupable>();
 
-    private void TryPickUpTarget(PheromoneRoute route)
-    {
-        IPickupable item = currentTarget.GetComponent<IPickupable>();
-
-        if (item != null)
-        {
-            bool success = pickup.TryPickUp(item);
-
-            if (success)
+            if (item != null && pickup.TryPickUp(item))
             {
                 currentTarget = null;
-                agent.SetDestination(route.StartPosition);
-                currentState = AntState.ReturningToStartZone;
+                TryGoToFoodStorage();
                 return;
             }
-        }
 
-        currentTarget = null;
-        BeginSearchingForPickup();
+            currentTarget = null;
+            BeginIdle();
+        }
     }
 
-    private void HandleReturningToStart(PheromoneRoute route)
+    private void TryGoToFoodStorage()
     {
-        if (route == null || !route.IsValid)
+        Transform storage = perception.GetClosestFoodStorageInsidePheromone();
+
+        if (storage == null)
         {
             BeginIdle();
             return;
         }
 
-        if (pickup != null && pickup.IsHoldingSomething)
+        currentTarget = storage;
+        agent.SetDestination(currentTarget.position);
+        currentState = AntState.GoingToFoodStorage;
+    }
+
+    private void HandleGoingToFoodStorage()
+    {
+        if (currentTarget == null)
         {
-            agent.SetDestination(route.StartPosition);
+            BeginIdle();
+            return;
         }
+
+        if (!PheromoneManager.Instance.IsInsidePheromone(currentTarget.position))
+        {
+            BeginIdle();
+            return;
+        }
+
+        agent.SetDestination(currentTarget.position);
 
         if (HasArrived())
         {
             if (pickup != null && pickup.IsHoldingSomething)
-            {
                 pickup.Drop();
-            }
 
-            // Go back to target zone again
-            agent.SetDestination(route.TargetPosition);
-            currentState = AntState.GoingToTargetZone;
+            currentTarget = null;
+            BeginIdle();
         }
+    }
+
+    private void WanderToRandomPheromonePoint()
+    {
+        for (int i = 0; i < 15; i++)
+        {
+            Vector3 randomPoint = PheromoneManager.Instance.GetRandomPheromonePoint();
+
+            if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, 3f, NavMesh.AllAreas))
+            {
+                agent.SetDestination(hit.position);
+                currentState = AntState.WanderingInPheromone;
+                return;
+            }
+        }
+
+        Debug.LogWarning($"{name} could not find valid NavMesh point inside pheromone.");
+        BeginIdle();
     }
 
     private void BeginIdle()
@@ -240,20 +240,19 @@ public class AntNPC : MonoBehaviour
         currentState = AntState.Idle;
     }
 
-    private void PickRandomWanderTarget()
-    {
-        Vector2 randomOffset = Random.insideUnitCircle * antDefinition.wanderRadius;
-        Vector2 destination = homePosition + randomOffset;
-
-        agent.SetDestination(destination);
-        currentState = AntState.Wandering;
-    }
-
     private bool HasArrived()
     {
+        if (!CanUseAgent())
+            return false;
+
         if (agent.pathPending)
             return false;
 
         return agent.remainingDistance <= arriveDistance;
+    }
+
+    private bool CanUseAgent()
+    {
+        return agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh;
     }
 }
