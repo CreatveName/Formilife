@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b90972a4c3e8bf418e596430c427e77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PheromoneTrail
-  radius: 1.25
+  radius: 0.5
   gasEmitterPrefab: {fileID: 4677800867871180369, guid: 539e92f430fa0f049ac4e3aefe7fe99c, type: 3}
   emitterSpacing: 0.9
   minWidth: 0.19
