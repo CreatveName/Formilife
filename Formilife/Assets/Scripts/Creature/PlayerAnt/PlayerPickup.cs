@@ -38,7 +38,7 @@ public class PlayerPickup : MonoBehaviour
 
                 FoodEffect food = obj.GetComponent<FoodEffect>();
 
-                if (food != null)
+                if (food != null && (!food.needsCrack||food.cracked))
                 {
                     food.Consume(gameObject);
                     DestroyHeldItem();

@@ -10,7 +10,7 @@ public class PlayerAntMovement : MonoBehaviour
     [SerializeField] private float turnSpeed = 180f;
 
     [Header("Carrying")]
-    [SerializeField] private float weightFactor = 0.5f;
+    [SerializeField] private float weightFactor = 0.01f;
     [SerializeField] private bool weightSlowsTurn = true;
 
     [Header("Animation")]
