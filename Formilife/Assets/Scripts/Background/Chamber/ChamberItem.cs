@@ -2,15 +2,6 @@ using UnityEngine;
 
 public class ChamberItem : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [Tooltip("Tag used to for objects that can assign rooms, e.g. 'Seed', 'Egg', 'Queen'")]
+    public string itemTag = "Seed";
 }

@@ -1,16 +1,22 @@
-using UnityEngine;
+using System.Collections.Generic;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public enum ChamberRole
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    Unassigned,
+    FoodStorage,
+    Nursery,
+    ThroneRoom,
+    Landfill
+}
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+public enum HumidityLevel { Dry, Humid, Neutral }
+public enum SafetyLevel  { Safe, Dangerous, Neutral }
+
+
+[System.Serializable]
+public class AssignmentRule
+{
+    public string    requiredItemTag;
+    public int       requiredCount;
+    public ChamberRole assignedRole; 
 }
