@@ -1,31 +1,42 @@
 using UnityEngine;
+using UnityEngine.AI;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class AntNPC : MonoBehaviour
 {
     private enum AntState
     {
         Idle,
-        Moving
+        WanderingInPheromone,
+        GoingToSeed,
+        GoingToFoodStorage
     }
 
     [Header("Definition")]
     [SerializeField] private AntDefinition antDefinition;
 
-    [Header("Movement")]
-    [SerializeField] private float arriveDistance = 0.1f;
-    [SerializeField] private float maxMoveTime = 3f;
+    [Header("Pheromone Work")]
+    [SerializeField] private float arriveDistance = 0.25f;
+    [SerializeField] private float pickupDistance = 0.25f;
 
-    private Rigidbody2D rb;
-    private Vector2 homePosition;
-    private Vector2 targetPosition;
+    [Header("Debug")]
+    [SerializeField] private AntState currentState;
+
+    private NavMeshAgent agent;
+    private AntPerception perception;
+    private NPCAntPickup pickup;
+
+    private Transform currentTarget;
     private float idleTimer;
-    private float moveTimer;
-    private AntState currentState;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        agent = GetComponent<NavMeshAgent>();
+        perception = GetComponent<AntPerception>();
+        pickup = GetComponent<NPCAntPickup>();
+
+        agent.updateRotation = false;
+        agent.updateUpAxis = false;
     }
 
     private void Start()
@@ -37,23 +48,32 @@ public class AntNPC : MonoBehaviour
             return;
         }
 
-        homePosition = rb.position;
+        agent.speed = antDefinition.moveSpeed;
         BeginIdle();
     }
 
     private void Update()
     {
-        if (currentState == AntState.Idle)
-        {
-            HandleIdle();
-        }
-    }
+        if (!CanUseAgent())
+            return;
 
-    private void FixedUpdate()
-    {
-        if (currentState == AntState.Moving)
+        switch (currentState)
         {
-            HandleMovement();
+            case AntState.Idle:
+                HandleIdle();
+                break;
+
+            case AntState.WanderingInPheromone:
+                HandleWanderingInPheromone();
+                break;
+
+            case AntState.GoingToSeed:
+                HandleGoingToSeed();
+                break;
+
+            case AntState.GoingToFoodStorage:
+                HandleGoingToFoodStorage();
+                break;
         }
     }
 
@@ -61,57 +81,178 @@ public class AntNPC : MonoBehaviour
     {
         idleTimer -= Time.deltaTime;
 
-        if (idleTimer <= 0f)
-        {
-            PickNewTarget();
-            moveTimer = maxMoveTime;
-            currentState = AntState.Moving;
-        }
-    }
+        if (idleTimer > 0f)
+            return;
 
-    private void HandleMovement()
-    {
-        moveTimer -= Time.fixedDeltaTime;
-
-        Vector2 currentPosition = rb.position;
-        Vector2 nextPosition = Vector2.MoveTowards(
-            currentPosition,
-            targetPosition,
-            antDefinition.moveSpeed * Time.fixedDeltaTime
-        );
-
-        rb.MovePosition(nextPosition);
-
-        if (Vector2.Distance(currentPosition, targetPosition) <= arriveDistance)
+        if (PheromoneManager.Instance == null || !PheromoneManager.Instance.HasAnyTrail())
         {
             BeginIdle();
             return;
         }
 
-        if (moveTimer <= 0f)
+        // If holding item, find storage
+        if (pickup != null && pickup.IsHoldingSomething)
+        {
+            Debug.Log($"{name} is holding something, looking for food storage.");
+            TryGoToFoodStorage();
+            return;
+        }
+
+        // If not holding, look for seed
+        Transform seed = perception.GetClosestSeedInsidePheromone();
+
+        if (seed != null)
+        {
+            Debug.Log($"{name} found seed: {seed.name}");
+            currentTarget = seed;
+            agent.SetDestination(currentTarget.position);
+            currentState = AntState.GoingToSeed;
+            return;
+        }
+
+        // If nothing useful found, wander
+        Debug.Log($"{name} found no seed, wandering in pheromone.");
+        WanderToRandomPheromonePoint();
+    }
+
+    private void HandleWanderingInPheromone()
+    {
+        if (PheromoneManager.Instance == null || !PheromoneManager.Instance.HasAnyTrail())
+        {
+            BeginIdle();
+            return;
+        }
+
+        Transform seed = perception.GetClosestSeedInsidePheromone();
+
+        if (seed != null && pickup != null && !pickup.IsHoldingSomething)
+        {
+            currentTarget = seed;
+            agent.SetDestination(currentTarget.position);
+            currentState = AntState.GoingToSeed;
+            return;
+        }
+
+        if (HasArrived())
         {
             BeginIdle();
         }
     }
 
+    private void HandleGoingToSeed()
+    {
+        if (currentTarget == null)
+        {
+            BeginIdle();
+            return;
+        }
+
+        if (!PheromoneManager.Instance.IsInsidePheromone(currentTarget.position))
+        {
+            currentTarget = null;
+            BeginIdle();
+            return;
+        }
+
+        agent.SetDestination(currentTarget.position);
+
+        float dist = Vector2.Distance(transform.position, currentTarget.position);
+
+        if (dist <= pickupDistance)
+        {
+            IPickupable item = currentTarget.GetComponent<IPickupable>();
+
+            if (item != null && pickup.TryPickUp(item))
+            {
+                currentTarget = null;
+                TryGoToFoodStorage();
+                return;
+            }
+
+            currentTarget = null;
+            BeginIdle();
+        }
+    }
+
+    private void TryGoToFoodStorage()
+    {
+        Transform storage = perception.GetClosestFoodStorageInsidePheromone();
+
+        if (storage == null)
+        {
+            BeginIdle();
+            return;
+        }
+
+        currentTarget = storage;
+        agent.SetDestination(currentTarget.position);
+        currentState = AntState.GoingToFoodStorage;
+    }
+
+    private void HandleGoingToFoodStorage()
+    {
+        if (currentTarget == null)
+        {
+            BeginIdle();
+            return;
+        }
+
+        if (!PheromoneManager.Instance.IsInsidePheromone(currentTarget.position))
+        {
+            BeginIdle();
+            return;
+        }
+
+        agent.SetDestination(currentTarget.position);
+
+        if (HasArrived())
+        {
+            if (pickup != null && pickup.IsHoldingSomething)
+                pickup.Drop();
+
+            currentTarget = null;
+            BeginIdle();
+        }
+    }
+
+    private void WanderToRandomPheromonePoint()
+    {
+        for (int i = 0; i < 15; i++)
+        {
+            Vector3 randomPoint = PheromoneManager.Instance.GetRandomPheromonePoint();
+
+            if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, 3f, NavMesh.AllAreas))
+            {
+                agent.SetDestination(hit.position);
+                currentState = AntState.WanderingInPheromone;
+                return;
+            }
+        }
+
+        Debug.LogWarning($"{name} could not find valid NavMesh point inside pheromone.");
+        BeginIdle();
+    }
+
     private void BeginIdle()
     {
         idleTimer = Random.Range(antDefinition.minIdleTime, antDefinition.maxIdleTime);
+        currentTarget = null;
         currentState = AntState.Idle;
     }
 
-    private void PickNewTarget()
+    private bool HasArrived()
     {
-        Vector2 randomOffset = Random.insideUnitCircle * antDefinition.wanderRadius;
-        targetPosition = homePosition + randomOffset;
+        if (!CanUseAgent())
+            return false;
+
+        if (agent.pathPending)
+            return false;
+
+        return agent.remainingDistance <= arriveDistance;
     }
 
-    private void OnDrawGizmosSelected()
+    private bool CanUseAgent()
     {
-        Gizmos.color = Color.yellow;
-
-        Vector3 center = Application.isPlaying ? (Vector3)homePosition : transform.position;
-        float radius = antDefinition != null ? antDefinition.wanderRadius : 3f;
-        Gizmos.DrawWireSphere(center, radius);
+        return agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh;
     }
 }
