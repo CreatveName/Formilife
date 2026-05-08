@@ -11,7 +11,7 @@ public class TopDownCamera : MonoBehaviour
     public float zoomSpeed = 5f;
     public float zoomSmoothing = 2f;
     public float minZoom = 5f;
-    public float maxZoom = 15f;
+    public float maxZoom = 40f;
 
     //Private
 

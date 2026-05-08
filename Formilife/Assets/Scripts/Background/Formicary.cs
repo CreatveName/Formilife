@@ -1,36 +1,95 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Formicary : MonoBehaviour
 {
     public Texture2D logTexture;
+    public Texture2D grayLogTexture;
     public Texture2D leafTexture;
+    public Texture2D darkLeafTexture;
+    public Texture2D testTexture;
+
     public Renderer wallR;
     public GameObject[] sandGrainOptions;
     private GameObject chosenSandGrain;
 
+    [Header("Tiling Settings")]
+    public Vector2 textureTiling = new Vector2(5f, 5f);
+
+    [Header("Debug Settings")]
+    public bool debugMode = true;
+
+    private Texture2D[] textureList;
+    private int currentTextureIndex = 0;
+    private string[] textureNames;
+
     void Start()
     {
-        //Transform formicaryWalls = transform.Find("Assets/3D Models/Formicary.fbx");
-        ChangeTexture(wallR, logTexture);
-        //PickRandomSandGrain();
+        textureList = new Texture2D[] { testTexture, logTexture, grayLogTexture, leafTexture, darkLeafTexture };
+        textureNames = new string[] { "testTexture", "logTexture", "grayLogTexture", "leafTexture", "darkLeafTexture" };
 
+        ChangeTexture(wallR, textureList[currentTextureIndex]);
+    }
+    void Update()
+    {
+        if (!debugMode) return;
+
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null) return;
+
+        if (keyboard.pKey.wasPressedThisFrame)
+        {
+            CycleToNextTexture();
+        }
     }
 
+    //debug for krill, will be removed when texture system is finalized. cycles through textures on wall for testing purposes
+    void CycleToNextTexture()
+    {
+        currentTextureIndex = (currentTextureIndex + 1) % textureList.Length;
+        Texture2D next = textureList[currentTextureIndex];
+
+        if (next == null)
+        {
+            Debug.LogWarning($"[Formicary] Texture at index {currentTextureIndex} ({textureNames[currentTextureIndex]}) is null, skipping...");
+            CycleToNextTexture();
+            return;
+        }
+
+        ChangeTexture(wallR, next);
+        Debug.Log($"[Formicary] Switched to texture {currentTextureIndex}: {textureNames[currentTextureIndex]}");
+    }
+
+    //sand grain system for future use, not currently implemented
     void PickRandomSandGrain()
     {
         if (sandGrainOptions.Length == 0)
         {
-            Debug.Log("No sand grains in list");
+            Debug.LogWarning("[Formicary] No sand grains in list");
             return;
         }
-        int index = Random.Range(0,sandGrainOptions.Length);
+        int index = Random.Range(0, sandGrainOptions.Length);
         chosenSandGrain = sandGrainOptions[index];
-        //Instantiate(chosenSandGrain, transform.position, Quaternion.identity);
+        Debug.Log($"[Formicary] Picked sand grain: {chosenSandGrain.name}");
     }
 
     void ChangeTexture(Renderer part, Texture2D newTexture)
     {
-        //Renderer myRenderer = part.GetComponent<Renderer>();
-        wallR.material.mainTexture = newTexture;
+        if (part == null)
+        {
+            Debug.LogError("[Formicary] Renderer is null!");
+            return;
+        }
+        if (newTexture == null)
+        {
+            Debug.LogError("[Formicary] Texture is null!");
+            return;
+        }
+
+        part.material.mainTexture = newTexture;
+        part.material.mainTextureScale = textureTiling;
+
+        if (debugMode)
+            Debug.Log($"[Formicary] Applied texture '{newTexture.name}' with tiling {textureTiling}");
     }
 }

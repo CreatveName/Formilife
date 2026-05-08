@@ -6,7 +6,7 @@ public class PlayerAntMovement : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 3f;
-    [SerializeField] private float runSpeed = 5f;
+    [SerializeField] private float runSpeed = 20f;
     [SerializeField] private float turnSpeed = 180f;
 
     [Header("Carrying")]

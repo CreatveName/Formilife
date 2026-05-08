@@ -5,9 +5,9 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - logTexture: {fileID: 2800000, guid: 04c4a5dfc75ff48bbbf229faa60e8cc7, type: 3}
+  - grayLogTexture: {fileID: 2800000, guid: 8cff82956265c446fa514d3417b101ac, type: 3}
   - leafTexture: {fileID: 2800000, guid: f7890264c463c4e1c936c7f2623f2960, type: 3}
-  - lightWoodTexture: {fileID: 2800000, guid: b8da809e783514b7a8c44e5636462f57, type: 3}
-  - darkWoodTexture: {fileID: 2800000, guid: e7ba49ed7e6d94ae2aa92d4b375946c4, type: 3}
+  - darkLeafTexture: {fileID: 2800000, guid: 28387c95786d3406ca2bc00dc106ca06, type: 3}
   - wallR: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
