@@ -22,6 +22,7 @@ public class AntNeeds : MonoBehaviour
     private Vector3 spawnPosition;
     private Quaternion spawnRotation;
     private bool isDead;
+    private bool isPlayer;
 
     private void Start()
     {
@@ -31,6 +32,8 @@ public class AntNeeds : MonoBehaviour
             enabled = false;
             return;
         }
+
+        isPlayer = GetComponent<PlayerAntMovement>() != null;
 
         hunger = definition.maxHunger;
         thirst = definition.maxThirst;
@@ -43,6 +46,7 @@ public class AntNeeds : MonoBehaviour
     private void Update()
     {
         if (definition == null || isDead) return;
+        if (isPlayer && !StartMenu.GameStarted) return;
         ApplyDecay();
         ApplySurvivalDamage();
         ClampValues();

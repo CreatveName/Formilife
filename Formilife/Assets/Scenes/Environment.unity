@@ -670,25 +670,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2790931006668401816, guid: c8d80d8bfa34404498ce67bfb31238c0, type: 3}
+      propertyPath: respawnPoint
+      value: 
+      objectReference: {fileID: 1599498170}
+    - target: {fileID: 2790931006668401816, guid: c8d80d8bfa34404498ce67bfb31238c0, type: 3}
+      propertyPath: respawnOnDeath
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3425087890753632593, guid: c8d80d8bfa34404498ce67bfb31238c0, type: 3}
       propertyPath: m_LocalScale.x
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3425087890753632593, guid: c8d80d8bfa34404498ce67bfb31238c0, type: 3}
       propertyPath: m_LocalScale.y
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3425087890753632593, guid: c8d80d8bfa34404498ce67bfb31238c0, type: 3}
       propertyPath: m_LocalScale.z
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3425087890753632593, guid: c8d80d8bfa34404498ce67bfb31238c0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -200.9
+      value: -108.1
       objectReference: {fileID: 0}
     - target: {fileID: 3425087890753632593, guid: c8d80d8bfa34404498ce67bfb31238c0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 57.4
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 3425087890753632593, guid: c8d80d8bfa34404498ce67bfb31238c0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -740,7 +748,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3425087890753632593, guid: c8d80d8bfa34404498ce67bfb31238c0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1599498170}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c8d80d8bfa34404498ce67bfb31238c0, type: 3}
 --- !u!4 &725993664 stripped
@@ -766,9 +777,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Formicary
   logTexture: {fileID: 2800000, guid: 04c4a5dfc75ff48bbbf229faa60e8cc7, type: 3}
+  grayLogTexture: {fileID: 2800000, guid: 8cff82956265c446fa514d3417b101ac, type: 3}
   leafTexture: {fileID: 2800000, guid: f7890264c463c4e1c936c7f2623f2960, type: 3}
+  darkLeafTexture: {fileID: 2800000, guid: 28387c95786d3406ca2bc00dc106ca06, type: 3}
+  testTexture: {fileID: 2800000, guid: c459862fec84746a8a6e0bc47c2ae47e, type: 3}
   wallR: {fileID: 445763063}
   sandGrainOptions: []
+  textureTiling: {x: 5, y: 5}
+  debugMode: 1
 --- !u!4 &970927024 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 62d2856a24216d64e926996323e87b03, type: 3}
@@ -939,23 +955,23 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 62d2856a24216d64e926996323e87b03, type: 3}
       propertyPath: m_LocalScale.x
-      value: 7
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 62d2856a24216d64e926996323e87b03, type: 3}
       propertyPath: m_LocalScale.y
-      value: 7
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 62d2856a24216d64e926996323e87b03, type: 3}
       propertyPath: m_LocalScale.z
-      value: 7
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 62d2856a24216d64e926996323e87b03, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -81.7
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 62d2856a24216d64e926996323e87b03, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -12.9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 62d2856a24216d64e926996323e87b03, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1004,6 +1020,37 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 970927023}
   m_SourcePrefab: {fileID: 100100000, guid: 62d2856a24216d64e926996323e87b03, type: 3}
+--- !u!1 &1599498169
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1599498170}
+  m_Layer: 0
+  m_Name: RespawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1599498170
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1599498169}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.76, y: 1.16, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 725993664}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

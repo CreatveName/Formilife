@@ -28,7 +28,8 @@ public class Formicary : MonoBehaviour
         textureList = new Texture2D[] { testTexture, logTexture, grayLogTexture, leafTexture, darkLeafTexture };
         textureNames = new string[] { "testTexture", "logTexture", "grayLogTexture", "leafTexture", "darkLeafTexture" };
 
-        ChangeTexture(wallR, textureList[currentTextureIndex]);
+        if (debugMode)
+            ChangeTexture(wallR, textureList[currentTextureIndex]);
     }
     void Update()
     {

@@ -32,6 +32,8 @@ public class PlayerAntMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!StartMenu.GameStarted) return;
+
         Keyboard keyboard = Keyboard.current;
         if (keyboard == null) return;
 

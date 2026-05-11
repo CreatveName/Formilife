@@ -31,6 +31,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3425087890753632593}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3287434387499925427
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8618148639055680718}
+  m_Layer: 0
+  m_Name: RespawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8618148639055680718
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3287434387499925427}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3425087890753632593}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6363957177313571059
 GameObject:
   m_ObjectHideFlags: 0
@@ -47,6 +78,7 @@ GameObject:
   - component: {fileID: 4539729734775885272}
   - component: {fileID: 2790931006668401816}
   - component: {fileID: 1174142504146443582}
+  - component: {fileID: 7190959460728865056}
   m_Layer: 0
   m_Name: Worker Ant
   m_TagString: Player
@@ -64,10 +96,11 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.17, y: -0.6, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.9988198, y: 0.9988198, z: 0.9988198}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6905477953189144245}
+  - {fileID: 8618148639055680718}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &9103356383462599799
@@ -190,8 +223,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.74, y: 0.93}
+  m_Offset: {x: -0.009336046, y: 0.026142934}
+  m_Size: {x: 0.17606916, y: 0.69098294}
   m_Direction: 0
 --- !u!114 &5604813959830638470
 MonoBehaviour:
@@ -205,8 +238,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07af10dd2998fa04693a4eca5db8bf0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAntMovement
-  moveSpeed: 3
-  runSpeed: 5
+  moveSpeed: 7
+  runSpeed: 8
   turnSpeed: 180
   weightFactor: 0.5
   weightSlowsTurn: 1
@@ -242,8 +275,8 @@ MonoBehaviour:
   hunger: 100
   thirst: 100
   health: 0
-  respawnOnDeath: 0
-  respawnPoint: {fileID: 0}
+  respawnOnDeath: 1
+  respawnPoint: {fileID: 8618148639055680718}
   respawnStatFraction: 0.5
   debugDamageKey: 25
   debugDamageAmount: 25
@@ -269,3 +302,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7190959460728865056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6363957177313571059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f97e98d3cd5721a44a623782b8b489f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AntStatsHUD
+  padding: {x: 12, y: 12}
+  barWidth: 180
+  barHeight: 14
+  lineSpacing: 22
+  fontSize: 13
+  labelWidth: 60
+  healthColor: {r: 1, g: 0, b: 0, a: 1}
+  hungerColor: {r: 1, g: 0.6, b: 0.1, a: 1}
+  thirstColor: {r: 0.2, g: 0.6, b: 1, a: 1}

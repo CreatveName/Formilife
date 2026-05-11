@@ -27,6 +27,7 @@ public class AntStatsHUD : MonoBehaviour
 
     private void OnGUI() {
         if (needs == null) return;
+        if (!StartMenu.GameStarted) return;
         EnsureStyles();
         float x = padding.x;
         float y = padding.y;

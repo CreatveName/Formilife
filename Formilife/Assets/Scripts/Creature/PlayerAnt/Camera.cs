@@ -44,6 +44,15 @@ public class TopDownCamera : MonoBehaviour
         }
     }
 
+    public void SetZoom(float zoom)
+    {
+        if (!_camera) _camera = GetComponent<Camera>();
+        zoom = Mathf.Clamp(zoom, minZoom, maxZoom);
+        _targetZoom = zoom;
+        if (_camera.orthographic) _camera.orthographicSize = zoom;
+        else _camera.fieldOfView = zoom;
+    }
+
     void LateUpdate()
     {
         HandleZoom();
