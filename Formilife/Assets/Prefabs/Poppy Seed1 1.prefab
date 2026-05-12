@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 3071636716125335772}
   - component: {fileID: 6515799623770091206}
   - component: {fileID: 9067157772492826818}
-  - component: {fileID: 1842634722015804178}
-  - component: {fileID: -6624600454940290057}
+  - component: {fileID: -3760886876784851782}
+  - component: {fileID: 1034688338670239276}
   m_Layer: 3
-  m_Name: Amaranth 2
+  m_Name: Poppy Seed1 1
   m_TagString: Food
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -86,7 +86,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 204213441922710603, guid: b62d5c83e417b4ad7813857c5848d51a, type: 3}
+  m_Sprite: {fileID: 4436261278765507304, guid: 34b86a8acbbb2403cbce48030e831d44, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -135,7 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0244823e0403a334881f67fd3f8920ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pickupable
-  weight: 1.6
+  weight: 1
 --- !u!114 &9067157772492826818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,7 +151,7 @@ MonoBehaviour:
   hungerRestore: 50
   cracked: 0
   needsCrack: 0
---- !u!70 &1842634722015804178
+--- !u!70 &-3760886876784851782
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -186,9 +186,9 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.36, y: 0.43}
+  m_Size: {x: 0.31, y: 0.24}
   m_Direction: 0
---- !u!114 &-6624600454940290057
+--- !u!114 &1034688338670239276
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

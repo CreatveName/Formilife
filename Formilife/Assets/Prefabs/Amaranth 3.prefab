@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 6515799623770091206}
   - component: {fileID: 9067157772492826818}
   - component: {fileID: 1842634722015804178}
-  - component: {fileID: -6624600454940290057}
+  - component: {fileID: -5809814822082044132}
   m_Layer: 3
-  m_Name: Amaranth 2
+  m_Name: Amaranth 3
   m_TagString: Food
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -86,7 +86,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 204213441922710603, guid: b62d5c83e417b4ad7813857c5848d51a, type: 3}
+  m_Sprite: {fileID: -1232336014291305746, guid: 90110c5d0eb8348bd9da629cf46dd856, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -188,7 +188,7 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.36, y: 0.43}
   m_Direction: 0
---- !u!114 &-6624600454940290057
+--- !u!114 &-5809814822082044132
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

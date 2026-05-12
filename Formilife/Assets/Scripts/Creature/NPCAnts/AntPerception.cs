@@ -80,4 +80,36 @@ public class AntPerception : MonoBehaviour
 
         return closest;
     }
+
+    public Transform GetClosestCrackableSeedInsidePheromone()
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius, seedLayer);
+
+        Transform closest = null;
+        float closestDist = Mathf.Infinity;
+
+        foreach (Collider2D hit in hits)
+        {
+            if (!PheromoneManager.Instance.IsInsidePheromone(hit.transform.position))
+                continue;
+
+            FoodEffect food = hit.GetComponent<FoodEffect>();
+
+            if (food == null)
+                continue;
+
+            if (!food.needsCrack || food.cracked)
+                continue;
+
+            float dist = Vector2.Distance(transform.position, hit.transform.position);
+
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                closest = hit.transform;
+            }
+        }
+
+        return closest;
+    }
 }

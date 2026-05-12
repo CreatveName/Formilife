@@ -10,7 +10,8 @@ public class AntNPC : MonoBehaviour
         WanderingInPheromone,
         GoingToSeed,
         GoingToFoodStorage,
-        GoingToFoodToEat
+        GoingToFoodToEat,
+        GoingToCrackSeed
     }
 
     [Header("Definition")]
@@ -93,6 +94,9 @@ public class AntNPC : MonoBehaviour
             case AntState.GoingToFoodToEat:
                 HandleGoingToFoodToEat();
                 break;
+            case AntState.GoingToCrackSeed:
+                HandleGoingToCrackSeed();
+                break;
         }
     }
 
@@ -115,9 +119,11 @@ public class AntNPC : MonoBehaviour
             return;
         }
 
-        if (npcDefinition.patrolsFormicary && !npcDefinition.collectsSeeds)
+        if (npcDefinition.role == AntRole.Soldier)
         {
-            // Soldier behavior for now: patrol/wander.
+            if (TryGoToCrackableSeed())
+                return;
+
             WanderToRandomPheromonePoint();
             return;
         }
@@ -162,14 +168,28 @@ public class AntNPC : MonoBehaviour
             return;
         }
 
-        Transform seed = perception.GetClosestSeedInsidePheromone();
-
-        if (seed != null && pickup != null && !pickup.IsHoldingSomething)
+        if (npcDefinition.role == AntRole.Soldier)
         {
-            currentTarget = seed;
-            agent.SetDestination(currentTarget.position);
-            currentState = AntState.GoingToSeed;
+            if (TryGoToCrackableSeed())
+                return;
+
+            if (HasArrived())
+                BeginIdle();
+
             return;
+        }
+
+        if (npcDefinition.collectsSeeds)
+        {
+            Transform seed = perception.GetClosestSeedInsidePheromone();
+
+            if (seed != null && pickup != null && !pickup.IsHoldingSomething)
+            {
+                currentTarget = seed;
+                agent.SetDestination(currentTarget.position);
+                currentState = AntState.GoingToSeed;
+                return;
+            }
         }
 
         if (HasArrived())
@@ -297,24 +317,45 @@ public class AntNPC : MonoBehaviour
     private bool TryInterruptForHunger()
     {
         if (needs == null)
-        {
-            Debug.LogWarning($"{name} has no AntNeeds component.");
             return false;
-        }
 
         if (!needs.IsHungry())
             return false;
 
-
         if (currentState == AntState.GoingToFoodToEat)
             return false;
 
-        if (pickup != null && pickup.IsHoldingSomething)
+        // Queen should be allowed to eat, but she should NOT drop tasks/items
+        // because she usually should not be carrying things anyway.
+        if (npcDefinition.role == AntRole.Queen)
         {
-            pickup.Drop();
+            return TryGoToClosestFoodToEat();
         }
 
-        return TryGoToClosestFoodToEat();
+        // Soldiers should not constantly abandon patrols the second they are a little hungry.
+        // Let them only eat when they are seriously low.
+        if (npcDefinition.role == AntRole.Soldier)
+        {
+            float emergencyHungerLevel = 0.20f; // 20%
+
+            if (needs.GetHungerNormalized() > emergencyHungerLevel)
+                return false;
+
+            return TryGoToClosestFoodToEat();
+        }
+
+        // Workers can interrupt normally because gathering/eating is their main job.
+        if (npcDefinition.role == AntRole.Worker)
+        {
+            if (pickup != null && pickup.IsHoldingSomething)
+            {
+                pickup.Drop();
+            }
+
+            return TryGoToClosestFoodToEat();
+        }
+
+        return false;
     }
     private bool TryGoToClosestFoodToEat()
     {
@@ -408,5 +449,63 @@ public class AntNPC : MonoBehaviour
 
         currentTarget = null;
         BeginIdle();
+    }
+    //SOLDIER
+    private bool TryGoToCrackableSeed()
+    {
+        if (perception == null)
+            return false;
+
+        if (!npcDefinition.cracksBigSeeds)
+            return false;
+
+        Transform seed = perception.GetClosestCrackableSeedInsidePheromone();
+
+        if (seed == null)
+            return false;
+
+        currentTarget = seed;
+        agent.SetDestination(currentTarget.position);
+        currentState = AntState.GoingToCrackSeed;
+        return true;
+    }
+
+    private void HandleGoingToCrackSeed()
+    {
+        if (currentTarget == null)
+        {
+            BeginIdle();
+            return;
+        }
+
+        if (!PheromoneManager.Instance.IsInsidePheromone(currentTarget.position))
+        {
+            currentTarget = null;
+            BeginIdle();
+            return;
+        }
+
+        FoodEffect food = currentTarget.GetComponent<FoodEffect>();
+
+        if (food == null || !food.needsCrack || food.cracked)
+        {
+            currentTarget = null;
+            BeginIdle();
+            return;
+        }
+
+        agent.SetDestination(currentTarget.position);
+
+        float dist = Vector2.Distance(transform.position, currentTarget.position);
+
+        if (dist <= pickupDistance)
+        {
+            food.cracked = true;
+
+            Debug.Log($"{name} cracked {currentTarget.name}");
+
+            currentTarget = null;
+            BeginIdle();
+        }
     }
 }
