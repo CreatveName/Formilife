@@ -171,6 +171,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FoodTest
       objectReference: {fileID: 0}
+    - target: {fileID: 9067157772492826818, guid: fd83a326128959743993570290c92569, type: 3}
+      propertyPath: hungerRestore
+      value: 75
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -959,10 +963,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a69b519ef51f8ff4fb955fe0055028b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AntNPC
-  antDefinition: {fileID: 11400000, guid: 5c2686b7bdeed9e448c50004959d9c6a, type: 2}
+  antDefinition: {fileID: 11400000, guid: 9776ae7987e984c4a841a7808b4df5ee, type: 2}
+  npcDefinition: {fileID: 11400000, guid: 9f6581525dcbe654cb151209c6f05444, type: 2}
   arriveDistance: 0.1
   pickupDistance: 0.25
   currentState: 0
+  eatDistance: 0.35
 --- !u!50 &651374499
 Rigidbody2D:
   serializedVersion: 5
@@ -1051,7 +1057,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3782802b3a4d62c46ace3341e55d0074, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AntNeeds
-  definition: {fileID: 11400000, guid: 5c2686b7bdeed9e448c50004959d9c6a, type: 2}
+  definition: {fileID: 11400000, guid: 9776ae7987e984c4a841a7808b4df5ee, type: 2}
   hunger: 0
   thirst: 0
   health: 0
@@ -1072,7 +1078,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5487c8f9e3187034f8985d310b006205, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AntPerception
-  detectionRadius: 6.14
+  detectionRadius: 15.23
+  hungryFoodDetectionRadius: 999
   seedLayer:
     serializedVersion: 2
     m_Bits: 72

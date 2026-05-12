@@ -9,11 +9,13 @@ public class AntNPC : MonoBehaviour
         Idle,
         WanderingInPheromone,
         GoingToSeed,
-        GoingToFoodStorage
+        GoingToFoodStorage,
+        GoingToFoodToEat
     }
 
     [Header("Definition")]
     [SerializeField] private AntDefinition antDefinition;
+    [SerializeField] private AntNPCDefinition npcDefinition;
 
     [Header("Pheromone Work")]
     [SerializeField] private float arriveDistance = 0.25f;
@@ -21,6 +23,10 @@ public class AntNPC : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private AntState currentState;
+    [Header("Survival")]
+    [SerializeField] private float eatDistance = 0.35f;
+
+    private AntNeeds needs;
 
     private NavMeshAgent agent;
     private AntPerception perception;
@@ -34,6 +40,7 @@ public class AntNPC : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         perception = GetComponent<AntPerception>();
         pickup = GetComponent<NPCAntPickup>();
+        needs = GetComponent<AntNeeds>();
 
         agent.updateRotation = false;
         agent.updateUpAxis = false;
@@ -47,6 +54,12 @@ public class AntNPC : MonoBehaviour
             enabled = false;
             return;
         }
+        if (npcDefinition == null)
+        {
+            Debug.LogError($"{name} is missing an AntNPCDefinition.", this);
+            enabled = false;
+            return;
+        }
 
         agent.speed = antDefinition.moveSpeed;
         BeginIdle();
@@ -55,6 +68,9 @@ public class AntNPC : MonoBehaviour
     private void Update()
     {
         if (!CanUseAgent())
+            return;
+    
+        if (TryInterruptForHunger())
             return;
 
         switch (currentState)
@@ -74,6 +90,9 @@ public class AntNPC : MonoBehaviour
             case AntState.GoingToFoodStorage:
                 HandleGoingToFoodStorage();
                 break;
+            case AntState.GoingToFoodToEat:
+                HandleGoingToFoodToEat();
+                break;
         }
     }
 
@@ -89,12 +108,32 @@ public class AntNPC : MonoBehaviour
             BeginIdle();
             return;
         }
+        if (npcDefinition.role == AntRole.Queen)
+        {
+            // Queen does not do worker tasks right now.
+            WanderToRandomPheromonePoint();
+            return;
+        }
+
+        if (npcDefinition.patrolsFormicary && !npcDefinition.collectsSeeds)
+        {
+            // Soldier behavior for now: patrol/wander.
+            WanderToRandomPheromonePoint();
+            return;
+        }
 
         // If holding item, find storage
         if (pickup != null && pickup.IsHoldingSomething)
         {
             Debug.Log($"{name} is holding something, looking for food storage.");
             TryGoToFoodStorage();
+            return;
+        }
+
+        // If not holding, look for seed
+        if (!npcDefinition.collectsSeeds)
+        {
+            WanderToRandomPheromonePoint();
             return;
         }
 
@@ -235,7 +274,7 @@ public class AntNPC : MonoBehaviour
 
     private void BeginIdle()
     {
-        idleTimer = Random.Range(antDefinition.minIdleTime, antDefinition.maxIdleTime);
+        idleTimer = Random.Range(npcDefinition.minIdleTime, npcDefinition.maxIdleTime);
         currentTarget = null;
         currentState = AntState.Idle;
     }
@@ -254,5 +293,120 @@ public class AntNPC : MonoBehaviour
     private bool CanUseAgent()
     {
         return agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh;
+    }
+    private bool TryInterruptForHunger()
+    {
+        if (needs == null)
+        {
+            Debug.LogWarning($"{name} has no AntNeeds component.");
+            return false;
+        }
+
+        if (!needs.IsHungry())
+            return false;
+
+
+        if (currentState == AntState.GoingToFoodToEat)
+            return false;
+
+        if (pickup != null && pickup.IsHoldingSomething)
+        {
+            pickup.Drop();
+        }
+
+        return TryGoToClosestFoodToEat();
+    }
+    private bool TryGoToClosestFoodToEat()
+    {
+        Transform seed = perception.GetClosestSeedInsidePheromoneForEating();
+
+        if (seed == null)
+        {
+            return false;
+        }
+
+        FoodEffect food = seed.GetComponent<FoodEffect>();
+
+        if (food == null)
+        {
+            return false;
+        }
+            
+
+        // Do not target big seeds unless they are already cracked.
+        if (food.needsCrack && !food.cracked)
+            return false;
+
+        currentTarget = seed;
+        agent.SetDestination(currentTarget.position);
+        currentState = AntState.GoingToFoodToEat;
+        return true;
+    }
+
+    private Transform GetCloserTransform(Transform a, Transform b)
+    {
+        if (a == null) return b;
+        if (b == null) return a;
+
+        float distA = Vector2.Distance(transform.position, a.position);
+        float distB = Vector2.Distance(transform.position, b.position);
+
+        return distA <= distB ? a : b;
+    }
+
+    private void HandleGoingToFoodToEat()
+    {
+        if (currentTarget == null)
+        {
+            BeginIdle();
+            return;
+        }
+
+        FoodEffect food = currentTarget.GetComponent<FoodEffect>();
+        if (food == null)
+        {
+            currentTarget = null;
+            BeginIdle();
+            return;
+        }
+
+        agent.SetDestination(currentTarget.position);
+
+        float dist = Vector2.Distance(transform.position, currentTarget.position);
+
+        if (dist <= eatDistance)
+        {
+            EatCurrentTarget();
+        }
+    }
+
+    private void EatCurrentTarget()
+    {
+        if (currentTarget == null)
+        {
+            BeginIdle();
+            return;
+        }
+
+        FoodEffect food = currentTarget.GetComponent<FoodEffect>();
+
+        if (food == null)
+        {
+            currentTarget = null;
+            BeginIdle();
+            return;
+        }
+
+        if (food.needsCrack && !food.cracked)
+        {
+            currentTarget = null;
+            BeginIdle();
+            return;
+        }
+
+        food.Consume(gameObject);
+
+        currentTarget = null;
+        BeginIdle();
     }
 }

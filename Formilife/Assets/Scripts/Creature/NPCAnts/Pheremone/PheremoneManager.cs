@@ -20,8 +20,6 @@ public class PheromoneManager : MonoBehaviour
     {
         if (!trails.Contains(trail))
             trails.Add(trail);
-
-        Debug.Log("Trail registered. Total trails: " + trails.Count);
     }
 
     public bool IsInsidePheromone(Vector3 position)
@@ -46,7 +44,7 @@ public class PheromoneManager : MonoBehaviour
 
     public bool HasAnyTrail()
     {
-        Debug.Log("Checking trails. Count: " + trails.Count);
+        //Debug.Log("Checking trails. Count: " + trails.Count);
         return trails.Count > 0;
     }
 }

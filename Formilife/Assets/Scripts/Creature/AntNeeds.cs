@@ -86,6 +86,8 @@ public class AntNeeds : MonoBehaviour
     // =========================
 
     public float GetHungerNormalized() => hunger / definition.maxHunger;
+    public float CurrentHunger => hunger;
+    public float HungerThreshold => definition != null ? definition.lowHungerThreshold : -1f;
     public float GetThirstNormalized() => thirst / definition.maxThirst;
     public float GetHealthNormalized() => health / definition.maxHealth;
 

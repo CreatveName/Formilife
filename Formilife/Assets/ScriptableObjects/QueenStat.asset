@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1eab6543a31ef9946b9d3481667bc890, type: 3}
+  m_Name: QueenStat
+  m_EditorClassIdentifier: Assembly-CSharp::AntDefinition
+  antName: QueenAnt
+  moveSpeed: 1.2
+  maxHunger: 150
+  hungerDecayRate: 3
+  maxThirst: 140
+  thirstDecayRate: 3.5
+  lowHungerThreshold: 60
+  lowThirstThreshold: 60
+  maxHealth: 200
+  starvationDamageRate: 8
+  dehydrationDamageRate: 10
+  corpsePrefab: {fileID: 0}

@@ -3,6 +3,7 @@ using UnityEngine;
 public class AntPerception : MonoBehaviour
 {
     [SerializeField] private float detectionRadius = 2f;
+    [SerializeField] private float hungryFoodDetectionRadius = 999f;
     [SerializeField] private LayerMask seedLayer;
     [SerializeField] private LayerMask foodStorageLayer;
 
@@ -16,6 +17,32 @@ public class AntPerception : MonoBehaviour
         foreach (Collider2D hit in hits)
         {
             if (!PheromoneManager.Instance.IsInsidePheromone(hit.transform.position))
+                continue;
+
+            float dist = Vector2.Distance(transform.position, hit.transform.position);
+
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                closest = hit.transform;
+            }
+        }
+
+        return closest;
+    }
+
+    public Transform GetClosestSeedInsidePheromoneForEating()
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, hungryFoodDetectionRadius, seedLayer);
+
+        Transform closest = null;
+        float closestDist = Mathf.Infinity;
+
+        foreach (Collider2D hit in hits)
+        {
+            FoodEffect food = hit.GetComponent<FoodEffect>();
+
+            if (food == null)
                 continue;
 
             float dist = Vector2.Distance(transform.position, hit.transform.position);

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4db18b5c06619a14aa26c811007c5f02, type: 3}
+  m_Name: Soldier
+  m_EditorClassIdentifier: Assembly-CSharp::AntNPCDefinition
+  role: 1
+  wanderRadius: 4
+  minIdleTime: 0.75
+  maxIdleTime: 2
+  collectsSeeds: 0
+  storesSeeds: 0
+  cracksBigSeeds: 1
+  patrolsFormicary: 1
+  fleesFromThreats: 0
+  warnsSoldiers: 0
+  laysEggs: 0
