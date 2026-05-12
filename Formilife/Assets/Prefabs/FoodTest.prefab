@@ -197,4 +197,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd61afbca4300643ad7ad295a08912e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FoodEffect
-  hungerRestore: 25
+  hungerRestore: 75
+  cracked: 0
+  needsCrack: 0

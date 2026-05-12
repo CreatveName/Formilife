@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: dc04f8bc268f84c7888698441dc85167
+guid: 64494d1dd0751456c8a2cc4da8cdd939
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7271588011425812823
-    second: Clover 2_0
+      213: -6147299322210892352
+    second: Clover 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,17 +96,43 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Clover 2_0
+      name: Clover 1_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 5
+        y: 0
         width: 64
-        height: 54
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 751560615ced9e460800000000000000
-      internalID: 7271588011425812823
+      spriteID: 0c5ce9316d760baa0800000000000000
+      internalID: -6147299322210892352
       vertices: []
       indices: 
       edges: []
@@ -135,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Clover 2_0: 7271588011425812823
+      Clover 1_0: -6147299322210892352
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

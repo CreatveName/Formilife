@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d59e33b5946a34e06b69d7dce9b497a9
+guid: b27477b83388c594484fb00b69b4307c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -911516846447577852
-    second: Millet 2_0
+      213: 421493371919346412
+    second: eg_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,17 +96,43 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Millet 2_0
+      name: eg_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 3
         y: 0
-        width: 64
-        height: 64
+        width: 1020
+        height: 1257
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 40535b0f144a953f0800000000000000
-      internalID: -911516846447577852
+      spriteID: cea2f641df179d500800000000000000
+      internalID: 421493371919346412
       vertices: []
       indices: 
       edges: []
@@ -135,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Millet 2_0: -911516846447577852
+      eg_0: 421493371919346412
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

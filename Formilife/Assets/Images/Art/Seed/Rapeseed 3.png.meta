@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 90110c5d0eb8348bd9da629cf46dd856
+guid: acfee5feb3ed642bba20382f0509cb79
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1232336014291305746
-    second: Amaranth 1_0
+      213: 7096263877477115770
+    second: Rapeseed 3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,17 +96,43 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Amaranth 1_0
+      name: Rapeseed 3_0
       rect:
         serializedVersion: 2
-        x: 15
-        y: 10
-        width: 36
-        height: 43
+        x: 5
+        y: 0
+        width: 51
+        height: 60
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eeafe389cecd5eee0800000000000000
-      internalID: -1232336014291305746
+      spriteID: a77a571266efa7260800000000000000
+      internalID: 7096263877477115770
       vertices: []
       indices: 
       edges: []
@@ -135,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Amaranth 1_0: -1232336014291305746
+      Rapeseed 3_0: 7096263877477115770
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

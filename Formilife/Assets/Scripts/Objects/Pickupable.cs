@@ -35,9 +35,8 @@ public class Pickupable : MonoBehaviour, IPickupable
     {
         transform.SetParent(null);
 
-        if (rb != null)
-        {
-            rb.simulated = true;
-        }
+        transform.position += (Vector3)(Random.insideUnitCircle * 0.3f);
+
+        rb.simulated = true;
     }
 }

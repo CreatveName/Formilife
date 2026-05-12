@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 34b86a8acbbb2403cbce48030e831d44
+guid: c1bf2d7d369494f9787e1b4437420f2e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4436261278765507304
-    second: poppy seed 2_0
+      213: 5178013472381858775
+    second: Rapeseed 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,17 +96,43 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: poppy seed 2_0
+      name: Rapeseed 1_0
       rect:
         serializedVersion: 2
-        x: 1
+        x: 7
         y: 0
-        width: 31
-        height: 24
+        width: 53
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8e263a3f024c09d30800000000000000
-      internalID: 4436261278765507304
+      spriteID: 7d3f18f91dffbd740800000000000000
+      internalID: 5178013472381858775
       vertices: []
       indices: 
       edges: []
@@ -135,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      poppy seed 2_0: 4436261278765507304
+      Rapeseed 1_0: 5178013472381858775
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

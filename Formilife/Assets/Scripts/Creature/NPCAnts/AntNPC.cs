@@ -21,11 +21,23 @@ public class AntNPC : MonoBehaviour
     [Header("Pheromone Work")]
     [SerializeField] private float arriveDistance = 0.25f;
     [SerializeField] private float pickupDistance = 0.25f;
+    [SerializeField] private float storageDropDistance = 0.8f;
+    [SerializeField] private float seedInteractDistance = 0.45f;
+    [SerializeField] private float stuckTimeout = 2.5f;
 
     [Header("Debug")]
     [SerializeField] private AntState currentState;
     [Header("Survival")]
     [SerializeField] private float eatDistance = 0.35f;
+    [Header("Queen Egg Laying")]
+    [SerializeField] private GameObject eggPrefab;
+    [SerializeField] private Transform eggSpawnPoint;
+    [SerializeField] private float eggLayInterval = 8f;
+    [SerializeField] private float eggSpawnRadius = 0.5f;
+
+    private float eggTimer;
+    private float stuckTimer;
+    private Vector3 lastPosition;
 
     private AntNeeds needs;
 
@@ -63,6 +75,8 @@ public class AntNPC : MonoBehaviour
         }
 
         agent.speed = antDefinition.moveSpeed;
+        eggTimer = eggLayInterval;
+        lastPosition = transform.position;
         BeginIdle();
     }
 
@@ -73,6 +87,8 @@ public class AntNPC : MonoBehaviour
     
         if (TryInterruptForHunger())
             return;
+        
+        HandleQueenEggLaying();
 
         switch (currentState)
         {
@@ -112,9 +128,13 @@ public class AntNPC : MonoBehaviour
             BeginIdle();
             return;
         }
+
         if (npcDefinition.role == AntRole.Queen)
         {
-            // Queen does not do worker tasks right now.
+            // If queen is hungry, let hunger system control her.
+            if (needs != null && needs.IsHungry())
+                return;
+
             WanderToRandomPheromonePoint();
             return;
         }
@@ -217,7 +237,7 @@ public class AntNPC : MonoBehaviour
 
         float dist = Vector2.Distance(transform.position, currentTarget.position);
 
-        if (dist <= pickupDistance)
+        if (dist <= seedInteractDistance || IsStuck())
         {
             IPickupable item = currentTarget.GetComponent<IPickupable>();
 
@@ -256,15 +276,21 @@ public class AntNPC : MonoBehaviour
             return;
         }
 
-        if (!PheromoneManager.Instance.IsInsidePheromone(currentTarget.position))
+        agent.SetDestination(currentTarget.position);
+
+        float dist = Vector2.Distance(transform.position, currentTarget.position);
+
+        if (dist <= storageDropDistance)
         {
+            if (pickup != null && pickup.IsHoldingSomething)
+                pickup.Drop();
+
+            currentTarget = null;
             BeginIdle();
             return;
         }
 
-        agent.SetDestination(currentTarget.position);
-
-        if (HasArrived())
+        if (IsStuck())
         {
             if (pickup != null && pickup.IsHoldingSomething)
                 pickup.Drop();
@@ -297,6 +323,9 @@ public class AntNPC : MonoBehaviour
         idleTimer = Random.Range(npcDefinition.minIdleTime, npcDefinition.maxIdleTime);
         currentTarget = null;
         currentState = AntState.Idle;
+
+        stuckTimer = 0f;
+        lastPosition = transform.position;
     }
 
     private bool HasArrived()
@@ -415,7 +444,7 @@ public class AntNPC : MonoBehaviour
 
         float dist = Vector2.Distance(transform.position, currentTarget.position);
 
-        if (dist <= eatDistance)
+        if (dist <= eatDistance || IsStuck())
         {
             EatCurrentTarget();
         }
@@ -450,6 +479,22 @@ public class AntNPC : MonoBehaviour
         currentTarget = null;
         BeginIdle();
     }
+
+    private bool IsStuck()
+    {
+        if (Vector2.Distance(transform.position, lastPosition) < 0.02f)
+        {
+            stuckTimer += Time.deltaTime;
+        }
+        else
+        {
+            stuckTimer = 0f;
+            lastPosition = transform.position;
+        }
+
+        return stuckTimer >= stuckTimeout;
+    }
+
     //SOLDIER
     private bool TryGoToCrackableSeed()
     {
@@ -507,5 +552,36 @@ public class AntNPC : MonoBehaviour
             currentTarget = null;
             BeginIdle();
         }
+    }
+    /////////QUEEEN
+    private void HandleQueenEggLaying()
+    {
+        if (npcDefinition.role != AntRole.Queen)
+            return;
+
+        if (!npcDefinition.laysEggs)
+            return;
+
+        if (eggPrefab == null)
+            return;
+
+        // Optional: queen should not lay eggs while hungry
+        if (needs != null && needs.IsHungry())
+            return;
+
+        eggTimer -= Time.deltaTime;
+
+        if (eggTimer > 0f)
+            return;
+
+        Vector3 center = eggSpawnPoint != null ? eggSpawnPoint.position : transform.position;
+        Vector2 randomOffset = Random.insideUnitCircle * eggSpawnRadius;
+        Vector3 spawnPos = center + new Vector3(randomOffset.x, randomOffset.y, 0f);
+
+        Instantiate(eggPrefab, spawnPos, Quaternion.identity);
+
+        Debug.Log($"{name} laid an egg.");
+
+        eggTimer = eggLayInterval;
     }
 }
