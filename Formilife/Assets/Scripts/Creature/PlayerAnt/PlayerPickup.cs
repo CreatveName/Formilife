@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -43,6 +44,21 @@ public class PlayerPickup : MonoBehaviour
                     food.Consume(gameObject);
                     DestroyHeldItem();
                 }
+            }
+            else
+            {
+                Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, pickupRange);
+
+                    foreach (var hit in hits)
+                    {
+                        Debug.Log("i see something");
+                        if (hit.TryGetComponent(out DrinkEffect liquid))
+                        {
+                            liquid.Drink(gameObject);
+                            DestroyHeldItem();
+                            Object.Destroy(liquid.gameObject);
+                        }
+                    }
             }
         }
     }
