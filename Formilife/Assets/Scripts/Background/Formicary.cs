@@ -9,8 +9,11 @@ public class Formicary : MonoBehaviour
     public Texture2D darkLeafTexture;
     public Texture2D testTexture;
 
+    public static int currNumWater = 5;
+
     public Renderer wallR;
     public GameObject[] sandGrainOptions;
+    public GameObject drinkablePrefab;
     private GameObject chosenSandGrain;
 
     [Header("Tiling Settings")]
@@ -23,13 +26,23 @@ public class Formicary : MonoBehaviour
     private int currentTextureIndex = 0;
     private string[] textureNames;
 
+    public int numWater = 5;
+    public Vector2 spawnAreaMin; // bottom-left of spawn area
+    public Vector2 spawnAreaMax; // top-right of spawn area
+
+
     void Start()
     {
+        Debug.Log("we're starting");
         textureList = new Texture2D[] { testTexture, logTexture, grayLogTexture, leafTexture, darkLeafTexture };
         textureNames = new string[] { "testTexture", "logTexture", "grayLogTexture", "leafTexture", "darkLeafTexture" };
 
+
         if (debugMode)
             ChangeTexture(wallR, textureList[currentTextureIndex]);
+
+        for(int i = 0; i < numWater; ++i)
+            SpawnDroplet();
     }
     void Update()
     {
@@ -41,6 +54,15 @@ public class Formicary : MonoBehaviour
         if (keyboard.pKey.wasPressedThisFrame)
         {
             CycleToNextTexture();
+        }
+        if(currNumWater != numWater)
+        {
+            Debug.Log("missing water!");
+            while(currNumWater != numWater)
+            {
+                SpawnDroplet();
+                currNumWater++;
+            }
         }
     }
 
@@ -72,6 +94,15 @@ public class Formicary : MonoBehaviour
         int index = Random.Range(0, sandGrainOptions.Length);
         chosenSandGrain = sandGrainOptions[index];
         Debug.Log($"[Formicary] Picked sand grain: {chosenSandGrain.name}");
+    }
+
+    public void SpawnDroplet()
+    {
+        Vector2 randomPos = new Vector2(
+            Random.Range(spawnAreaMin.x, spawnAreaMax.x),
+            Random.Range(spawnAreaMin.y, spawnAreaMax.y)
+        );
+        GameObject spawnedDrinkable = Instantiate(drinkablePrefab, randomPos, Quaternion.identity);
     }
 
     void ChangeTexture(Renderer part, Texture2D newTexture)

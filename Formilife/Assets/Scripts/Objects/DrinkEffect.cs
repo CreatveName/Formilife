@@ -6,6 +6,7 @@ public class DrinkEffect : MonoBehaviour
     [SerializeField] private float thirstRestore = 25f;
     public bool cracked = false;
     public bool needsCrack = false;
+    private Formicary spawner;
 
     public void Drink(GameObject consumer)
     {
@@ -16,6 +17,7 @@ public class DrinkEffect : MonoBehaviour
             {
                 needs.RestoreThirst(thirstRestore);
                 Debug.Log("drinking!");
+                Formicary.currNumWater--;
             }
             Destroy(gameObject);
         }
