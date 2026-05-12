@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class StartMenu : MonoBehaviour
 {
-    public static bool GameStarted { get; private set; }
+    public static bool GameStarted { get; private set; } = true;
 
 
     [Header("Refs")]
