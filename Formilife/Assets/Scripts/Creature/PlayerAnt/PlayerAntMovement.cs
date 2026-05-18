@@ -8,6 +8,11 @@ public class PlayerAntMovement : MonoBehaviour
     [SerializeField] private float moveSpeed = 3f;
     [SerializeField] private float runSpeed = 20f;
     [SerializeField] private float turnSpeed = 180f;
+    private float externalSpeedMultiplier = 1f;
+    public void SetExternalSpeedMultiplier(float multiplier)
+    {
+        externalSpeedMultiplier = multiplier;
+    }
 
     [Header("Carrying")]
     [SerializeField] private float weightFactor = 0.01f;
@@ -59,7 +64,7 @@ public class PlayerAntMovement : MonoBehaviour
 
         float weightMultiplier = 1f / (1f + heldWeight * weightFactor);
 
-        currentSpeed *= weightMultiplier;
+        currentSpeed *= weightMultiplier * externalSpeedMultiplier;
 
         float currentTurnSpeed =
             weightSlowsTurn ? turnSpeed * weightMultiplier : turnSpeed;

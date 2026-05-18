@@ -1,6 +1,6 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
 
 public class PlayerPickup : MonoBehaviour
 {
@@ -9,6 +9,9 @@ public class PlayerPickup : MonoBehaviour
 
     private IPickupable heldItem;
     public IPickupable HeldItem => heldItem;
+
+    public Action<IPickupable> OnPickedUpItem;
+    public Action OnDroppedItem;
 
     public float CurrentCarryWeight
     {
@@ -56,7 +59,7 @@ public class PlayerPickup : MonoBehaviour
                         {
                             liquid.Drink(gameObject);
                             DestroyHeldItem();
-                            Object.Destroy(liquid.gameObject);
+                            Destroy(liquid.gameObject);
                         }
                     }
             }
@@ -73,6 +76,8 @@ public class PlayerPickup : MonoBehaviour
             {
                 heldItem = pickup;
                 pickup.OnPickup(holdPoint);
+
+                OnPickedUpItem?.Invoke(heldItem);
                 break;
             }
         }
@@ -82,6 +87,7 @@ public class PlayerPickup : MonoBehaviour
     {
         if (heldItem == null) return;
         heldItem.OnDrop();
+        OnDroppedItem?.Invoke();
         heldItem = null;
     }
     public void DestroyHeldItem()
@@ -90,7 +96,9 @@ public class PlayerPickup : MonoBehaviour
 
         heldItem.OnDrop();
 
-        Object.Destroy(heldItem.GameObject);
+        OnDroppedItem?.Invoke();
+
+        Destroy(heldItem.GameObject);
 
         heldItem = null;
     }

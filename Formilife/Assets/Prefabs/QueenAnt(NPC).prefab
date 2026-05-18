@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 2703395206889131172}
   - component: {fileID: 6859514527259912480}
   - component: {fileID: 1075079602872051110}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: QueenAnt(NPC)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -143,6 +143,9 @@ MonoBehaviour:
   npcDefinition: {fileID: 11400000, guid: ecca7895bd11d1b408fb0f53f0ae82ab, type: 2}
   arriveDistance: 0.1
   pickupDistance: 0.25
+  storageDropDistance: 0.8
+  seedInteractDistance: 0.45
+  stuckTimeout: 2.5
   currentState: 0
   eatDistance: 0.35
   eggPrefab: {fileID: 9029590545799396793, guid: 04824205ffb3cdd41be693dfdf414445, type: 3}
@@ -286,7 +289,7 @@ Transform:
   m_GameObject: {fileID: 4194537777647992813}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.01, y: -1.37, z: 0}
+  m_LocalPosition: {x: 0.03, y: -1.83, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

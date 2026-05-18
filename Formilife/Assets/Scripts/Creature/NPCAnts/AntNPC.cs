@@ -11,7 +11,10 @@ public class AntNPC : MonoBehaviour
         GoingToSeed,
         GoingToFoodStorage,
         GoingToFoodToEat,
-        GoingToCrackSeed
+        GoingToCrackSeed,
+
+        RecruitedFollow,
+        RecruitedHelpCarry
     }
 
     [Header("Definition")]
@@ -24,6 +27,7 @@ public class AntNPC : MonoBehaviour
     [SerializeField] private float storageDropDistance = 0.8f;
     [SerializeField] private float seedInteractDistance = 0.45f;
     [SerializeField] private float stuckTimeout = 2.5f;
+    [SerializeField] private float rotationSpeed = 540f;
 
     [Header("Debug")]
     [SerializeField] private AntState currentState;
@@ -44,6 +48,13 @@ public class AntNPC : MonoBehaviour
     private NavMeshAgent agent;
     private AntPerception perception;
     private NPCAntPickup pickup;
+    private Transform recruitedLeader;
+    private Transform recruitedCarryTarget;
+    private Vector3 recruitedFollowOffset;
+    private int recruitedSlotIndex;
+    private float recruitedFollowSpacing = 1.1f;
+    private bool isRecruited;
+    private Collider2D[] antColliders;
 
     private Transform currentTarget;
     private float idleTimer;
@@ -54,6 +65,7 @@ public class AntNPC : MonoBehaviour
         perception = GetComponent<AntPerception>();
         pickup = GetComponent<NPCAntPickup>();
         needs = GetComponent<AntNeeds>();
+        antColliders = GetComponentsInChildren<Collider2D>();
 
         agent.updateRotation = false;
         agent.updateUpAxis = false;
@@ -84,6 +96,14 @@ public class AntNPC : MonoBehaviour
     {
         if (!CanUseAgent())
             return;
+
+        FaceMovementDirection();
+        
+        if (isRecruited)
+        {
+            HandleRecruitedBehavior();
+            return;
+        }
     
         if (TryInterruptForHunger())
             return;
@@ -583,5 +603,195 @@ public class AntNPC : MonoBehaviour
         Debug.Log($"{name} laid an egg.");
 
         eggTimer = eggLayInterval;
+    }
+    ///////RECRUITMENT
+    public bool CanBeRecruited()
+    {
+        if (npcDefinition == null)
+            return false;
+
+        return npcDefinition.role == AntRole.Worker || npcDefinition.role == AntRole.Soldier;
+    }
+
+    public void RecruitToPlayer(Transform player, int slotIndex, float followSpacing)
+    {
+        if (player == null)
+            return;
+
+        if (!CanBeRecruited())
+            return;
+
+        isRecruited = true;
+        recruitedLeader = player;
+        recruitedCarryTarget = null;
+        recruitedSlotIndex = slotIndex;
+        recruitedFollowSpacing = followSpacing;
+
+        recruitedFollowOffset = GetFollowOffset(slotIndex, recruitedFollowSpacing);
+
+        if (pickup != null && pickup.IsHoldingSomething)
+        {
+            pickup.Drop();
+        }
+
+        currentTarget = null;
+
+        SetRecruitCollision(false);
+
+        currentState = AntState.RecruitedFollow;
+
+        if (CanUseAgent())
+            agent.ResetPath();
+
+        Debug.Log($"{name} recruited by player.");
+    }
+
+    // Backwards-compatible overload in case another script still calls the old method.
+    public void RecruitToPlayer(Transform player)
+    {
+        RecruitToPlayer(player, 0, 1.1f);
+    }
+
+    public void HelpCarry(Transform carryTarget, int slotIndex)
+    {
+        if (!isRecruited)
+            return;
+
+        recruitedCarryTarget = carryTarget;
+        recruitedSlotIndex = slotIndex;
+        currentState = AntState.RecruitedHelpCarry;
+    }
+
+    // Backwards-compatible overload in case another script still calls the old method.
+    public void HelpCarry(Transform carryTarget)
+    {
+        HelpCarry(carryTarget, recruitedSlotIndex);
+    }
+
+    public void StopHelpingCarry()
+    {
+        if (!isRecruited)
+            return;
+
+        recruitedCarryTarget = null;
+        currentState = AntState.RecruitedFollow;
+    }
+
+    public void DismissRecruit()
+    {
+        isRecruited = false;
+        recruitedLeader = null;
+        recruitedCarryTarget = null;
+
+        if (CanUseAgent())
+            agent.ResetPath();
+        
+        SetRecruitCollision(true);
+
+        BeginIdle();
+
+        Debug.Log($"{name} dismissed.");
+    }
+    private void FaceMovementDirection()
+    {
+        Vector2 velocity = agent.velocity;
+
+        if (velocity.sqrMagnitude < 0.01f)
+            return;
+
+        float targetAngle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg + 90f;
+
+        Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetAngle);
+
+        transform.rotation = Quaternion.RotateTowards(
+            transform.rotation,
+            targetRotation,
+            rotationSpeed * Time.deltaTime
+        );
+    }
+
+    private void HandleRecruitedBehavior()
+    {
+        if (recruitedLeader == null)
+        {
+            DismissRecruit();
+            return;
+        }
+
+        if (!CanUseAgent())
+            return;
+
+        if (currentState == AntState.RecruitedHelpCarry && recruitedCarryTarget != null)
+        {
+            agent.SetDestination(GetCarrySlotPosition(recruitedSlotIndex));
+
+            Vector2 dir = recruitedCarryTarget.position - transform.position;
+
+            if (dir.sqrMagnitude > 0.001f)
+            {
+                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + 90f;
+
+                Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle);
+
+                transform.rotation = Quaternion.RotateTowards(
+                    transform.rotation,
+                    targetRotation,
+                    rotationSpeed * Time.deltaTime
+                );
+            }
+
+            return;
+        }
+
+        Vector3 followPos = recruitedLeader.position + recruitedFollowOffset;
+        agent.SetDestination(followPos);
+        currentState = AntState.RecruitedFollow;
+    }
+
+    private Vector3 GetFollowOffset(int slotIndex, float spacing)
+    {
+        // Puts recruited ants behind and around the player instead of stacking directly on them.
+        Vector2[] offsets =
+        {
+            new Vector2(0f, -1f),
+            new Vector2(-0.8f, -0.8f),
+            new Vector2(0.8f, -0.8f),
+            new Vector2(-1.2f, -0.2f),
+            new Vector2(1.2f, -0.2f),
+            new Vector2(0f, -1.6f)
+        };
+
+        Vector2 offset = offsets[slotIndex % offsets.Length].normalized * spacing;
+        return new Vector3(offset.x, offset.y, 0f);
+    }
+
+    private Vector3 GetCarrySlotPosition(int slotIndex)
+    {
+        if (recruitedCarryTarget == null)
+            return transform.position;
+
+        // Slots around the carried item. This makes helpers look like they are actually assisting.
+        Vector2[] slots =
+        {
+            Vector2.left,
+            Vector2.right,
+            Vector2.down,
+            new Vector2(-0.7f, -0.7f),
+            new Vector2(0.7f, -0.7f),
+            Vector2.up
+        };
+
+        Vector2 offset = slots[slotIndex % slots.Length].normalized * 0.7f;
+        return recruitedCarryTarget.position + new Vector3(offset.x, offset.y, 0f);
+    }
+    private void SetRecruitCollision(bool enabledState)
+    {
+        foreach (Collider2D col in antColliders)
+        {
+            if (col.isTrigger)
+                continue;
+
+            col.enabled = enabledState;
+        }
     }
 }

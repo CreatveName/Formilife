@@ -79,6 +79,7 @@ GameObject:
   - component: {fileID: 2790931006668401816}
   - component: {fileID: 1174142504146443582}
   - component: {fileID: 7190959460728865056}
+  - component: {fileID: 2556413853979204713}
   m_Layer: 0
   m_Name: Worker Ant
   m_TagString: Player
@@ -323,3 +324,23 @@ MonoBehaviour:
   healthColor: {r: 1, g: 0, b: 0, a: 1}
   hungerColor: {r: 1, g: 0.6, b: 0.1, a: 1}
   thirstColor: {r: 0.2, g: 0.6, b: 1, a: 1}
+--- !u!114 &2556413853979204713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6363957177313571059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76051df6b2829f245b2ff7fb8e36b123, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAntRecruiter
+  recruitRange: 1.5
+  maxRecruits: 3
+  antLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  followSpacing: 1.1
+  speedBonusPerHelper: 0.5
+  maxSpeedMultiplier: 2

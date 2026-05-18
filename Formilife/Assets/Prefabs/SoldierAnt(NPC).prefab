@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1777549311886098541}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: HoldPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: 945087444536451868}
   - component: {fileID: 6142721630062283824}
   - component: {fileID: 649957165677232294}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SoldierAnt(NPC)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,6 +173,9 @@ MonoBehaviour:
   npcDefinition: {fileID: 11400000, guid: 9f4ea38bbd917c64d975422c413937eb, type: 2}
   arriveDistance: 0.1
   pickupDistance: 0.25
+  storageDropDistance: 0.8
+  seedInteractDistance: 0.45
+  stuckTimeout: 2.5
   currentState: 0
   eatDistance: 0.35
   eggPrefab: {fileID: 0}

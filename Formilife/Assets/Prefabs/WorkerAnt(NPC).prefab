@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 3677151950196170549}
   - component: {fileID: 5345554043662307492}
   - component: {fileID: 2404523567380859928}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WorkerAnt(NPC)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142,6 +142,9 @@ MonoBehaviour:
   npcDefinition: {fileID: 11400000, guid: 9f6581525dcbe654cb151209c6f05444, type: 2}
   arriveDistance: 0.1
   pickupDistance: 0.25
+  storageDropDistance: 0.8
+  seedInteractDistance: 0.45
+  stuckTimeout: 2.5
   currentState: 0
   eatDistance: 0.35
   eggPrefab: {fileID: 0}
@@ -269,7 +272,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4402973492337406183}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: HoldPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
