@@ -1,16 +1,82 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class Chamber: MonoBehaviour
 {
+    public HumidityLevel humidity = HumidityLevel.Neutral;
+    public SafetyLevel safety = SafetyLevel.Safe;
+
+    public ChamberRole current = ChamberRole.Unassigned;
+
+    public List<AssignmentRule> assignmentRules = new();
+
+    private Dictionary<string,int> _itemCounts = new();
+    private HashSet<ChamberItem> _trackedItems = new();
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        EvaluateRole();
         
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        
+        ChamberItem item = other.GetComponent<ChamberItem>();
+        if (item == null) return;
+        if (_trackedItems.Add(item))
+        {
+            Debug.Log("Adding to count...");
+            AddCount(item.itemTag, 1);
+            EvaluateRole();
+        }
     }
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        ChamberItem item = other.GetComponent<ChamberItem>();
+        if(item == null) return;
+        if (_trackedItems.Remove(item))
+        {
+            AddCount(item.itemTag, -1);
+            EvaluateRole();
+        }
+    }
+
+    public void EvaluateRole()
+    {
+        foreach(AssignmentRule rule in assignmentRules)
+        {
+            _itemCounts.TryGetValue(rule.requiredItemTag, out int count);
+            if(count >= rule.requiredCount)
+            {
+                Debug.Log("setting role");
+                SetRole(rule.assignedRole);
+                return;
+            }
+        }
+        SetRole(ChamberRole.Unassigned);
+    }
+
+    private void SetRole(ChamberRole newRole)
+    {
+        if(current == newRole) return;
+        current = newRole;
+
+    }
+
+    private void AddCount(string tag, int delta){
+        _itemCounts.TryGetValue(tag, out int current);
+        int updated = Mathf.Max(0, current + delta);
+
+        if (updated == 0)
+            _itemCounts.Remove(tag);
+        else
+            _itemCounts[tag] = updated;
+    }
+    public int GetItemCount(string tag)
+    {
+        _itemCounts.TryGetValue(tag, out int count);
+        return count;
+    }
+    
 }
