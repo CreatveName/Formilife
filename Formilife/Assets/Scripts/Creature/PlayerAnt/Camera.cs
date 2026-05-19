@@ -41,10 +41,14 @@ public class TopDownCamera : MonoBehaviour
         SetZoom(maxZoom);
     }
 
-    public void SetZoom(float zoom)
+    // allowBeyondMax lets the initial framing start wider than the mouse-wheel
+    // limit (maxZoom). The wheel itself still clamps to maxZoom in HandleZoom,
+    // so the first scroll eases the view back into the normal range.
+    public void SetZoom(float zoom, bool allowBeyondMax = false)
     {
         if (!_camera) _camera = GetComponent<Camera>();
-        zoom = Mathf.Clamp(zoom, minZoom, maxZoom);
+        float upper = allowBeyondMax ? Mathf.Max(maxZoom, zoom) : maxZoom;
+        zoom = Mathf.Clamp(zoom, minZoom, upper);
         _targetZoom = zoom;
         if (_camera.orthographic) _camera.orthographicSize = zoom;
         else _camera.fieldOfView = zoom;
