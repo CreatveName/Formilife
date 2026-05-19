@@ -7,6 +7,9 @@ public class TopDownCamera : MonoBehaviour
     [Header("Player")]
     public Transform player;
 
+    [Header("Follow")]
+    public float followSmoothing = 10f; // higher = snappier; locks onto the ant
+
     [Header("Zoom")]
     public float zoomSpeed = 5f;
     public float zoomSmoothing = 2f;
@@ -34,14 +37,8 @@ public class TopDownCamera : MonoBehaviour
             return;
         }
 
-        if (_camera.orthographic)
-        {
-            _targetZoom = _camera.orthographicSize;
-        }
-        else
-        {
-            _targetZoom = _camera.fieldOfView;
-        }
+        // Start fully zoomed out at max zoom.
+        SetZoom(maxZoom);
     }
 
     public void SetZoom(float zoom)
@@ -72,29 +69,20 @@ public class TopDownCamera : MonoBehaviour
 
     void ApplyTransform()
     {
-        Vector3 smoothed = Vector3.Lerp(
-            transform.position,
-            new Vector3(player.position.x, player.position.y, transform.position.z),
-            Time.deltaTime * zoomSmoothing
-        );
-        transform.position = smoothed;
+        // Frame-rate-independent smoothing: t -> 1 as dt grows, so the camera
+        // always converges on the ant regardless of how fast it moves.
+        float followT = 1f - Mathf.Exp(-followSmoothing * Time.deltaTime);
+        Vector3 target = new Vector3(player.position.x, player.position.y, transform.position.z);
+        transform.position = Vector3.Lerp(transform.position, target, followT);
 
+        float zoomT = 1f - Mathf.Exp(-zoomSmoothing * Time.deltaTime);
         if (_camera.orthographic)
         {
-            _camera.orthographicSize = Mathf.Lerp(
-                _camera.orthographicSize, 
-                _targetZoom,
-                Time.deltaTime * zoomSmoothing
-            );
+            _camera.orthographicSize = Mathf.Lerp(_camera.orthographicSize, _targetZoom, zoomT);
         }
         else
         {
-            float newY = Mathf.Lerp(
-                transform.position.y,
-                _targetZoom,
-                Time.deltaTime * zoomSmoothing
-            );
-            transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+            _camera.fieldOfView = Mathf.Lerp(_camera.fieldOfView, _targetZoom, zoomT);
         }
     }
 }
