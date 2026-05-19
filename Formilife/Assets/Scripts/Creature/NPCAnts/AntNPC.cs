@@ -38,6 +38,9 @@ public class AntNPC : MonoBehaviour
     [SerializeField] private Transform eggSpawnPoint;
     [SerializeField] private float eggLayInterval = 8f;
     [SerializeField] private float eggSpawnRadius = 0.5f;
+    [Header("Queen Throne Room")]
+    [SerializeField] private Chamber throneRoom;
+    [SerializeField] private float throneRoomWanderRadius = 2f;
 
     private float eggTimer;
     private float stuckTimer;
@@ -151,11 +154,14 @@ public class AntNPC : MonoBehaviour
 
         if (npcDefinition.role == AntRole.Queen)
         {
-            // If queen is hungry, let hunger system control her.
             if (needs != null && needs.IsHungry())
                 return;
 
-            WanderToRandomPheromonePoint();
+            if (throneRoom != null)
+                WanderInsideThroneRoom();
+            else
+                WanderToRandomPheromonePoint();
+
             return;
         }
 
@@ -604,6 +610,60 @@ public class AntNPC : MonoBehaviour
 
         eggTimer = eggLayInterval;
     }
+
+    public void AssignThroneRoom(Chamber chamber)
+    {
+        if (npcDefinition.role != AntRole.Queen)
+            return;
+
+        throneRoom = chamber;
+
+        if (throneRoom != null)
+            Debug.Log($"{name} assigned throne room: {throneRoom.name}");
+
+        BeginIdle();
+    }
+
+    private void WanderInsideThroneRoom()
+    {
+        if (throneRoom == null)
+        {
+            WanderToRandomPheromonePoint();
+            return;
+        }
+
+        Vector3 center = throneRoom.transform.position;
+
+        for (int i = 0; i < 15; i++)
+        {
+            Vector2 offset = Random.insideUnitCircle * throneRoomWanderRadius;
+            Vector3 randomPoint = center + new Vector3(offset.x, offset.y, 0f);
+
+            if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            {
+                agent.SetDestination(hit.position);
+                currentState = AntState.WanderingInPheromone;
+                return;
+            }
+        }
+
+        agent.SetDestination(center);
+        currentState = AntState.WanderingInPheromone;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (npcDefinition == null || npcDefinition.role != AntRole.Queen)
+            return;
+
+        Chamber chamber = other.GetComponent<Chamber>();
+
+        if (chamber != null && chamber.current == ChamberRole.ThroneRoom)
+        {
+            AssignThroneRoom(chamber);
+        }
+    }
+
     ///////RECRUITMENT
     public bool CanBeRecruited()
     {

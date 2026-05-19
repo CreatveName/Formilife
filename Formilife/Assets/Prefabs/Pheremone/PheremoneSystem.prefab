@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3979087580676745043
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2345683757599090070}
+  - component: {fileID: 7218065656746972881}
+  - component: {fileID: 526718070344595041}
+  - component: {fileID: 7960865044748750996}
+  - component: {fileID: 1484701211055391534}
+  m_Layer: 0
+  m_Name: PheremoneSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2345683757599090070
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3979087580676745043}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7218065656746972881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3979087580676745043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d871727c5336954d8856109b3d1ce99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PheromoneRouteManager
+--- !u!114 &526718070344595041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3979087580676745043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23e660aac897d8743ae7b2ee5fd87021, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PheromoneRouteCreator
+  zoneLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  routePrefab: {fileID: 2341102033850734908, guid: cc043bbeca4d1ac4eb5936e66c9e8c47, type: 3}
+  pheromoneModeKey: 304
+  pheromoneIndicatorUI: {fileID: 0}
+--- !u!114 &7960865044748750996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3979087580676745043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36c5227fc6ef94d448316d7fcd3e1403, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PheromoneManager
+--- !u!114 &1484701211055391534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3979087580676745043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a716c9c4d3c7fe4ab1371d5bf87d599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PheromoneDrawer
+  trailPrefab: {fileID: 6241562949215809320, guid: f63e99f06072e834c8f9380bac8d2010, type: 3}
+  pointSpacing: 0.35
+  pheromoneIndicatorUI: {fileID: 0}
+  pheromoneOverlay: {fileID: 0}
