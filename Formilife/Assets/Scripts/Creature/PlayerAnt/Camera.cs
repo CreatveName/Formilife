@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -22,11 +23,11 @@ public class TopDownCamera : MonoBehaviour
     public float maxFov = 40f;
 
     [Header("Height")]
-    public float initialHeight = 20f;
+    public float initialHeight = 30f;
     public float heightSpeed = 5f;
     public float heightSmoothing = 2f;
-    public float minHeight = 10f;
-    public float maxHeight = 40f;
+    public float minHeight = 20f;
+    public float maxHeight = 70f;
     //Private
 
     private Camera _camera;
@@ -52,9 +53,15 @@ public class TopDownCamera : MonoBehaviour
             return;
         }
 
-        _camera.orthographic = isOrthographic;
+        setCameraType(isOrthographic);
 
-        if (isOrthographic)
+    }
+
+    public void setCameraType(bool orthographic)
+    {
+        isOrthographic = orthographic;
+        _camera.orthographic = orthographic;
+        if (orthographic)
         {
             SetFov(initialFov);
         }
@@ -62,7 +69,6 @@ public class TopDownCamera : MonoBehaviour
         {
             SetHeight(initialHeight);
         }
-
     }
 
     // Handles Zoom for orthographic camera, ranges from (1, 179)
@@ -79,7 +85,14 @@ public class TopDownCamera : MonoBehaviour
     // Handles Zoom for perspective camera, ranges from (0.1, infinity)
     public void SetHeight(float height, bool allowBeyondMax = false)
     {
-
+        if (!_camera) _camera = GetComponent<Camera>();
+        float upper = allowBeyondMax ? Mathf.Max(maxHeight, height) : maxHeight;
+        height = Mathf.Clamp(height, minHeight, upper);
+        _targetZoom = height;
+        if (!_camera.orthographic)
+        {
+            transform.position = player.position - transform.forward * height;
+        }
     }
 
     void LateUpdate()
@@ -140,10 +153,6 @@ public class TopDownCamera : MonoBehaviour
 
     void ApplyTransformPerspective()
     {
-        float followT = 1f - Mathf.Exp(-followSmoothing * Time.deltaTime);
-        Vector3 target = player.position;
-        transform.position = Vector3.Lerp(transform.position, target, followT);
-
         float zoomT = 1f - Mathf.Exp(-heightSmoothing * Time.deltaTime);
         Vector3 desiredPosition = player.position - transform.forward * _targetZoom;
         transform.position = Vector3.Lerp(transform.position, desiredPosition, zoomT);

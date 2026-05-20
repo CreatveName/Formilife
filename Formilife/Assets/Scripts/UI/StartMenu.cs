@@ -74,6 +74,7 @@ public class StartMenu : MonoBehaviour
         if (topDownCamera != null)
         {
             topDownCamera.SetFov(gameStartZoom, allowBeyondMax: true);
+            topDownCamera.setCameraType(false);
             topDownCamera.enabled = true;
         }
     }
