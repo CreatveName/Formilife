@@ -8,18 +8,33 @@ public class TopDownCamera : MonoBehaviour
     public Transform player;
 
     [Header("Follow")]
-    public float followSmoothing = 10f; // higher = snappier; locks onto the ant
+    public float followSmoothing = 10f;
 
-    [Header("Zoom")]
-    public float zoomSpeed = 5f;
-    public float zoomSmoothing = 2f;
-    public float minZoom = 5f;
-    public float maxZoom = 40f;
+    // Zoom
+    // Orthographic: FOV
+    // Perspective: Height (distance from player)
 
+    [Header("Fov")]
+    public float initialFov = 20f;
+    public float fovSpeed = 5f;
+    public float fovSmoothing = 2f;
+    public float minFov = 10f;
+    public float maxFov = 40f;
+
+    [Header("Height")]
+    public float initialHeight = 20f;
+    public float heightSpeed = 5f;
+    public float heightSmoothing = 2f;
+    public float minHeight = 10f;
+    public float maxHeight = 40f;
     //Private
 
     private Camera _camera;
     private float _targetZoom;
+
+    // Either orthographic or perspective (3d) camera
+
+    private bool isOrthographic = true;
 
     private void Awake()
     {
@@ -37,49 +52,68 @@ public class TopDownCamera : MonoBehaviour
             return;
         }
 
-        // Start fully zoomed out at max zoom.
-        SetZoom(maxZoom);
+        _camera.orthographic = isOrthographic;
+
+        if (isOrthographic)
+        {
+            SetFov(initialFov);
+        }
+        else
+        {
+            SetHeight(initialHeight);
+        }
+
     }
 
-    // allowBeyondMax lets the initial framing start wider than the mouse-wheel
-    // limit (maxZoom). The wheel itself still clamps to maxZoom in HandleZoom,
-    // so the first scroll eases the view back into the normal range.
-    public void SetZoom(float zoom, bool allowBeyondMax = false)
+    // Handles Zoom for orthographic camera, ranges from (1, 179)
+    public void SetFov(float zoom, bool allowBeyondMax = false)
     {
         if (!_camera) _camera = GetComponent<Camera>();
-        float upper = allowBeyondMax ? Mathf.Max(maxZoom, zoom) : maxZoom;
-        zoom = Mathf.Clamp(zoom, minZoom, upper);
+        float upper = allowBeyondMax ? Mathf.Max(maxFov, zoom) : maxFov;
+        zoom = Mathf.Clamp(zoom, minFov, upper);
         _targetZoom = zoom;
         if (_camera.orthographic) _camera.orthographicSize = zoom;
         else _camera.fieldOfView = zoom;
     }
 
-    void LateUpdate()
+    // Handles Zoom for perspective camera, ranges from (0.1, infinity)
+    public void SetHeight(float height, bool allowBeyondMax = false)
     {
-        HandleZoom();
-        ApplyTransform();
+
     }
 
-    void HandleZoom()
+    void LateUpdate()
+    {
+        if (isOrthographic) {
+            HandleZoomOrthographic();
+            ApplyTransformOrthographic();
+        }
+        else
+        {
+            HandleZoomPerspective();
+            ApplyTransformPerspective();   
+        }
+    }
+
+    void HandleZoomOrthographic()
     {
         float scrollInput = Mouse.current.scroll.ReadValue().y;
 
         if (Mathf.Abs(scrollInput) > 0.01f)
         {
-            _targetZoom -= scrollInput * zoomSpeed;
-            _targetZoom = Mathf.Clamp(_targetZoom, minZoom, maxZoom);
+
+            _targetZoom -= scrollInput * fovSpeed;
+            _targetZoom = Mathf.Clamp(_targetZoom, minFov, maxFov);
         }
     }
 
-    void ApplyTransform()
+    void ApplyTransformOrthographic()
     {
-        // Frame-rate-independent smoothing: t -> 1 as dt grows, so the camera
-        // always converges on the ant regardless of how fast it moves.
         float followT = 1f - Mathf.Exp(-followSmoothing * Time.deltaTime);
         Vector3 target = new Vector3(player.position.x, player.position.y, transform.position.z);
         transform.position = Vector3.Lerp(transform.position, target, followT);
 
-        float zoomT = 1f - Mathf.Exp(-zoomSmoothing * Time.deltaTime);
+        float zoomT = 1f - Mathf.Exp(-fovSmoothing * Time.deltaTime);
         if (_camera.orthographic)
         {
             _camera.orthographicSize = Mathf.Lerp(_camera.orthographicSize, _targetZoom, zoomT);
@@ -89,4 +123,32 @@ public class TopDownCamera : MonoBehaviour
             _camera.fieldOfView = Mathf.Lerp(_camera.fieldOfView, _targetZoom, zoomT);
         }
     }
+
+    //Perspective camera zoom is handled by changing the height of the camera above the player, 
+    // which is done by moving the camera along its forward vector
+
+    void HandleZoomPerspective()
+    {
+        float scrollInput = Mouse.current.scroll.ReadValue().y;
+
+        if (Mathf.Abs(scrollInput) > 0.01f)
+        {
+            _targetZoom -= scrollInput * heightSpeed;
+            _targetZoom = Mathf.Clamp(_targetZoom, minHeight, maxHeight);
+        }
+    }
+
+    void ApplyTransformPerspective()
+    {
+        float followT = 1f - Mathf.Exp(-followSmoothing * Time.deltaTime);
+        Vector3 target = player.position;
+        transform.position = Vector3.Lerp(transform.position, target, followT);
+
+        float zoomT = 1f - Mathf.Exp(-heightSmoothing * Time.deltaTime);
+        Vector3 desiredPosition = player.position - transform.forward * _targetZoom;
+        transform.position = Vector3.Lerp(transform.position, desiredPosition, zoomT);
+    }
+
 }
+
+
