@@ -94,6 +94,13 @@ public class TopDownCamera : MonoBehaviour
             transform.position = player.position - transform.forward * height;
         }
     }
+    void Update()
+    {
+        if (Keyboard.current.cKey.wasPressedThisFrame)
+        {
+            setCameraType(!isOrthographic);
+        }
+    }
 
     void LateUpdate()
     {
