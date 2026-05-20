@@ -32,6 +32,7 @@ public class TopDownCamera : MonoBehaviour
 
     private Camera _camera;
     private float _targetZoom;
+    private float _zoomDirection = 0f;
 
     // Either orthographic or perspective (3d) camera
 
@@ -94,13 +95,41 @@ public class TopDownCamera : MonoBehaviour
             transform.position = player.position - transform.forward * height;
         }
     }
-    void Update()
+void Update()
+{
+    if (Keyboard.current.cKey.wasPressedThisFrame)
     {
-        if (Keyboard.current.cKey.wasPressedThisFrame)
-        {
-            setCameraType(!isOrthographic);
-        }
+        setCameraType(!isOrthographic);
     }
+
+    HandleZoomKeys();
+}
+
+void HandleZoomKeys()
+{
+    bool min = Keyboard.current.digit9Key.wasPressedThisFrame;
+    bool max = Keyboard.current.digit0Key.wasPressedThisFrame;
+
+    // Hold - to zoom in, hold = to zoom out
+    if (Keyboard.current.minusKey.isPressed)       _zoomDirection = -1f;
+    else if (Keyboard.current.equalsKey.isPressed) _zoomDirection =  1f;
+    else                                           _zoomDirection =  0f;
+
+    if (isOrthographic)
+    {
+        if (min) SetFov(minFov);
+        if (max) SetFov(maxFov);
+        _targetZoom += _zoomDirection * fovSpeed * Time.deltaTime;
+        _targetZoom  = Mathf.Clamp(_targetZoom, minFov, maxFov);
+    }
+    else
+    {
+        if (min) SetHeight(minHeight);
+        if (max) SetHeight(maxHeight);
+        _targetZoom += _zoomDirection * heightSpeed * Time.deltaTime;
+        _targetZoom  = Mathf.Clamp(_targetZoom, minHeight, maxHeight);
+    }
+}
 
     void LateUpdate()
     {
