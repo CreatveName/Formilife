@@ -26,8 +26,8 @@ public class TopDownCamera : MonoBehaviour
     public float initialHeight = 30f;
     public float heightSpeed = 5f;
     public float heightSmoothing = 2f;
-    public float minHeight = 20f;
-    public float maxHeight = 70f;
+    public float minHeight = 10f;
+    public float maxHeight = 80f;
     //Private
 
     private Camera _camera;
