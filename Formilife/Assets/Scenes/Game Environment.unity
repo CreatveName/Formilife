@@ -2807,6 +2807,92 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 934439360892739704, guid: 5317af906232b436291a7711509d0b47, type: 3}
   m_PrefabInstance: {fileID: 819570214}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1024620458
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1024620460}
+  - component: {fileID: 1024620459}
+  m_Layer: 0
+  m_Name: QuestUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1024620459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024620458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb1690528ad57ee46915b838dd3c56cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuestButton
+  margin: {x: 16, y: 60}
+  buttonSize: {x: 260, y: 68}
+  panelWidth: 480
+  panelPadding: 24
+  backgroundSprite: {fileID: -3549277683308129439, guid: 621808c90966db14182ae578031d4b0c, type: 3}
+  titleBarSprite: {fileID: 5489196035785152471, guid: 7b81d70c19f4d764f8f779e2f6def62a, type: 3}
+  titleBarWidth: 0.675
+  closeSprite: {fileID: 5781445747943558089, guid: 0501fd911173d3747a2fd83fc4f4e505, type: 3}
+  closeButtonHeight: 140
+  closeButtonOffset: {x: 34, y: -47}
+  closeFontSize: 22
+  closeTextOffset: {x: 28, y: 40}
+  buttonLabel: Quests
+  menuTitle: Quest Chain
+  milestoneName: Move in
+  buttonFontSize: 24
+  titleFontSize: 26
+  labelFontSize: 22
+  valueFontSize: 24
+  barHeight: 26
+  overallBarColor: {r: 1, g: 0.55, b: 0.1, a: 1}
+  taskBarColor: {r: 1, g: 0.85, b: 0.15, a: 1}
+  barEmptySprite: {fileID: 8285939528396310546, guid: fc367b426e7481e4095b090a98e5af8c, type: 3}
+  barFrameSprite: {fileID: 9056710260312645223, guid: c242d387eff1f1442970ad7c375ded81, type: 3}
+  overallFillSprite: {fileID: -5200956600035728770, guid: ae4ab3f7bd02cd84e8a0089abdd5ca02, type: 3}
+  taskFillSprite: {fileID: -1325390332815362181, guid: d93a878917ffa25459280a759c7e1d64, type: 3}
+  tasks:
+  - name: Assign Food Storage
+    target: 1
+    current: 0
+  - name: Assign Nursery
+    target: 1
+    current: 0
+  - name: Pave the Path
+    target: 1
+    current: 0
+  - name: Assign Royal Chamber
+    target: 1
+    current: 0
+  glowColor: {r: 1, g: 0.85, b: 0.15, a: 1}
+  glowDuration: 2.5
+  glowSpeed: 4
+--- !u!4 &1024620460
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024620458}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 861.3629, y: 660.2281, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1038235320
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6861,3 +6947,4 @@ SceneRoots:
   - {fileID: 172537590}
   - {fileID: 223363314}
   - {fileID: 40338939}
+  - {fileID: 1024620460}
