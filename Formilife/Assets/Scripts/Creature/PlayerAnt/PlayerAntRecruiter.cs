@@ -67,6 +67,12 @@ public class PlayerAntRecruiter : MonoBehaviour
         }
     }
 
+    public int GetRecruitCount()
+    {
+        CleanupMissingRecruits();
+        return recruitedAnts.Count;
+    }
+
     private void TryRecruitNearbyAnt()
     {
         if (recruitedAnts.Count >= maxRecruits)

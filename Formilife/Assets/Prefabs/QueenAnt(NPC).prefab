@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 6859514527259912480}
   - component: {fileID: 1075079602872051110}
   - component: {fileID: 8536806004021780629}
+  - component: {fileID: 1963405174633821825}
   m_Layer: 8
   m_Name: QueenAnt(NPC)
   m_TagString: Queen
@@ -35,7 +36,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.49, y: 0.49, z: 0.49}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5516264132377649378}
@@ -89,7 +90,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 6
   m_MaskInteraction: 0
   m_Sprite: {fileID: -5802005875387582840, guid: 3e272f439ece096458be3325f21d3a16, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -281,6 +282,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChamberItem
   itemTag: Queen
+--- !u!114 &1963405174633821825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2315024611945502623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0244823e0403a334881f67fd3f8920ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pickupable
+  weight: 0.5
 --- !u!1 &4194537777647992813
 GameObject:
   m_ObjectHideFlags: 0

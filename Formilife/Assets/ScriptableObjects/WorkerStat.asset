@@ -15,9 +15,9 @@ MonoBehaviour:
   antName: WorkerAnt
   moveSpeed: 2
   maxHunger: 100
-  hungerDecayRate: 2
+  hungerDecayRate: 0.55
   maxThirst: 100
-  thirstDecayRate: 3
+  thirstDecayRate: 0.66
   lowHungerThreshold: 40
   lowThirstThreshold: 40
   maxHealth: 100

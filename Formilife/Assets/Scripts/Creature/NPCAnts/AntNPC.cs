@@ -213,6 +213,25 @@ public class AntNPC : MonoBehaviour
             BeginIdle();
             return;
         }
+            if (npcDefinition.role == AntRole.Queen)
+        {
+            if (throneRoom != null)
+            {
+                float distanceFromThrone =
+                    Vector3.Distance(transform.position, throneRoom.transform.position);
+
+                if (distanceFromThrone > throneRoomWanderRadius + 1f)
+                {
+                    agent.SetDestination(throneRoom.transform.position);
+                    return;
+                }
+            }
+
+            if (HasArrived())
+                BeginIdle();
+
+            return;
+        }
 
         if (npcDefinition.role == AntRole.Soldier)
         {
@@ -671,6 +690,14 @@ public class AntNPC : MonoBehaviour
             return false;
 
         return npcDefinition.role == AntRole.Worker || npcDefinition.role == AntRole.Soldier;
+    }
+
+    public AntRole GetRole()
+    {
+        if (npcDefinition == null)
+            return AntRole.Worker;
+
+        return npcDefinition.role;
     }
 
     public void RecruitToPlayer(Transform player, int slotIndex, float followSpacing)

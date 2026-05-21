@@ -118,7 +118,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 6
   m_MaskInteraction: 0
   m_Sprite: {fileID: -5631900692471618751, guid: c7327d52bdcb2674b91a2e2fbf8a6686, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -176,12 +176,15 @@ MonoBehaviour:
   storageDropDistance: 0.8
   seedInteractDistance: 0.45
   stuckTimeout: 2.5
+  rotationSpeed: 540
   currentState: 0
   eatDistance: 0.35
   eggPrefab: {fileID: 0}
   eggSpawnPoint: {fileID: 0}
   eggLayInterval: 8
   eggSpawnRadius: 0.5
+  throneRoom: {fileID: 0}
+  throneRoomWanderRadius: 2
 --- !u!114 &4490539464960922024
 MonoBehaviour:
   m_ObjectHideFlags: 0

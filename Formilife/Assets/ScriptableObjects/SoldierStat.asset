@@ -15,9 +15,9 @@ MonoBehaviour:
   antName: SoldierAnt
   moveSpeed: 2.3
   maxHunger: 120
-  hungerDecayRate: 2.5
+  hungerDecayRate: 0.5
   maxThirst: 110
-  thirstDecayRate: 3.2
+  thirstDecayRate: 0.61
   lowHungerThreshold: 45
   lowThirstThreshold: 45
   maxHealth: 150
