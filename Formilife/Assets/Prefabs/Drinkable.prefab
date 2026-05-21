@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3588cde1882aa4131a42517b1ebe668f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DrinkEffect
-  thirstRestore: 25
+  thirstRestore: 50
   cracked: 0
   needsCrack: 0
 --- !u!70 &6720864879468888936

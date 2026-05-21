@@ -3,6 +3,7 @@ using UnityEngine;
 public class FoodEffect : MonoBehaviour
 {
     [SerializeField] private float hungerRestore = 25f;
+    [SerializeField] private float thirstRestore = 5f;
     public bool cracked = false;
     public bool needsCrack = false;
 
@@ -14,6 +15,7 @@ public class FoodEffect : MonoBehaviour
             if (needs != null)
             {
                 needs.RestoreHunger(hungerRestore);
+                needs.RestoreThirst(thirstRestore);
             }
             Destroy(gameObject);
         }

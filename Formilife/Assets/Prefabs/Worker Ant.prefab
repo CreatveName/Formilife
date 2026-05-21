@@ -240,7 +240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAntMovement
   moveSpeed: 7
-  runSpeed: 8
+  runSpeed: 9
   turnSpeed: 180
   weightFactor: 0.5
   weightSlowsTurn: 1
