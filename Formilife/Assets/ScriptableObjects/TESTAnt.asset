@@ -14,6 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AntDefinition
   antName: Basic Ant
   moveSpeed: 2
-  wanderRadius: 5
-  minIdleTime: 0.5
-  maxIdleTime: 2
+  maxHunger: 100
+  hungerDecayRate: 0.4
+  maxThirst: 100
+  thirstDecayRate: 0.55
+  lowHungerThreshold: 40
+  lowThirstThreshold: 40
+  maxHealth: 100
+  starvationDamageRate: 5
+  dehydrationDamageRate: 8
+  corpsePrefab: {fileID: 0}

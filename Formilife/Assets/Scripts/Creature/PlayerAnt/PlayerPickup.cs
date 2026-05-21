@@ -6,6 +6,8 @@ public class PlayerPickup : MonoBehaviour
 {
     [SerializeField] private float pickupRange = 1f;
     [SerializeField] private Transform holdPoint;
+    [SerializeField] private int soldiersRequiredForQueen = 2;
+    private PlayerAntRecruiter recruiter;
 
     private IPickupable heldItem;
     public IPickupable HeldItem => heldItem;
@@ -19,6 +21,10 @@ public class PlayerPickup : MonoBehaviour
         {
             return heldItem != null ? heldItem.Weight : 0f;
         }
+    }
+    private void Awake()
+    {
+        recruiter = GetComponent<PlayerAntRecruiter>();
     }
 
     private void Update()
@@ -74,6 +80,9 @@ public class PlayerPickup : MonoBehaviour
         {
             if (hit.TryGetComponent(out IPickupable pickup) && pickup.CanBePickedUp)
             {
+                if (!CanPickUpThisItem(pickup))
+                    continue;
+
                 heldItem = pickup;
                 pickup.OnPickup(holdPoint);
 
@@ -81,6 +90,28 @@ public class PlayerPickup : MonoBehaviour
                 break;
             }
         }
+    }
+    private bool CanPickUpThisItem(IPickupable pickup)
+    {
+        AntNPC ant = pickup.GameObject.GetComponentInParent<AntNPC>();
+
+        if (ant == null)
+            return true;
+
+        if (ant.GetRole() != AntRole.Queen)
+            return true;
+
+        int recruitCount = recruiter != null ? recruiter.GetRecruitCount() : 0;
+
+        Debug.Log($"Trying to pick up queen. Recruits: {recruitCount}/{soldiersRequiredForQueen}");
+
+        if (recruitCount < soldiersRequiredForQueen)
+        {
+            Debug.Log($"Need at least {soldiersRequiredForQueen} recruited soldiers to move the queen.");
+            return false;
+        }
+
+        return true;
     }
 
     public void Drop()

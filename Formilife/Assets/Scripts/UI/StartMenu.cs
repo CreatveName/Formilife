@@ -73,7 +73,8 @@ public class StartMenu : MonoBehaviour
         GameStarted = true;
         if (topDownCamera != null)
         {
-            topDownCamera.SetZoom(gameStartZoom, allowBeyondMax: true);
+            topDownCamera.SetFov(gameStartZoom, allowBeyondMax: true);
+            topDownCamera.setCameraType(false);
             topDownCamera.enabled = true;
         }
     }

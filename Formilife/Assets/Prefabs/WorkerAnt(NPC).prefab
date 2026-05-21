@@ -34,7 +34,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.49, y: 0.49, z: 0.49}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4402973492337406183}
@@ -87,7 +87,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 6
   m_MaskInteraction: 0
   m_Sprite: {fileID: -286114623, guid: 957f207e8a32f414495030ae1543940a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -145,12 +145,15 @@ MonoBehaviour:
   storageDropDistance: 0.8
   seedInteractDistance: 0.45
   stuckTimeout: 2.5
+  rotationSpeed: 540
   currentState: 0
   eatDistance: 0.35
   eggPrefab: {fileID: 0}
   eggSpawnPoint: {fileID: 0}
   eggLayInterval: 8
   eggSpawnRadius: 0.5
+  throneRoom: {fileID: 0}
+  throneRoomWanderRadius: 2
 --- !u!114 &4526228589834059826
 MonoBehaviour:
   m_ObjectHideFlags: 0
