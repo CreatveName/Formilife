@@ -11,6 +11,8 @@ public class QuestButton : MonoBehaviour
         public string name = "Task";
         [Tooltip("Total amount needed to finish this task (e.g. seeds to carry).")]
         public float target = 1f;
+        [Tooltip("If not Unassigned, this task auto-completes when a chamber in the scene has this role.")]
+        public ChamberRole requiredChamberRole = ChamberRole.Unassigned;
         [HideInInspector] public float current = 0f;
 
         public float Normalized => target <= 0f ? 1f : Mathf.Clamp01(current / target);
@@ -70,10 +72,10 @@ public class QuestButton : MonoBehaviour
     [SerializeField]
     private List<QuestTask> tasks = new List<QuestTask>
     {
-        new QuestTask { name = "Assign Food Storage", target = 1f },
-        new QuestTask { name = "Assign Nursery",      target = 1f },
-        new QuestTask { name = "Pave the Path",       target = 1f },
-        new QuestTask { name = "Assign Royal Chamber", target = 1f },
+        new QuestTask { name = "Assign Food Storage",  target = 1f, requiredChamberRole = ChamberRole.FoodStorage },
+        new QuestTask { name = "Assign Nursery",       target = 1f, requiredChamberRole = ChamberRole.Nursery },
+        new QuestTask { name = "Pave the Path",        target = 1f },
+        new QuestTask { name = "Assign Royal Chamber", target = 1f, requiredChamberRole = ChamberRole.ThroneRoom },
     };
 
     // Toggle key is Tab (read via the new Input System in Update).
@@ -83,9 +85,14 @@ public class QuestButton : MonoBehaviour
     [SerializeField] private float glowDuration = 2.5f;
     [SerializeField] private float glowSpeed = 4f;
 
+    [Header("Auto-Complete")]
+    [Tooltip("How often (seconds) to scan the scene's chambers for the current task's required role.")]
+    [SerializeField] private float chamberCheckInterval = 0.5f;
+
     private int currentTaskIndex = 0;
     private bool isOpen = false;
     private float glowEndTime = -1f;
+    private float nextChamberCheck = 0f;
 
     // Cached styles / textures
     private GUIStyle buttonStyle;
@@ -153,6 +160,32 @@ public class QuestButton : MonoBehaviour
         if (keyboard != null && keyboard.tabKey.wasPressedThisFrame)
         {
             isOpen = !isOpen;
+        }
+
+        if (Time.unscaledTime >= nextChamberCheck)
+        {
+            nextChamberCheck = Time.unscaledTime + Mathf.Max(0.1f, chamberCheckInterval);
+            CheckChamberCompletion();
+        }
+    }
+
+    // Auto-completes the current task if a chamber in the scene matches its
+    // required role (e.g. a chamber assigned FoodStorage finishes "Assign Food Storage").
+    private void CheckChamberCompletion()
+    {
+        if (!HasCurrentTask) return;
+
+        ChamberRole required = CurrentTask.requiredChamberRole;
+        if (required == ChamberRole.Unassigned) return;
+
+        Chamber[] chambers = FindObjectsByType<Chamber>(FindObjectsSortMode.None);
+        foreach (Chamber c in chambers)
+        {
+            if (c.current == required)
+            {
+                CompleteCurrentTask();
+                return;
+            }
         }
     }
 

@@ -1,10 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// Drives a three-layer health bar (outline + fill + background) from an
-// AntNeeds component. Only the Fill image needs wiring: it must be an
-// Image with Image Type = Filled (Horizontal). The outline and background
-// are just static images layered behind/in front in the hierarchy.
 public class HealthBarUI : MonoBehaviour
 {
     [Header("Refs")]

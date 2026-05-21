@@ -18,6 +18,10 @@ public class StartMenu : MonoBehaviour
     [SerializeField] private float gameStartZoom = 8f;
 
     [Header("Title")]
+    [Tooltip("If set, this image is shown instead of the title text (FormilifeTitle.png).")]
+    [SerializeField] private Texture2D titleImage;
+    [Tooltip("Width of the title image in pixels; height keeps the image's aspect ratio.")]
+    [SerializeField] private float titleImageWidth = 380f;
     [SerializeField] private string titleText = "Formilife";
     [SerializeField] private int titleFontSize = 72;
 
@@ -99,11 +103,24 @@ public class StartMenu : MonoBehaviour
         float cx = Screen.width * 0.25f;
         float titleY = Screen.height * 0.18f;
 
-        Vector2 titleSize = titleStyle.CalcSize(new GUIContent(titleText));
-        GUI.Label(new Rect(cx - titleSize.x * 0.5f, titleY, titleSize.x, titleSize.y), titleText, titleStyle);
+        float titleH;
+        if (titleImage != null)
+        {
+            float titleW = titleImageWidth;
+            titleH = titleImage.width > 0
+                ? titleW * ((float)titleImage.height / titleImage.width)
+                : titleImageWidth;
+            GUI.DrawTexture(new Rect(cx - titleW * 0.5f, titleY, titleW, titleH), titleImage, ScaleMode.ScaleToFit);
+        }
+        else
+        {
+            Vector2 titleSize = titleStyle.CalcSize(new GUIContent(titleText));
+            GUI.Label(new Rect(cx - titleSize.x * 0.5f, titleY, titleSize.x, titleSize.y), titleText, titleStyle);
+            titleH = titleSize.y;
+        }
 
         float bx = cx - buttonSize.x * 0.5f;
-        float by = titleY + titleSize.y + 60f;
+        float by = titleY + titleH + 60f;
 
         if (GUI.Button(new Rect(bx, by, buttonSize.x, buttonSize.y), "Start", buttonStyle)) StartGame();
         by += buttonSize.y + buttonSpacing;

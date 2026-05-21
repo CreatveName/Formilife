@@ -19,7 +19,7 @@ public class PheromoneDrawer : MonoBehaviour
     {
         bool inPheromoneMode =
             Keyboard.current != null &&
-            Keyboard.current.leftShiftKey.isPressed;
+            Keyboard.current.zKey.isPressed;
 
         if (pheromoneIndicatorUI != null)
             pheromoneIndicatorUI.SetActive(inPheromoneMode);

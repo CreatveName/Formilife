@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: d7ba106423c2de94e9723240bd8a064a
+guid: 3d7ddbcd4b10e1c438530cef9c205a8f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1061353610350482156
-    second: Test Tube hitbox_0
+      213: -8388781164673300028
+    second: FormilifeTitle_0
+  - first:
+      213: -6219757505345549778
+    second: FormilifeTitle_1
+  - first:
+      213: 3028255270090279947
+    second: FormilifeTitle_2
+  - first:
+      213: -8263499913220930505
+    second: FormilifeTitle_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,43 +122,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Test Tube hitbox_0
+      name: FormilifeTitle_0
       rect:
         serializedVersion: 2
-        x: 6285
-        y: 2703
-        width: 2461
-        height: 336
+        x: 64
+        y: 196
+        width: 636
+        height: 389
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
-      physicsShape:
-      - - {x: 1227.5, y: -136.99982}
-        - {x: -252.5, y: -136.99982}
-        - {x: -257.5, y: -131.99982}
-        - {x: -257.5, y: 143.00018}
-        - {x: -252.5, y: 148.00018}
-        - {x: 1227.5, y: 148.00018}
-        - {x: 1227.5, y: 168}
-        - {x: -1067.5, y: 168}
-        - {x: -1122.5, y: 168}
-        - {x: -1167.5, y: 143.00018}
-        - {x: -1202.5, y: 103.00018}
-        - {x: -1217.5, y: 78.00018}
-        - {x: -1230.5, y: 38.000183}
-        - {x: -1230.5, y: -31.999817}
-        - {x: -1227.5, y: -61.999817}
-        - {x: -1202.5, y: -101.99982}
-        - {x: -1172.5, y: -126.99982}
-        - {x: -1127.5, y: -151.99982}
-        - {x: -1092.5, y: -161.99982}
-        - {x: 1227.5, y: -161.99982}
-      tessellationDetail: 0.547
+      physicsShape: []
+      tessellationDetail: -1
       bones: []
-      spriteID: 41d2bf1c3805541f0800000000000000
-      internalID: -1061353610350482156
+      spriteID: 4c90925f9ff059b80800000000000000
+      internalID: -8388781164673300028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FormilifeTitle_1
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 23
+        width: 413
+        height: 199
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2a0fc8a08bfea9a0800000000000000
+      internalID: -6219757505345549778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FormilifeTitle_2
+      rect:
+        serializedVersion: 2
+        x: 706
+        y: 23
+        width: 1324
+        height: 562
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0c8feeaf16860a20800000000000000
+      internalID: 3028255270090279947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FormilifeTitle_3
+      rect:
+        serializedVersion: 2
+        x: 2029
+        y: 193
+        width: 563
+        height: 392
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 734cefe5c96225d80800000000000000
+      internalID: -8263499913220930505
       vertices: []
       indices: 
       edges: []
@@ -158,7 +213,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 074b50f70178f1646b784be355cc869e
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -168,7 +223,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Test Tube hitbox_0: -1061353610350482156
+      FormilifeTitle_0: -8388781164673300028
+      FormilifeTitle_1: -6219757505345549778
+      FormilifeTitle_2: 3028255270090279947
+      FormilifeTitle_3: -8263499913220930505
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
