@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: QueenStat
   m_EditorClassIdentifier: Assembly-CSharp::AntDefinition
   antName: QueenAnt
-  moveSpeed: 1.2
+  moveSpeed: 4
   maxHunger: 150
   hungerDecayRate: 0.625
   maxThirst: 140
