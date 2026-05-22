@@ -15,6 +15,8 @@ public class QuestButton : MonoBehaviour
         public ChamberRole requiredChamberRole = ChamberRole.Unassigned;
         [Tooltip("If true, this task auto-completes once the player draws a pheromone path (hold Z, connect two zones).")]
         public bool completeOnPathDrawn = false;
+        [Tooltip("If true, this task auto-completes once an NPC carries a seed to a chamber (food storage).")]
+        public bool completeOnSeedDelivered = false;
         [HideInInspector] public float current = 0f;
 
         public float Normalized => target <= 0f ? 1f : Mathf.Clamp01(current / target);
@@ -76,7 +78,7 @@ public class QuestButton : MonoBehaviour
     {
         new QuestTask { name = "Assign Food Storage",  target = 1f, requiredChamberRole = ChamberRole.FoodStorage },
         new QuestTask { name = "Assign Nursery",       target = 1f, requiredChamberRole = ChamberRole.Nursery },
-        new QuestTask { name = "Pave the Path",        target = 1f, completeOnPathDrawn = true },
+        new QuestTask { name = "Pave the Path",        target = 1f, completeOnSeedDelivered = true },
         new QuestTask { name = "Assign Royal Chamber", target = 1f, requiredChamberRole = ChamberRole.ThroneRoom },
     };
 
@@ -96,6 +98,7 @@ public class QuestButton : MonoBehaviour
     private float glowEndTime = -1f;
     private float nextChamberCheck = 0f;
     private bool pathDrawn = false;
+    private bool seedDelivered = false;
 
     public static QuestButton Instance { get; private set; }
 
@@ -145,6 +148,13 @@ public class QuestButton : MonoBehaviour
         CheckPathCompletion();
     }
 
+    /// <summary>Called when an NPC carries a seed to a chamber (food storage).</summary>
+    public void NotifySeedDelivered()
+    {
+        seedDelivered = true;
+        CheckSeedDelivery();
+    }
+
     /// <summary>Marks the current task done and moves to the next one.</summary>
     public void CompleteCurrentTask()
     {
@@ -189,6 +199,7 @@ public class QuestButton : MonoBehaviour
             nextChamberCheck = Time.unscaledTime + Mathf.Max(0.1f, chamberCheckInterval);
             CheckChamberCompletion();
             CheckPathCompletion();
+            CheckSeedDelivery();
         }
     }
 
@@ -198,6 +209,15 @@ public class QuestButton : MonoBehaviour
     {
         if (!HasCurrentTask) return;
         if (pathDrawn && CurrentTask.completeOnPathDrawn)
+            CompleteCurrentTask();
+    }
+
+    // Completes the current task if it's a "deliver a seed" task and an NPC has
+    // already brought a seed to a chamber (handles delivery before this task is active).
+    private void CheckSeedDelivery()
+    {
+        if (!HasCurrentTask) return;
+        if (seedDelivered && CurrentTask.completeOnSeedDelivered)
             CompleteCurrentTask();
     }
 

@@ -350,7 +350,17 @@ public class AntNPC : MonoBehaviour
         if (dist <= storageDropDistance)
         {
             if (pickup != null && pickup.IsHoldingSomething)
+            {
+                // An NPC brought a seed to a chamber — completes the "Pave the Path" quest.
+                GameObject delivered = pickup.HeldItem != null ? pickup.HeldItem.GameObject : null;
                 pickup.Drop();
+
+                if (delivered != null && delivered.GetComponent<FoodEffect>() != null &&
+                    QuestButton.Instance != null)
+                {
+                    QuestButton.Instance.NotifySeedDelivered();
+                }
+            }
 
             currentTarget = null;
             BeginIdle();
