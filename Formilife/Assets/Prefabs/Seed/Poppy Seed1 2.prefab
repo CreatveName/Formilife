@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 9067157772492826818}
   - component: {fileID: -3760886876784851782}
   - component: {fileID: 1034688338670239276}
+  - component: {fileID: 4188886052295700300}
   m_Layer: 3
   m_Name: Poppy Seed1 2
   m_TagString: Food
@@ -164,7 +165,7 @@ CapsuleCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 2560
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 1535
@@ -202,3 +203,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Stackable
   stackCount: 1
   isMerging: 0
+--- !u!114 &4188886052295700300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7005911649146616721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11f047081c72c4153aae7790dac52449, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChamberItem
+  itemTag: Seed
