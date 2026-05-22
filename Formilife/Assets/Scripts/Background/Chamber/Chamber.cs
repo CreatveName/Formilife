@@ -60,6 +60,7 @@ public class Chamber: MonoBehaviour
     private void SetRole(ChamberRole newRole)
     {
         if(current == newRole) return;
+        Debug.Log($"Chamber '{name}' assigned role: {newRole} (was {current})", this);
         current = newRole;
 
     }

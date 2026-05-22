@@ -35,6 +35,7 @@ public class StartMenu : MonoBehaviour
     private bool isOpen = true;
 
     private GUIStyle titleStyle;
+    private GUIStyle headerStyle;
     private GUIStyle buttonStyle;
     private GUIStyle bodyStyle;
     private GUIStyle panelStyle;
@@ -133,37 +134,71 @@ public class StartMenu : MonoBehaviour
 
     private void DrawOptions()
     {
-        DrawSubPanel("Options", "Options will go here.");
+        DrawSubPanel("Options", ControlsBody());
     }
 
     private void DrawControls()
     {
-        string body =
-            "WASD / Arrow Keys — Move\n" +
-            "Mouse Wheel — Zoom\n" +
-            "Space — Pick up";
-        DrawSubPanel("Controls", body);
+        DrawSubPanel("Controls", ControlsBody());
+    }
+
+    // Single source of truth for the control list so the Options and
+    // Controls panels can't drift out of sync with each other or the code.
+    private static string ControlsBody()
+    {
+        return
+            "Movement\n" +
+            "    W / Up — Move forward\n" +
+            "    S / Down — Move backward\n" +
+            "    A / Left — Turn left\n" +
+            "    D / Right — Turn right\n" +
+            "    Shift or Ctrl — Run\n" +
+            "\n" +
+            "Items\n" +
+            "    Space — Pick up / Drop\n" +
+            "    E — Eat held food / Drink nearby\n" +
+            "\n" +
+            "Colony\n" +
+            "    R — Recruit nearby ant\n" +
+            "    Q — Dismiss all recruits\n" +
+            "\n" +
+            "Camera\n" +
+            "    Mouse Wheel — Zoom\n" +
+            "    - / = — Zoom in / out\n" +
+            "    9 / 0 — Min / Max zoom\n" +
+            "    C — Toggle 2D / 3D view";
     }
 
     private void DrawSubPanel(string header, string body)
     {
+        const float pad = 24f;
+        const float gap = 18f;
+        const float backH = 48f;
+
         float halfW = Screen.width * 0.5f;
         float w = Mathf.Min(560f, halfW - 80f);
-        float h = Mathf.Min(420f, Screen.height - 160f);
+        float bodyW = w - 2f * pad;
+
+        Vector2 headerSize = headerStyle.CalcSize(new GUIContent(header));
+        float bodyH = bodyStyle.CalcHeight(new GUIContent(body), bodyW);
+
+        // Size the panel to its contents (clamped to the screen) so longer
+        // lists don't clip.
+        float h = pad + headerSize.y + gap + bodyH + gap + backH + pad;
+        h = Mathf.Min(h, Screen.height - 80f);
+
         float x = (halfW - w) * 0.5f;
         float y = (Screen.height - h) * 0.5f;
 
         GUI.DrawTexture(new Rect(x, y, w, h), panelTex);
 
-        Vector2 headerSize = titleStyle.CalcSize(new GUIContent(header));
-        GUI.Label(new Rect(x + (w - headerSize.x) * 0.5f, y + 20f, headerSize.x, headerSize.y), header, titleStyle);
+        GUI.Label(new Rect(x + (w - headerSize.x) * 0.5f, y + pad, headerSize.x, headerSize.y), header, headerStyle);
 
-        Rect bodyRect = new Rect(x + 30f, y + 30f + headerSize.y, w - 60f, h - 130f - headerSize.y);
+        Rect bodyRect = new Rect(x + pad, y + pad + headerSize.y + gap, bodyW, bodyH);
         GUI.Label(bodyRect, body, bodyStyle);
 
         float backW = 180f;
-        float backH = 48f;
-        Rect backRect = new Rect(x + (w - backW) * 0.5f, y + h - backH - 24f, backW, backH);
+        Rect backRect = new Rect(x + (w - backW) * 0.5f, y + h - backH - pad, backW, backH);
         if (GUI.Button(backRect, "Back", buttonStyle)) currentPanel = Panel.Main;
     }
 
@@ -195,6 +230,14 @@ public class StartMenu : MonoBehaviour
             buttonStyle.fontSize = buttonFontSize;
             buttonStyle.fontStyle = FontStyle.Bold;
             buttonStyle.alignment = TextAnchor.MiddleCenter;
+        }
+        if (headerStyle == null || headerStyle.fontSize != 34)
+        {
+            headerStyle = new GUIStyle(GUI.skin.label);
+            headerStyle.fontSize = 34;
+            headerStyle.fontStyle = FontStyle.Bold;
+            headerStyle.alignment = TextAnchor.MiddleCenter;
+            headerStyle.normal.textColor = Color.white;
         }
         if (bodyStyle == null)
         {
