@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WorkerStat
   m_EditorClassIdentifier: Assembly-CSharp::AntDefinition
   antName: WorkerAnt
-  moveSpeed: 2
+  moveSpeed: 8
   maxHunger: 100
   hungerDecayRate: 0.55
   maxThirst: 100

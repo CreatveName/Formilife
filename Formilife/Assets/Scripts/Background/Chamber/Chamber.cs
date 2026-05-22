@@ -7,6 +7,7 @@ public class Chamber: MonoBehaviour
     public SafetyLevel safety = SafetyLevel.Safe;
 
     public ChamberRole current = ChamberRole.Unassigned;
+    private Collider2D chamberCollider;
 
     public List<AssignmentRule> assignmentRules = new();
 
@@ -16,8 +17,35 @@ public class Chamber: MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if (PheromoneManager.Instance != null)
+        PheromoneManager.Instance.RegisterChamber(this);
+
         EvaluateRole();
-        
+    }
+
+    private void Awake()
+    {
+        chamberCollider = GetComponent<Collider2D>();
+    }
+
+    private void OnEnable()
+    {
+        if (PheromoneManager.Instance != null)
+            PheromoneManager.Instance.RegisterChamber(this);
+    }
+
+    private void OnDisable()
+    {
+        if (PheromoneManager.Instance != null)
+            PheromoneManager.Instance.UnregisterChamber(this);
+    }
+
+    public bool ContainsPoint(Vector3 worldPosition)
+    {
+        if (chamberCollider == null)
+            return false;
+
+        return chamberCollider.OverlapPoint(worldPosition);
     }
 
     private void OnTriggerEnter2D(Collider2D other)

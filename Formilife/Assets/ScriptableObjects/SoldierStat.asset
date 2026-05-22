@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SoldierStat
   m_EditorClassIdentifier: Assembly-CSharp::AntDefinition
   antName: SoldierAnt
-  moveSpeed: 2.3
+  moveSpeed: 8
   maxHunger: 120
   hungerDecayRate: 0.5
   maxThirst: 110

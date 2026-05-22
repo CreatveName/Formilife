@@ -100,6 +100,21 @@ public class AntNPC : MonoBehaviour
         if (!CanUseAgent())
             return;
 
+        if (npcDefinition.role == AntRole.Queen)
+        {
+            bool insideThrone =
+                PheromoneManager.Instance != null &&
+                PheromoneManager.Instance.IsInsideThroneRoom(transform.position);
+
+            if (!insideThrone)
+            {
+                agent.ResetPath();
+                currentTarget = null;
+                currentState = AntState.Idle;
+                return;
+            }
+        }
+        
         FaceMovementDirection();
         
         if (isRecruited)
@@ -272,6 +287,13 @@ public class AntNPC : MonoBehaviour
         }
 
         if (!PheromoneManager.Instance.IsInsidePheromone(currentTarget.position))
+        {
+            currentTarget = null;
+            BeginIdle();
+            return;
+        }
+
+        if (PheromoneManager.Instance.IsInsideFoodStorage(currentTarget.position))
         {
             currentTarget = null;
             BeginIdle();

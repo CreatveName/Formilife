@@ -9,7 +9,7 @@ public class PheromoneRouteCreator : MonoBehaviour
     [SerializeField] private PheromoneRoute routePrefab;
 
     [Header("Input")]
-    [SerializeField] private KeyCode pheromoneModeKey = KeyCode.Z;
+    [SerializeField] private Key pheromoneKey = Key.Z;
     [SerializeField] private GameObject pheromoneIndicatorUI;
 
     private PheromoneZone selectedStart;
@@ -18,7 +18,7 @@ public class PheromoneRouteCreator : MonoBehaviour
     {
         bool inPheromoneMode =
             Keyboard.current != null &&
-            Keyboard.current.zKey.isPressed;
+            Keyboard.current[pheromoneKey].isPressed;
 
         if (pheromoneIndicatorUI != null)
             pheromoneIndicatorUI.SetActive(inPheromoneMode);

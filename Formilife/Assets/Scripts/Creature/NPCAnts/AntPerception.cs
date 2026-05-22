@@ -16,7 +16,13 @@ public class AntPerception : MonoBehaviour
 
         foreach (Collider2D hit in hits)
         {
+            if (PheromoneManager.Instance == null)
+                continue;
+
             if (!PheromoneManager.Instance.IsInsidePheromone(hit.transform.position))
+                continue;
+
+            if (PheromoneManager.Instance.IsInsideFoodStorage(hit.transform.position))
                 continue;
 
             float dist = Vector2.Distance(transform.position, hit.transform.position);
@@ -59,26 +65,10 @@ public class AntPerception : MonoBehaviour
 
     public Transform GetClosestFoodStorageInsidePheromone()
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 999f, foodStorageLayer);
+        if (PheromoneManager.Instance == null)
+            return null;
 
-        Transform closest = null;
-        float closestDist = Mathf.Infinity;
-
-        foreach (Collider2D hit in hits)
-        {
-            if (!PheromoneManager.Instance.IsInsidePheromone(hit.transform.position))
-                continue;
-
-            float dist = Vector2.Distance(transform.position, hit.transform.position);
-
-            if (dist < closestDist)
-            {
-                closestDist = dist;
-                closest = hit.transform;
-            }
-        }
-
-        return closest;
+        return PheromoneManager.Instance.GetClosestFoodStorage(transform.position);
     }
 
     public Transform GetClosestCrackableSeedInsidePheromone()
@@ -90,7 +80,7 @@ public class AntPerception : MonoBehaviour
 
         foreach (Collider2D hit in hits)
         {
-            if (!PheromoneManager.Instance.IsInsidePheromone(hit.transform.position))
+            if (PheromoneManager.Instance == null)
                 continue;
 
             FoodEffect food = hit.GetComponent<FoodEffect>();
