@@ -76,5 +76,9 @@ public class PheromoneRouteCreator : MonoBehaviour
             PheromoneRouteManager.Instance.SetRoute(route);
 
         Debug.Log($"Created route: {target.name} → {start.name}");
+
+        // Drawing a path (Z + connecting two zones) advances the "Pave the Path" quest.
+        if (QuestButton.Instance != null)
+            QuestButton.Instance.NotifyPathDrawn();
     }
 }

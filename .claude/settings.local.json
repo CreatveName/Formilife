@@ -9,7 +9,8 @@
       "Bash(grep -c \"m_SourcePrefab: {fileID: 100100000, guid: 62b04a997b5d84b24963b28f2c72b4ae\" \"Formilife/Assets/Scenes/Game.unity\")",
       "Bash(grep -c \"m_SourcePrefab: {fileID: 100100000, guid: bf6cb1d2fc6db4dc1bf492acbc37bbee\" \"Formilife/Assets/Scenes/Game.unity\")",
       "Bash(rm -f \"Formilife/Assets/Scripts/Background/Chamber/ChamberWaterSpawner.cs\" \"Formilife/Assets/Scripts/Background/Chamber/ChamberWaterSpawner.cs.meta\")",
-      "Bash(ls Formilife/Assets/Resources)"
+      "Bash(ls Formilife/Assets/Resources)",
+      "Bash(grep -c \"m_SourcePrefab: {fileID: 100100000, guid: 04824205ffb3cdd41be693dfdf414445\" \"Formilife/Assets/Scenes/Game.unity\")"
     ]
   }
 }

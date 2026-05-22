@@ -37,6 +37,7 @@ public class Pickupable : MonoBehaviour, IPickupable
 
         transform.position += (Vector3)(Random.insideUnitCircle * 0.3f);
 
-        rb.simulated = true;
+        if (rb != null)
+            rb.simulated = true;
     }
 }

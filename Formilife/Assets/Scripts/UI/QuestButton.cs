@@ -13,6 +13,8 @@ public class QuestButton : MonoBehaviour
         public float target = 1f;
         [Tooltip("If not Unassigned, this task auto-completes when a chamber in the scene has this role.")]
         public ChamberRole requiredChamberRole = ChamberRole.Unassigned;
+        [Tooltip("If true, this task auto-completes once the player draws a pheromone path (hold Z, connect two zones).")]
+        public bool completeOnPathDrawn = false;
         [HideInInspector] public float current = 0f;
 
         public float Normalized => target <= 0f ? 1f : Mathf.Clamp01(current / target);
@@ -74,7 +76,7 @@ public class QuestButton : MonoBehaviour
     {
         new QuestTask { name = "Assign Food Storage",  target = 1f, requiredChamberRole = ChamberRole.FoodStorage },
         new QuestTask { name = "Assign Nursery",       target = 1f, requiredChamberRole = ChamberRole.Nursery },
-        new QuestTask { name = "Pave the Path",        target = 1f },
+        new QuestTask { name = "Pave the Path",        target = 1f, completeOnPathDrawn = true },
         new QuestTask { name = "Assign Royal Chamber", target = 1f, requiredChamberRole = ChamberRole.ThroneRoom },
     };
 
@@ -93,6 +95,19 @@ public class QuestButton : MonoBehaviour
     private bool isOpen = false;
     private float glowEndTime = -1f;
     private float nextChamberCheck = 0f;
+    private bool pathDrawn = false;
+
+    public static QuestButton Instance { get; private set; }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
 
     // Cached styles / textures
     private GUIStyle buttonStyle;
@@ -121,6 +136,13 @@ public class QuestButton : MonoBehaviour
         if (!HasCurrentTask) return;
         CurrentTask.current = amount;
         if (CurrentTask.IsComplete) CompleteCurrentTask();
+    }
+
+    /// <summary>Called by the pheromone system when the player draws a path (Z + connect two zones).</summary>
+    public void NotifyPathDrawn()
+    {
+        pathDrawn = true;
+        CheckPathCompletion();
     }
 
     /// <summary>Marks the current task done and moves to the next one.</summary>
@@ -166,7 +188,17 @@ public class QuestButton : MonoBehaviour
         {
             nextChamberCheck = Time.unscaledTime + Mathf.Max(0.1f, chamberCheckInterval);
             CheckChamberCompletion();
+            CheckPathCompletion();
         }
+    }
+
+    // Completes the current task if it's a "draw a path" task and the player has
+    // already drawn one (handles drawing the path before this task is active).
+    private void CheckPathCompletion()
+    {
+        if (!HasCurrentTask) return;
+        if (pathDrawn && CurrentTask.completeOnPathDrawn)
+            CompleteCurrentTask();
     }
 
     // Auto-completes the current task if a chamber in the scene matches its
