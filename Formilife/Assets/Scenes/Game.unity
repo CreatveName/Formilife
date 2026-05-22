@@ -1879,7 +1879,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthBarUI
   needs: {fileID: 1333553174}
-  fill: {fileID: 1802265171}
+  fill: {fileID: 347589292}
   group: {fileID: 521897341}
   hideUntilGameStarted: 1
   smoothing: 8
