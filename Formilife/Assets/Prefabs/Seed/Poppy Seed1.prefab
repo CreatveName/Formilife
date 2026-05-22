@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 9067157772492826818}
   - component: {fileID: -3760886876784851782}
   - component: {fileID: 1034688338670239276}
-  - component: {fileID: 2170537863999398541}
+  - component: {fileID: 7685533491785095435}
   m_Layer: 3
   m_Name: Poppy Seed1
   m_TagString: Food
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 6
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4436261278765507304, guid: 34b86a8acbbb2403cbce48030e831d44, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -150,7 +150,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FoodEffect
   hungerRestore: 50
-  thirstRestore: 5
   cracked: 0
   needsCrack: 0
 --- !u!70 &-3760886876784851782
@@ -166,10 +165,10 @@ CapsuleCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2560
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 1535
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -204,7 +203,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Stackable
   stackCount: 1
   isMerging: 0
---- !u!114 &2170537863999398541
+--- !u!114 &7685533491785095435
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

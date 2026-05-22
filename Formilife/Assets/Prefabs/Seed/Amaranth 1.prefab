@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 9067157772492826818}
   - component: {fileID: 1842634722015804178}
   - component: {fileID: -5809814822082044132}
-  - component: {fileID: -5339967806059759882}
+  - component: {fileID: 912759044502546592}
   m_Layer: 3
   m_Name: Amaranth 1
   m_TagString: Food
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 6
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -1232336014291305746, guid: 90110c5d0eb8348bd9da629cf46dd856, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -150,7 +150,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FoodEffect
   hungerRestore: 50
-  thirstRestore: 5
   cracked: 0
   needsCrack: 0
 --- !u!70 &1842634722015804178
@@ -166,10 +165,10 @@ CapsuleCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2560
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 1535
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -204,7 +203,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Stackable
   stackCount: 1
   isMerging: 0
---- !u!114 &-5339967806059759882
+--- !u!114 &912759044502546592
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

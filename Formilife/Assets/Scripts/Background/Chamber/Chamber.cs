@@ -54,7 +54,7 @@ public class Chamber: MonoBehaviour
         if (item == null) return;
         if (_trackedItems.Add(item))
         {
-            Debug.Log("Adding to count...");
+            Debug.Log($"Adding to count: {item.name} (tag '{item.itemTag}')", item);
             AddCount(item.itemTag, 1);
             EvaluateRole();
         }

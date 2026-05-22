@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 9067157772492826818}
   - component: {fileID: -5809814822082044132}
   - component: {fileID: 1842634722015804178}
-  - component: {fileID: 2305420997538341180}
+  - component: {fileID: 243481955339006746}
   m_Layer: 3
   m_Name: Rapeseed 7
   m_TagString: Food
@@ -150,7 +150,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FoodEffect
   hungerRestore: 50
-  thirstRestore: 5
   cracked: 0
   needsCrack: 0
 --- !u!114 &-5809814822082044132
@@ -180,10 +179,10 @@ CapsuleCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2560
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 1535
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -204,7 +203,7 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.36, y: 0.43}
   m_Direction: 0
---- !u!114 &2305420997538341180
+--- !u!114 &243481955339006746
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

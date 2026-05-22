@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python add_chamberitem.py)",
+      "Bash(python -c ' *)",
+      "Bash(grep -nA1 \"WALL\" \"Formilife/ProjectSettings/TagManager.asset\")",
+      "Bash(grep -nB1 \"m_Bits: 2560\" \"Formilife/Assets/Prefabs/Seed/Rapeseed 1.prefab\")"
+    ]
+  }
+}
