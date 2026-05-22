@@ -6,6 +6,9 @@ public class DrinkEffect : MonoBehaviour
     [SerializeField] private float thirstRestore = 25f;
     public bool cracked = false;
     public bool needsCrack = false;
+    // Droplets spawned inside chambers manage their own respawning, so they
+    // should not affect Formicary's separate global water count when drunk.
+    public bool countsTowardFormicaryWater = true;
     private Formicary spawner;
 
     public void Drink(GameObject consumer)
@@ -17,7 +20,8 @@ public class DrinkEffect : MonoBehaviour
             {
                 needs.RestoreThirst(thirstRestore);
                 Debug.Log("drinking!");
-                Formicary.currNumWater--;
+                if (countsTowardFormicaryWater)
+                    Formicary.currNumWater--;
             }
             Destroy(gameObject);
         }

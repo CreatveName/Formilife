@@ -178,7 +178,7 @@ public class QuestButton : MonoBehaviour
         ChamberRole required = CurrentTask.requiredChamberRole;
         if (required == ChamberRole.Unassigned) return;
 
-        Chamber[] chambers = FindObjectsByType<Chamber>(FindObjectsSortMode.None);
+        Chamber[] chambers = FindObjectsByType<Chamber>(FindObjectsInactive.Exclude);
         foreach (Chamber c in chambers)
         {
             if (c.current == required)
