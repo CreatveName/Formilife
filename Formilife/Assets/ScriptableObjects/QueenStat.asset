@@ -15,9 +15,9 @@ MonoBehaviour:
   antName: QueenAnt
   moveSpeed: 4
   maxHunger: 150
-  hungerDecayRate: 0.625
+  hungerDecayRate: 0
   maxThirst: 140
-  thirstDecayRate: 0.75
+  thirstDecayRate: 0
   lowHungerThreshold: 60
   lowThirstThreshold: 60
   maxHealth: 200

@@ -14,6 +14,7 @@ public class AntEgg : MonoBehaviour
     [SerializeField, Range(0f, 100f)] private float workerChance = 75f;
 
     private float hatchTimer;
+    private Chamber currentChamber;
 
     private void Start()
     {
@@ -22,12 +23,21 @@ public class AntEgg : MonoBehaviour
 
     private void Update()
     {
+        if (!IsInHumidChamber())
+            return;
+
         hatchTimer -= Time.deltaTime;
 
         if (hatchTimer <= 0f)
         {
             Hatch();
         }
+    }
+
+    private bool IsInHumidChamber()
+    {
+        return currentChamber != null &&
+            currentChamber.humidity == HumidityLevel.Humid;
     }
 
     private void Hatch()
@@ -63,5 +73,25 @@ public class AntEgg : MonoBehaviour
         }
 
         return soldierPrefab;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        Chamber chamber = other.GetComponent<Chamber>();
+
+        if (chamber != null)
+        {
+            currentChamber = chamber;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        Chamber chamber = other.GetComponent<Chamber>();
+
+        if (chamber != null && chamber == currentChamber)
+        {
+            currentChamber = null;
+        }
     }
 }

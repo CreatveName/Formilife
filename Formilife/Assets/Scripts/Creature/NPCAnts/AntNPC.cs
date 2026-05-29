@@ -61,6 +61,10 @@ public class AntNPC : MonoBehaviour
 
     private Transform currentTarget;
     private float idleTimer;
+    private bool IsBeingCarried()
+    {
+        return transform.parent != null;
+    }
 
     private void Awake()
     {
@@ -106,7 +110,7 @@ public class AntNPC : MonoBehaviour
                 PheromoneManager.Instance != null &&
                 PheromoneManager.Instance.IsInsideThroneRoom(transform.position);
 
-            if (!insideThrone)
+            if (!insideThrone && !IsBeingCarried())
             {
                 agent.ResetPath();
                 currentTarget = null;
@@ -644,6 +648,16 @@ public class AntNPC : MonoBehaviour
 
         // Optional: queen should not lay eggs while hungry
         if (needs != null && needs.IsHungry())
+            return;
+
+        bool insideThrone =
+            PheromoneManager.Instance != null &&
+            PheromoneManager.Instance.IsInsideThroneRoom(transform.position);
+
+        bool beingCarried = transform.parent != null;
+
+        // ONLY lay eggs if inside throne room AND not carried
+        if (!insideThrone || beingCarried)
             return;
 
         eggTimer -= Time.deltaTime;
