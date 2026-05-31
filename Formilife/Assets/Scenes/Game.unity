@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &17942466 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2315024611945502623, guid: b2a1646940a2dd94f9cc5e3e65a27d7d, type: 3}
+  m_PrefabInstance: {fileID: 1912247272}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &28347144 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 934439360892739704, guid: ae09a89bfab344ebe938dab3e1d3e221, type: 3}
@@ -3720,6 +3725,21 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7394460360463873404, guid: b2a1646940a2dd94f9cc5e3e65a27d7d, type: 3}
   m_PrefabInstance: {fileID: 1912247272}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1156276411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 17942466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62bf6b4a6c8928c47a2b301f1078c6c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QueenInteract
+  interactRange: 2.5
+  talkKey: 19
+  player: {fileID: 0}
 --- !u!4 &1217317687 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 934439360892739704, guid: 470f36377921641e48787e9cb3152e69, type: 3}
@@ -5557,7 +5577,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2315024611945502623, guid: b2a1646940a2dd94f9cc5e3e65a27d7d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1156276411}
   m_SourcePrefab: {fileID: 100100000, guid: b2a1646940a2dd94f9cc5e3e65a27d7d, type: 3}
 --- !u!4 &1945425822 stripped
 Transform:
