@@ -32,7 +32,7 @@ public class StartMenu : MonoBehaviour
     [Tooltip("Sprite used as the button background (Plank Medium.png).")]
     [SerializeField] private Sprite buttonBackground;
 
-    private enum Panel { Main, Options, Controls }
+    private enum Panel { Main, Options, Controls, Credits }
     private Panel currentPanel = Panel.Main;
     private bool isOpen = true;
 
@@ -100,6 +100,7 @@ public class StartMenu : MonoBehaviour
             case Panel.Main: DrawMain(); break;
             case Panel.Options: DrawOptions(); break;
             case Panel.Controls: DrawControls(); break;
+            case Panel.Credits: DrawCredits(); break;
         }
     }
 
@@ -133,17 +134,29 @@ public class StartMenu : MonoBehaviour
         by += buttonSize.y + buttonSpacing;
         if (PlankButton(new Rect(bx, by, buttonSize.x, buttonSize.y), "Controls")) currentPanel = Panel.Controls;
         by += buttonSize.y + buttonSpacing;
+        if (PlankButton(new Rect(bx, by, buttonSize.x, buttonSize.y), "Credits")) currentPanel = Panel.Credits;
+        by += buttonSize.y + buttonSpacing;
         if (PlankButton(new Rect(bx, by, buttonSize.x, buttonSize.y), "Quit")) QuitGame();
     }
 
     private void DrawOptions()
     {
-        DrawSubPanel("Options", ControlsBody());
+        DrawSubPanel("Options", "Coming in a future update!");
     }
 
     private void DrawControls()
     {
         DrawSubPanel("Controls", ControlsBody());
+    }
+
+    private void DrawCredits()
+    {
+        DrawSubPanel("Credits", CreditsBody());
+    }
+
+    private static string CreditsBody()
+    {
+        return "";
     }
 
     // Single source of truth for the control list so the Options and
