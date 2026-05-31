@@ -50,6 +50,10 @@ public class QuestButton : MonoBehaviour
     [Tooltip("Nudge the 'Close' text within the leaf: +X right, +Y down.")]
     [SerializeField] private Vector2 closeTextOffset = Vector2.zero;
 
+    [Header("Font")]
+    [Tooltip("If set, all quest menu text uses this font (Itim-Regular).")]
+    [SerializeField] private Font font;
+
     [Header("Text")]
     [SerializeField] private string buttonLabel = "Quests";
     [SerializeField] private string menuTitle = "Quest Chain";
@@ -543,6 +547,16 @@ public class QuestButton : MonoBehaviour
         if (panelTex == null) panelTex = MakeTex(new Color(0.08f, 0.08f, 0.1f, 0.95f));
         if (barBgTex == null) barBgTex = MakeTex(new Color(0f, 0f, 0f, 0.6f));
         if (barFillTex == null) barFillTex = MakeTex(Color.white);
+
+        if (font != null)
+        {
+            buttonStyle.font = font;
+            titleStyle.font = font;
+            labelStyle.font = font;
+            valueStyle.font = font;
+            closeStyle.font = font;
+            closeLabelStyle.font = font;
+        }
     }
 
     private static Texture2D MakeTex(Color c)

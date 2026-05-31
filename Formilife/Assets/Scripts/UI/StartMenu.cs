@@ -25,6 +25,10 @@ public class StartMenu : MonoBehaviour
     [SerializeField] private string titleText = "Formilife";
     [SerializeField] private int titleFontSize = 72;
 
+    [Header("Font")]
+    [Tooltip("If set, all menu text uses this font (Itim-Regular).")]
+    [SerializeField] private Font font;
+
     [Header("Buttons")]
     [SerializeField] private int buttonFontSize = 24;
     [SerializeField] private Vector2 buttonSize = new Vector2(260f, 56f);
@@ -297,6 +301,15 @@ public class StartMenu : MonoBehaviour
         if (panelStyle == null)
         {
             panelStyle = new GUIStyle(GUI.skin.box);
+        }
+
+        if (font != null)
+        {
+            titleStyle.font = font;
+            buttonStyle.font = font;
+            plankLabelStyle.font = font;
+            headerStyle.font = font;
+            bodyStyle.font = font;
         }
     }
 

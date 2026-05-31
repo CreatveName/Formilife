@@ -15,6 +15,10 @@ public class AntStatsHUD : MonoBehaviour
     [SerializeField] private Color hungerColor = new Color(1f, 0.6f, 0.1f);
     [SerializeField] private Color thirstColor = new Color(0.2f, 0.6f, 1f);
 
+    [Header("Font")]
+    [Tooltip("If set, the HUD labels use this font (Itim-Regular).")]
+    [SerializeField] private Font font;
+
     private AntNeeds needs;
     private GUIStyle labelStyle;
     private Texture2D bgTex;
@@ -66,6 +70,8 @@ public class AntStatsHUD : MonoBehaviour
         }
         if (bgTex == null) bgTex = MakeTex(new Color(0f, 0f, 0f, 0.6f));
         if (fillTex == null) fillTex = MakeTex(Color.white);
+
+        if (font != null) labelStyle.font = font;
     }
 
     private static Texture2D MakeTex(Color c)

@@ -14,6 +14,10 @@ public class QueenDialogue : MonoBehaviour
     [SerializeField] private float bottomMargin = 30f;
     [SerializeField] private float padding = 24f;
 
+    [Header("Font")]
+    [Tooltip("If set, all dialogue text uses this font (Itim-Regular).")]
+    [SerializeField] private Font font;
+
     [Header("Text")]
     [SerializeField] private string speakerName = "Queen";
     [SerializeField] private int nameFontSize = 26;
@@ -258,6 +262,13 @@ public class QueenDialogue : MonoBehaviour
                 alignment = TextAnchor.MiddleRight,
             };
             hintStyle.normal.textColor = new Color(1f, 1f, 1f, 0.7f);
+        }
+
+        if (font != null)
+        {
+            nameStyle.font = font;
+            bodyStyle.font = font;
+            hintStyle.font = font;
         }
     }
 }
