@@ -4,6 +4,7 @@ public class FoodEffect : MonoBehaviour
 {
     [SerializeField] private float hungerRestore = 25f;
     [SerializeField] private float thirstRestore = 5f;
+    [SerializeField] private float healthRestore = 25f;
     public bool cracked = false;
     public bool needsCrack = false;
 
@@ -16,6 +17,7 @@ public class FoodEffect : MonoBehaviour
             {
                 needs.RestoreHunger(hungerRestore);
                 needs.RestoreThirst(thirstRestore);
+                needs.Heal(healthRestore);
             }
             Destroy(gameObject);
         }

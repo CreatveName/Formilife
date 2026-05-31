@@ -102,6 +102,14 @@ public class QueenDialogue : MonoBehaviour
         BeginIfNeeded();
     }
 
+    // Replays the explanation for whatever task is currently active (used when
+    // the player walks up to the queen and presses E).
+    public void ReplayCurrentTask()
+    {
+        if (QuestButton.Instance == null || !QuestButton.Instance.HasActiveTask) return;
+        PlayForTask(QuestButton.Instance.CurrentTaskIndex);
+    }
+
     public void PlayForTask(int taskIndex)
     {
         string[] lines = taskIndex switch

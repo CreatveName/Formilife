@@ -108,6 +108,9 @@ public class QuestButton : MonoBehaviour
 
     public static QuestButton Instance { get; private set; }
 
+    public int CurrentTaskIndex => currentTaskIndex;
+    public bool HasActiveTask => HasCurrentTask;
+
     private void Awake()
     {
         Instance = this;

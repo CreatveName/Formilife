@@ -15,12 +15,12 @@ MonoBehaviour:
   antName: Basic Ant
   moveSpeed: 2
   maxHunger: 100
-  hungerDecayRate: 0.4
+  hungerDecayRate: 0.18518519
   maxThirst: 100
-  thirstDecayRate: 0.55
+  thirstDecayRate: 0.27777778
   lowHungerThreshold: 40
   lowThirstThreshold: 40
   maxHealth: 100
-  starvationDamageRate: 5
-  dehydrationDamageRate: 8
+  starvationDamageRate: 3.3333333
+  dehydrationDamageRate: 3.3333333
   corpsePrefab: {fileID: 0}
