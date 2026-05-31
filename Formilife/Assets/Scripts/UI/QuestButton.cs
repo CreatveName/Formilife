@@ -17,6 +17,8 @@ public class QuestButton : MonoBehaviour
         public bool completeOnPathDrawn = false;
         [Tooltip("If true, this task auto-completes once an NPC carries a seed to a chamber (food storage).")]
         public bool completeOnSeedDelivered = false;
+        [Tooltip("If set (e.g. 'Seed' or 'Egg'), the task bar tracks the largest count of that item tag across all chambers. The bar fills as items pile up in any one chamber.")]
+        public string trackChamberItemTag = "";
         [HideInInspector] public float current = 0f;
 
         public float Normalized => target <= 0f ? 1f : Mathf.Clamp01(current / target);
@@ -76,8 +78,8 @@ public class QuestButton : MonoBehaviour
     [SerializeField]
     private List<QuestTask> tasks = new List<QuestTask>
     {
-        new QuestTask { name = "Assign Food Storage",  target = 1f, requiredChamberRole = ChamberRole.FoodStorage },
-        new QuestTask { name = "Assign Nursery",       target = 1f, requiredChamberRole = ChamberRole.Nursery },
+        new QuestTask { name = "Assign Food Storage",  target = 4f, requiredChamberRole = ChamberRole.FoodStorage, trackChamberItemTag = "Seed" },
+        new QuestTask { name = "Assign Nursery",       target = 4f, requiredChamberRole = ChamberRole.Nursery, trackChamberItemTag = "Egg" },
         new QuestTask { name = "Pave the Path",        target = 1f, completeOnSeedDelivered = true },
         new QuestTask { name = "Assign Royal Chamber", target = 1f, requiredChamberRole = ChamberRole.ThroneRoom },
     };
@@ -226,22 +228,57 @@ public class QuestButton : MonoBehaviour
     }
 
     // Auto-completes the current task if a chamber in the scene matches its
-    // required role (e.g. a chamber assigned FoodStorage finishes "Assign Food Storage").
+    // required role, and mirrors the largest item count across all chambers
+    // into the task bar when trackChamberItemTag is set (so the bar fills as
+    // seeds/eggs pile up in any one chamber).
     private void CheckChamberCompletion()
     {
         if (!HasCurrentTask) return;
 
         ChamberRole required = CurrentTask.requiredChamberRole;
-        if (required == ChamberRole.Unassigned) return;
+        string trackedTag = CurrentTask.trackChamberItemTag;
+        if (required == ChamberRole.Unassigned && string.IsNullOrEmpty(trackedTag)) return;
 
         Chamber[] chambers = FindObjectsByType<Chamber>(FindObjectsInactive.Exclude);
+
+        // Auto-read the assignment threshold from whichever chamber has a rule
+        // for this task's tracked tag + role, so the bar target stays in sync
+        // with the chamber's AssignmentRule (no need to hand-edit it here).
+        if (!string.IsNullOrEmpty(trackedTag) && required != ChamberRole.Unassigned)
+        {
+            foreach (Chamber c in chambers)
+            {
+                foreach (AssignmentRule rule in c.assignmentRules)
+                {
+                    if (rule.assignedRole == required && rule.requiredItemTag == trackedTag && rule.requiredCount > 0)
+                    {
+                        CurrentTask.target = rule.requiredCount;
+                        break;
+                    }
+                }
+            }
+        }
+
+        int maxCount = 0;
         foreach (Chamber c in chambers)
         {
-            if (c.current == required)
+            if (required != ChamberRole.Unassigned && c.current == required)
             {
                 CompleteCurrentTask();
                 return;
             }
+            if (!string.IsNullOrEmpty(trackedTag))
+            {
+                int n = c.GetItemCount(trackedTag);
+                if (n > maxCount) maxCount = n;
+            }
+        }
+
+        if (!string.IsNullOrEmpty(trackedTag))
+        {
+            // Track best-ever — bar only goes up, doesn't drop if seeds leave.
+            float clamped = Mathf.Min(maxCount, CurrentTask.target);
+            if (clamped > CurrentTask.current) CurrentTask.current = clamped;
         }
     }
 
