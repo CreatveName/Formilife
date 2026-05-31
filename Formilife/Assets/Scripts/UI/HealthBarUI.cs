@@ -19,6 +19,8 @@ public class HealthBarUI : MonoBehaviour
     [SerializeField] private float lowGlowThreshold = 0.25f;
     [SerializeField] private Color lowGlowColor = new Color(1f, 0.15f, 0.15f);
     [SerializeField] private float lowGlowSpeed = 5f;
+    [Tooltip("Optional Image shown around the bar when the stat is low (pulses with the same color).")]
+    [SerializeField] private Image lowGlowOverlay;
 
     private Color baseColor;
     private Color baseOutlineColor;
@@ -45,16 +47,25 @@ public class HealthBarUI : MonoBehaviour
             ? Mathf.Lerp(fill.fillAmount, target, 1f - Mathf.Exp(-smoothing * Time.deltaTime))
             : target;
 
-        if (target <= lowGlowThreshold)
+        bool low = target <= lowGlowThreshold;
+        if (low)
         {
             float t = (Mathf.Sin(Time.unscaledTime * lowGlowSpeed) + 1f) * 0.5f;
             fill.color = Color.Lerp(baseColor, lowGlowColor, t);
             if (outline != null) outline.color = Color.Lerp(baseOutlineColor, lowGlowColor, t);
+            if (lowGlowOverlay != null)
+            {
+                if (!lowGlowOverlay.gameObject.activeSelf) lowGlowOverlay.gameObject.SetActive(true);
+                Color c = lowGlowColor; c.a = t;
+                lowGlowOverlay.color = c;
+            }
         }
         else
         {
             fill.color = baseColor;
             if (outline != null) outline.color = baseOutlineColor;
+            if (lowGlowOverlay != null && lowGlowOverlay.gameObject.activeSelf)
+                lowGlowOverlay.gameObject.SetActive(false);
         }
     }
 }
