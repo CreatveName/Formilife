@@ -94,7 +94,7 @@ public class QuestButton : MonoBehaviour
     [SerializeField] private float chamberCheckInterval = 0.5f;
 
     private int currentTaskIndex = 0;
-    private bool isOpen = false;
+    private bool isOpen = true;
     private float glowEndTime = -1f;
     private float nextChamberCheck = 0f;
     private bool pathDrawn = false;
@@ -161,7 +161,11 @@ public class QuestButton : MonoBehaviour
         if (!HasCurrentTask) return;
         CurrentTask.current = CurrentTask.target;
         currentTaskIndex++;
-        if (HasCurrentTask) TriggerGlow();
+        if (HasCurrentTask)
+        {
+            TriggerGlow();
+            if (QueenDialogue.Instance != null) QueenDialogue.Instance.PlayForTask(currentTaskIndex);
+        }
     }
 
     // ---------- Helpers ----------

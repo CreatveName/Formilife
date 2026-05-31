@@ -29,6 +29,8 @@ public class StartMenu : MonoBehaviour
     [SerializeField] private int buttonFontSize = 24;
     [SerializeField] private Vector2 buttonSize = new Vector2(260f, 56f);
     [SerializeField] private float buttonSpacing = 14f;
+    [Tooltip("Sprite used as the button background (Plank Medium.png).")]
+    [SerializeField] private Sprite buttonBackground;
 
     private enum Panel { Main, Options, Controls }
     private Panel currentPanel = Panel.Main;
@@ -37,6 +39,7 @@ public class StartMenu : MonoBehaviour
     private GUIStyle titleStyle;
     private GUIStyle headerStyle;
     private GUIStyle buttonStyle;
+    private GUIStyle plankLabelStyle;
     private GUIStyle bodyStyle;
     private GUIStyle panelStyle;
     private Texture2D dimTex;
@@ -82,6 +85,7 @@ public class StartMenu : MonoBehaviour
             topDownCamera.setCameraType(false);
             topDownCamera.enabled = true;
         }
+        if (QueenDialogue.Instance != null) QueenDialogue.Instance.PlayIntro();
     }
 
     private void OnGUI()
@@ -123,13 +127,13 @@ public class StartMenu : MonoBehaviour
         float bx = cx - buttonSize.x * 0.5f;
         float by = titleY + titleH + 60f;
 
-        if (GUI.Button(new Rect(bx, by, buttonSize.x, buttonSize.y), "Start", buttonStyle)) StartGame();
+        if (PlankButton(new Rect(bx, by, buttonSize.x, buttonSize.y), "Start")) StartGame();
         by += buttonSize.y + buttonSpacing;
-        if (GUI.Button(new Rect(bx, by, buttonSize.x, buttonSize.y), "Options", buttonStyle)) currentPanel = Panel.Options;
+        if (PlankButton(new Rect(bx, by, buttonSize.x, buttonSize.y), "Options")) currentPanel = Panel.Options;
         by += buttonSize.y + buttonSpacing;
-        if (GUI.Button(new Rect(bx, by, buttonSize.x, buttonSize.y), "Controls", buttonStyle)) currentPanel = Panel.Controls;
+        if (PlankButton(new Rect(bx, by, buttonSize.x, buttonSize.y), "Controls")) currentPanel = Panel.Controls;
         by += buttonSize.y + buttonSpacing;
-        if (GUI.Button(new Rect(bx, by, buttonSize.x, buttonSize.y), "Quit", buttonStyle)) QuitGame();
+        if (PlankButton(new Rect(bx, by, buttonSize.x, buttonSize.y), "Quit")) QuitGame();
     }
 
     private void DrawOptions()
@@ -199,7 +203,29 @@ public class StartMenu : MonoBehaviour
 
         float backW = 180f;
         Rect backRect = new Rect(x + (w - backW) * 0.5f, y + h - backH - pad, backW, backH);
-        if (GUI.Button(backRect, "Back", buttonStyle)) currentPanel = Panel.Main;
+        if (PlankButton(backRect, "Back")) currentPanel = Panel.Main;
+    }
+
+    // Button with the Plank Medium sprite as a background and a transparent
+    // GUI.Button on top so the label still renders and clicks still register.
+    private bool PlankButton(Rect rect, string label)
+    {
+        if (buttonBackground == null)
+            return GUI.Button(rect, label, buttonStyle);
+
+        Texture tex = buttonBackground.texture;
+        Rect tr = buttonBackground.textureRect;
+        Rect coords = new Rect(
+            tr.x / tex.width,
+            tr.y / tex.height,
+            tr.width / tex.width,
+            tr.height / tex.height);
+        GUI.DrawTextureWithTexCoords(rect, tex, coords);
+
+        // Label on top of the plank (label-style, no background), then an invisible
+        // button on the same rect for clicks.
+        GUI.Label(rect, label, plankLabelStyle);
+        return GUI.Button(rect, GUIContent.none, GUIStyle.none);
     }
 
     private void QuitGame()
@@ -230,6 +256,14 @@ public class StartMenu : MonoBehaviour
             buttonStyle.fontSize = buttonFontSize;
             buttonStyle.fontStyle = FontStyle.Bold;
             buttonStyle.alignment = TextAnchor.MiddleCenter;
+        }
+        if (plankLabelStyle == null || plankLabelStyle.fontSize != buttonFontSize)
+        {
+            plankLabelStyle = new GUIStyle(GUI.skin.label);
+            plankLabelStyle.fontSize = buttonFontSize;
+            plankLabelStyle.fontStyle = FontStyle.Bold;
+            plankLabelStyle.alignment = TextAnchor.MiddleCenter;
+            plankLabelStyle.normal.textColor = Color.white;
         }
         if (headerStyle == null || headerStyle.fontSize != 34)
         {
