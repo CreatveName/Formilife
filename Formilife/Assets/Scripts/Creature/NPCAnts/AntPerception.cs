@@ -7,7 +7,7 @@ public class AntPerception : MonoBehaviour
     [SerializeField] private LayerMask seedLayer;
     [SerializeField] private LayerMask foodStorageLayer;
 
-    public Transform GetClosestSeedInsidePheromone()
+    public Transform GetClosestSeedInsidePheromone(AntNPC askingAnt)
     {
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius, seedLayer);
 
@@ -16,17 +16,17 @@ public class AntPerception : MonoBehaviour
 
         foreach (Collider2D hit in hits)
         {
-            if (PheromoneManager.Instance == null)
-                continue;
+            if (PheromoneManager.Instance == null) continue;
+            if (!PheromoneManager.Instance.IsInsidePheromone(hit.transform.position)) continue;
+            if (PheromoneManager.Instance.IsInsideFoodStorage(hit.transform.position)) continue;
 
-            if (!PheromoneManager.Instance.IsInsidePheromone(hit.transform.position))
-                continue;
+            PickupReservation reservation = hit.GetComponent<PickupReservation>();
+            if (reservation != null && reservation.IsReservedByAnother(askingAnt)) continue;
 
-            if (PheromoneManager.Instance.IsInsideFoodStorage(hit.transform.position))
-                continue;
+            IPickupable pickupable = hit.GetComponent<IPickupable>();
+            if (pickupable != null && !pickupable.CanBePickedUp) continue;
 
             float dist = Vector2.Distance(transform.position, hit.transform.position);
-
             if (dist < closestDist)
             {
                 closestDist = dist;

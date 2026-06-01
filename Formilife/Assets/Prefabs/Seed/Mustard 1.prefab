@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -5809814822082044132}
   - component: {fileID: 1842634722015804178}
   - component: {fileID: 6298316699795794613}
+  - component: {fileID: 5825960329472669062}
   m_Layer: 3
   m_Name: Mustard 1
   m_TagString: Food
@@ -150,6 +151,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FoodEffect
   hungerRestore: 50
+  thirstRestore: 5
+  healthRestore: 25
   cracked: 0
   needsCrack: 0
 --- !u!114 &-5809814822082044132
@@ -216,3 +219,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChamberItem
   itemTag: Seed
+--- !u!114 &5825960329472669062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7005911649146616721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c225d7270e520a4fac07e89ff4d6cfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PickupReservation
+  reservationTimeout: 5

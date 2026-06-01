@@ -51,6 +51,7 @@ public class AntNPC : MonoBehaviour
     private NavMeshAgent agent;
     private AntPerception perception;
     private NPCAntPickup pickup;
+    private PickupReservation currentReservation;
     private Transform recruitedLeader;
     private Transform recruitedCarryTarget;
     private Vector3 recruitedFollowOffset;
@@ -209,15 +210,14 @@ public class AntNPC : MonoBehaviour
         }
 
         // If not holding, look for seed
-        Transform seed = perception.GetClosestSeedInsidePheromone();
+        Transform seed = perception.GetClosestSeedInsidePheromone(this);
 
         if (seed != null)
         {
             Debug.Log($"{name} found seed: {seed.name}");
-            currentTarget = seed;
-            agent.SetDestination(currentTarget.position);
-            currentState = AntState.GoingToSeed;
-            return;
+
+            if (TrySetSeedTarget(seed))
+                return;
         }
 
         // If nothing useful found, wander
@@ -265,14 +265,12 @@ public class AntNPC : MonoBehaviour
 
         if (npcDefinition.collectsSeeds)
         {
-            Transform seed = perception.GetClosestSeedInsidePheromone();
+            Transform seed = perception.GetClosestSeedInsidePheromone(this);
 
             if (seed != null && pickup != null && !pickup.IsHoldingSomething)
             {
-                currentTarget = seed;
-                agent.SetDestination(currentTarget.position);
-                currentState = AntState.GoingToSeed;
-                return;
+                if (TrySetSeedTarget(seed))
+                    return;
             }
         }
 
@@ -314,11 +312,13 @@ public class AntNPC : MonoBehaviour
 
             if (item != null && pickup.TryPickUp(item))
             {
+                ReleaseCurrentReservation();
                 currentTarget = null;
                 TryGoToFoodStorage();
                 return;
             }
 
+            ReleaseCurrentReservation();
             currentTarget = null;
             BeginIdle();
         }
@@ -401,6 +401,7 @@ public class AntNPC : MonoBehaviour
 
     private void BeginIdle()
     {
+        ReleaseCurrentReservation();
         idleTimer = Random.Range(npcDefinition.minIdleTime, npcDefinition.maxIdleTime);
         currentTarget = null;
         currentState = AntState.Idle;
@@ -925,6 +926,34 @@ public class AntNPC : MonoBehaviour
                 continue;
 
             col.enabled = enabledState;
+        }
+    }
+
+    /////Pickup Preservation/protection
+    private bool TrySetSeedTarget(Transform seed)
+    {
+        if (seed == null) return false;
+
+        PickupReservation reservation = seed.GetComponent<PickupReservation>();
+
+        if (reservation != null && !reservation.TryReserve(this))
+            return false;
+
+        ReleaseCurrentReservation();
+
+        currentReservation = reservation;
+        currentTarget = seed;
+        agent.SetDestination(currentTarget.position);
+        currentState = AntState.GoingToSeed;
+        return true;
+    }
+
+    private void ReleaseCurrentReservation()
+    {
+        if (currentReservation != null)
+        {
+            currentReservation.Release(this);
+            currentReservation = null;
         }
     }
 }
