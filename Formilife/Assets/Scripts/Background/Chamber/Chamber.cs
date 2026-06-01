@@ -17,10 +17,10 @@ public class Chamber: MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if (PheromoneManager.Instance != null)
-        PheromoneManager.Instance.RegisterChamber(this);
-
         EvaluateRole();
+
+        if (PheromoneManager.Instance != null)
+            PheromoneManager.Instance.RegisterChamber(this);
     }
 
     private void Awake()
@@ -87,10 +87,18 @@ public class Chamber: MonoBehaviour
 
     private void SetRole(ChamberRole newRole)
     {
-        if(current == newRole) return;
+        if (current == newRole) return;
+
+        ChamberRole oldRole = current;
+
         Debug.Log($"Chamber '{name}' assigned role: {newRole} (was {current})", this);
         current = newRole;
 
+        if (PheromoneManager.Instance != null)
+        {
+            PheromoneManager.Instance.UnregisterChamber(this);
+            PheromoneManager.Instance.RegisterChamber(this);
+        }
     }
 
     private void AddCount(string tag, int delta){

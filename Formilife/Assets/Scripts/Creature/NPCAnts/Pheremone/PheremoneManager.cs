@@ -83,6 +83,11 @@ public class PheromoneManager : MonoBehaviour
             if (chamber.current != ChamberRole.FoodStorage)
                 continue;
 
+            // Important: make sure this storage is reachable/valid through pheromone.
+            if (!IsInsidePheromone(chamber.transform.position) &&
+                !chamber.ContainsPoint(position))
+                continue;
+
             float dist = Vector2.Distance(position, chamber.transform.position);
 
             if (dist < closestDist)
@@ -112,22 +117,22 @@ public class PheromoneManager : MonoBehaviour
 
     public Vector3 GetRandomPheromonePoint()
     {
-        if (trails.Count > 0)
-        {
-            PheromoneTrail trail = trails[Random.Range(0, trails.Count)];
-            return trail.GetRandomPoint();
-        }
+        List<Vector3> possiblePoints = new List<Vector3>();
 
-        List<Chamber> foodChambers = new List<Chamber>();
+        foreach (PheromoneTrail trail in trails)
+        {
+            if (trail != null)
+                possiblePoints.Add(trail.GetRandomPoint());
+        }
 
         foreach (Chamber chamber in chambers)
         {
             if (chamber != null && chamber.current == ChamberRole.FoodStorage)
-                foodChambers.Add(chamber);
+                possiblePoints.Add(chamber.transform.position);
         }
 
-        if (foodChambers.Count > 0)
-            return foodChambers[Random.Range(0, foodChambers.Count)].transform.position;
+        if (possiblePoints.Count > 0)
+            return possiblePoints[Random.Range(0, possiblePoints.Count)];
 
         return Vector3.zero;
     }

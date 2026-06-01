@@ -330,9 +330,12 @@ public class AntNPC : MonoBehaviour
 
         if (storage == null)
         {
+            Debug.LogWarning($"{name} is holding a seed but found NO food storage. Check if chamber role is actually FoodStorage.");
             BeginIdle();
             return;
         }
+
+        Debug.Log($"{name} found food storage: {storage.name}");
 
         currentTarget = storage;
         agent.SetDestination(currentTarget.position);
