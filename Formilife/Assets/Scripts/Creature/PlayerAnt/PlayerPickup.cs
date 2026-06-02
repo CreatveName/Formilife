@@ -8,6 +8,7 @@ public class PlayerPickup : MonoBehaviour
     [SerializeField] private Transform holdPoint;
     [SerializeField] private int soldiersRequiredForQueen = 2;
     private PlayerAntRecruiter recruiter;
+    private PlayerSfx sfx;
 
     private IPickupable heldItem;
     public IPickupable HeldItem => heldItem;
@@ -25,6 +26,7 @@ public class PlayerPickup : MonoBehaviour
     private void Awake()
     {
         recruiter = GetComponent<PlayerAntRecruiter>();
+        sfx = GetComponent<PlayerSfx>();
     }
 
     private void Update()
@@ -86,6 +88,8 @@ public class PlayerPickup : MonoBehaviour
                 heldItem = pickup;
                 pickup.OnPickup(holdPoint);
 
+                if (sfx != null) sfx.PlayPickup();
+
                 OnPickedUpItem?.Invoke(heldItem);
                 break;
             }
@@ -118,6 +122,7 @@ public class PlayerPickup : MonoBehaviour
     {
         if (heldItem == null) return;
         heldItem.OnDrop();
+        if (sfx != null) sfx.PlayDrop();
         OnDroppedItem?.Invoke();
         heldItem = null;
     }

@@ -20,11 +20,13 @@ public class PlayerAntRecruiter : MonoBehaviour
 
     private PlayerPickup pickup;
     private PlayerAntMovement movement;
+    private PlayerSfx sfx;
 
     private void Awake()
     {
         pickup = GetComponent<PlayerPickup>();
         movement = GetComponent<PlayerAntMovement>();
+        sfx = GetComponent<PlayerSfx>();
     }
 
     private void OnEnable()
@@ -113,6 +115,8 @@ public class PlayerAntRecruiter : MonoBehaviour
         closestAnt.RecruitToPlayer(transform, slotIndex, followSpacing);
         recruitedAnts.Add(closestAnt);
 
+        if (sfx != null) sfx.PlayRecruit();
+
         RefreshCarryHelp();
     }
 
@@ -167,6 +171,9 @@ public class PlayerAntRecruiter : MonoBehaviour
 
     private void DismissAll()
     {
+        if (recruitedAnts.Count == 0)
+            return;
+
         foreach (AntNPC ant in recruitedAnts)
         {
             if (ant != null)
@@ -174,6 +181,8 @@ public class PlayerAntRecruiter : MonoBehaviour
         }
 
         recruitedAnts.Clear();
+
+        if (sfx != null) sfx.PlayDismiss();
 
         if (movement != null)
             movement.SetExternalSpeedMultiplier(1f);
