@@ -28,6 +28,12 @@ public class QuestButton : MonoBehaviour
     [Header("Layout")]
     [SerializeField] private Vector2 margin = new Vector2(16f, 16f);
     [SerializeField] private Vector2 buttonSize = new Vector2(260f, 68f);
+    [Tooltip("Icon for the collapsed quest button (Quest icon.png). If set, replaces the text button.")]
+    [SerializeField] private Sprite buttonIconSprite;
+    [Tooltip("Icon shown instead while there's an unseen new quest (Quest notify.png).")]
+    [SerializeField] private Sprite buttonNotifySprite;
+    [Tooltip("Height of the quest icon button in pixels; width follows the art's aspect ratio.")]
+    [SerializeField] private float buttonIconHeight = 68f;
     [SerializeField] private float panelWidth = 480f;
     [SerializeField] private float panelPadding = 24f;
 
@@ -105,6 +111,7 @@ public class QuestButton : MonoBehaviour
     private float nextChamberCheck = 0f;
     private bool pathDrawn = false;
     private bool seedDelivered = false;
+    private bool hasUnseenQuest = false;
 
     public static QuestButton Instance { get; private set; }
 
@@ -173,6 +180,9 @@ public class QuestButton : MonoBehaviour
         if (HasCurrentTask)
         {
             TriggerGlow();
+            // Flag the collapsed button so it shows the notify icon until the
+            // player opens the menu (only matters while it's closed).
+            if (!isOpen) hasUnseenQuest = true;
             if (QueenDialogue.Instance != null) QueenDialogue.Instance.PlayForTask(currentTaskIndex);
         }
     }
@@ -294,16 +304,47 @@ public class QuestButton : MonoBehaviour
         if (!StartMenu.GameStarted) return;
         EnsureStyles();
 
-        if (isOpen) DrawMenu();
+        if (isOpen)
+        {
+            hasUnseenQuest = false;   // opening the menu = the player has seen it
+            DrawMenu();
+        }
         else DrawButton();
     }
 
     // The collapsed icon/button, anchored top-right.
     private void DrawButton()
     {
-        float bx = Screen.width - buttonSize.x - margin.x;
-        float by = margin.y;
-        Rect r = new Rect(bx, by, buttonSize.x, buttonSize.y);
+        // Swap to the notify icon while there's an unseen new quest.
+        Sprite icon = (hasUnseenQuest && buttonNotifySprite != null)
+            ? buttonNotifySprite
+            : buttonIconSprite;
+
+        // Icon button: draw the sprite (aspect-preserved) as a clickable area.
+        if (icon != null)
+        {
+            float bh = buttonIconHeight;
+            Rect itr = icon.textureRect;
+            float bw = itr.height > 0f ? bh * (itr.width / itr.height) : bh;
+            Rect r = new Rect(Screen.width - bw - margin.x, margin.y, bw, bh);
+
+            Color prevColor = GUI.color;
+            if (IsGlowing)
+            {
+                float t = (Mathf.Sin(Time.unscaledTime * glowSpeed) + 1f) * 0.5f;
+                GUI.color = Color.Lerp(prevColor, glowColor, t);
+            }
+            DrawSprite(r, icon);
+            GUI.color = prevColor;
+
+            if (GUI.Button(r, GUIContent.none, GUIStyle.none)) isOpen = true;
+            return;
+        }
+
+        // Fallback: text button.
+        float tx = Screen.width - buttonSize.x - margin.x;
+        float ty = margin.y;
+        Rect tr = new Rect(tx, ty, buttonSize.x, buttonSize.y);
 
         Color prevBg = GUI.backgroundColor;
         if (IsGlowing)
@@ -312,7 +353,7 @@ public class QuestButton : MonoBehaviour
             GUI.backgroundColor = Color.Lerp(prevBg, glowColor, t);
         }
 
-        if (GUI.Button(r, buttonLabel, buttonStyle)) isOpen = true;
+        if (GUI.Button(tr, buttonLabel, buttonStyle)) isOpen = true;
 
         GUI.backgroundColor = prevBg;
     }
