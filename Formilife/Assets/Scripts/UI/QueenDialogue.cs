@@ -39,48 +39,48 @@ public class QueenDialogue : MonoBehaviour
     [Header("Colors")]
     [SerializeField] private Color boxColor = new Color(0.08f, 0.06f, 0.04f, 0.92f);
     [SerializeField] private Color nameColor = new Color(1f, 0.85f, 0.4f);
-    [SerializeField] private Color bodyColor = Color.white;
+    [SerializeField] private Color bodyColor = Color.black;
 
     [Header("Dialogue Lines")]
     [TextArea(2, 8)] [SerializeField] private string[] introLines = new[]
     {
         "Welcome to the world, my child! The time has come!",
         "This test tube will soon no longer be able to sustain our colony, and so our owner is moving us into a new Formicary. We need you to scout out our new environment and help us relocate.",
-        "I will give you tasks to achieve our goal — in this case, <color=#5CC75F>move into the Formicary</color>! <b>[Press TAB to open the Quest Menu]</b>",
+        "I will give you tasks to achieve our goal — in this case, <color=#176B23>move into the Formicary</color>! <b>[Press TAB to open the Quest Menu]</b>",
         "But don't forget about your own personal needs, such as hunger and thirst. We are the Harvester Ants, meaning we eat seeds.",
         "To eat a seed, you must first pick it up <b>[Press SPACE to pick up]</b> and then bite into it <b>[Press E to eat]</b>.",
-        "<color=#FF5C5C>Be careful, my child, for you will die quickly if you do not sustain yourself in time.</color>",
+        "<color=#7A1414>Be careful, my child, for you will die quickly if you do not sustain yourself in time.</color>",
     };
 
     [TextArea(2, 8)] [SerializeField] private string[] task1Lines = new[]
     {
         "Your first task is to <b>Assign a Food Storage</b> in our new home so that other ants know where to bring seeds and where to eat.",
-        "<color=#5CC75F>Carry 4 seeds into a chamber to assign it as a Food Storage.</color> Seeds can be found on the arena — the large open space in the Formicary.",
-        "Choose your location carefully. To prevent seeds from rotting, <color=#FF5C5C>select a dry chamber</color>. You can identify chamber types by their floor: humid chambers are raised with a yellowish hue, while dry chambers are lower and appear more white.",
+        "<color=#176B23>Carry 4 seeds into a chamber to assign it as a Food Storage.</color> Seeds can be found on the arena — the large open space in the Formicary.",
+        "Choose your location carefully. To prevent seeds from rotting, <color=#7A1414>select a dry chamber</color>. You can identify chamber types by their floor: humid chambers are raised with a yellowish hue, while dry chambers are lower and appear more white.",
         "Once done, return to me to receive your next task. Speak to me again if you need this explanation repeated.",
     };
 
     [TextArea(2, 8)] [SerializeField] private string[] task2Lines = new[]
     {
         "Great job! Your second task is to move our eggs from this tube into our new home and <b>Assign a Nursery</b>.",
-        "As you may have guessed, you need to <color=#5CC75F>carry 4 eggs into a chamber to assign it as a Nursery</color>.",
-        "For the eggs to hatch, they require humidity, so please <color=#FF5C5C>select a humid chamber to assign as a Nursery</color>.",
+        "As you may have guessed, you need to <color=#176B23>carry 4 eggs into a chamber to assign it as a Nursery</color>.",
+        "For the eggs to hatch, they require humidity, so please <color=#7A1414>select a humid chamber to assign as a Nursery</color>.",
     };
 
     [TextArea(2, 8)] [SerializeField] private string[] task3Lines = new[]
     {
         "Great work! Now that you have assigned chambers in our new home, you need to <b>Pave a Trail</b> using your trail pheromones to let other ants know where it is safe to walk. <b>[Hold Z to activate your pheromone mapping mode.]</b>",
-        "Using your pheromones, <color=#5CC75F>draw a trail leading into your assigned chambers and back to the arena</color>. <color=#FF5C5C>Make sure an ant brings a seed into the Food Storage</color> from the arena to confirm it is working correctly.",
+        "Using your pheromones, <color=#176B23>draw a trail leading into your assigned chambers and back to the arena</color>. <color=#7A1414>Make sure an ant brings a seed into the Food Storage</color> from the arena to confirm it is working correctly.",
         "Other ants will only walk along the trail you have marked.",
     };
 
     [TextArea(2, 8)] [SerializeField] private string[] task4Lines = new[]
     {
         "Well done, Scout! You're almost done! Our final step of moving is escorting me to the Royal Chamber.",
-        "<color=#5CC75F>Recruit at least two ants to help carry me to the chamber</color> you want to <b>assign as the Royal Chamber</b>.",
+        "<color=#176B23>Recruit at least two ants to help carry me to the chamber</color> you want to <b>assign as the Royal Chamber</b>.",
         "<b>[Press R while near an ant to recruit them.]</b> When you recruit an ant, they will start to follow you and help you carry heavy objects by increasing your carrying speed and strength.",
         "The deeper the Royal Chamber is, the better, as it will be safer in the case of an intruder.",
-        "I will stay in this chamber most of the time, so please <color=#FF5C5C>select a humid chamber</color> so I have a supply of water to drink from.",
+        "I will stay in this chamber most of the time, so please <color=#7A1414>select a humid chamber</color> so I have a supply of water to drink from.",
     };
 
     private readonly Queue<string> queue = new Queue<string>();
@@ -133,8 +133,17 @@ public class QueenDialogue : MonoBehaviour
         foreach (var line in lines)
         {
             if (!string.IsNullOrWhiteSpace(line))
-                queue.Enqueue(line.Trim());
+                queue.Enqueue(Recolor(line.Trim()));
         }
+    }
+
+    // Lines are serialized in the scene, so old bright highlight colors persist
+    // even after the defaults change. Swap them to the dark variants at runtime.
+    private static string Recolor(string line)
+    {
+        return line
+            .Replace("#5CC75F", "#176B23")   // green  -> dark green
+            .Replace("#FF5C5C", "#7A1414");  // red    -> dark red
     }
 
     private void BeginIfNeeded()

@@ -3085,7 +3085,7 @@ MonoBehaviour:
   nameTextOffset: {x: 0, y: 0}
   boxColor: {r: 0.08, g: 0.06, b: 0.04, a: 0.92}
   nameColor: {r: 1, g: 1, b: 1, a: 1}
-  bodyColor: {r: 1, g: 1, b: 1, a: 1}
+  bodyColor: {r: 0, g: 0, b: 0, a: 1}
   introLines:
   - Welcome to the world, my child! The time has come!
   - This test tube will soon no longer be able to sustain our colony, and so our
@@ -3538,6 +3538,7 @@ MonoBehaviour:
   margin: {x: 16, y: 60}
   buttonSize: {x: 260, y: 68}
   buttonIconSprite: {fileID: 420629223217871831, guid: 4ed7e6994f30550439aff9422ebddb44, type: 3}
+  buttonNotifySprite: {fileID: 8610175849273887957, guid: 5249886381d786c469581e6785d631d2, type: 3}
   buttonIconHeight: 200
   panelWidth: 480
   panelPadding: 24
