@@ -1900,12 +1900,12 @@ MonoBehaviour:
   - {fileID: 7005911649146616721, guid: ac52bdc1e784ea14da16f7bb2a833974, type: 3}
   minSeeds: 20
   maxSeeds: 30
-  areaSize: {x: 27, y: 16}
+  areaSize: {x: 17, y: 6}
   spawnZ: 0
   topUpInterval: 2
   spawnParent: {fileID: 0}
   sortingLayerName: 
-  sortingOrder: 50
+  sortingOrder: 3
 --- !u!4 &498125793
 Transform:
   m_ObjectHideFlags: 0
@@ -1916,7 +1916,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 29.6, y: 29.2, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
