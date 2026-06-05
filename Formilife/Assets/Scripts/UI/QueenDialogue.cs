@@ -167,6 +167,8 @@ public class QueenDialogue : MonoBehaviour
     private void OnGUI()
     {
         if (!isOpen || string.IsNullOrEmpty(currentLine)) return;
+        // Hide the dialogue while the start menu is up (returned to menu mid-line).
+        if (!StartMenu.GameStarted) return;
         EnsureStyles();
 
         GUI.depth = -2000;
@@ -221,11 +223,25 @@ public class QueenDialogue : MonoBehaviour
         Rect hintRect = new Rect(x + w - 240f - padding, y + h - hintFontSize - padding * 0.5f, 240f, hintFontSize + 4f);
         GUI.Label(hintRect, hint, hintStyle);
 
-        if (Event.current.type == EventType.MouseDown && box.Contains(Event.current.mousePosition))
+        if (!PauseMenu.IsPaused && Event.current.type == EventType.MouseDown && box.Contains(Event.current.mousePosition))
         {
             Advance();
             Event.current.Use();
         }
+    }
+
+    // Keep a label's color fixed across all interaction states so text doesn't
+    // change color when the mouse hovers over the dialogue box.
+    private static void LockTextColor(GUIStyle s)
+    {
+        Color c = s.normal.textColor;
+        s.hover.textColor = c;
+        s.active.textColor = c;
+        s.focused.textColor = c;
+        s.onNormal.textColor = c;
+        s.onHover.textColor = c;
+        s.onActive.textColor = c;
+        s.onFocused.textColor = c;
     }
 
     private static void DrawSprite(Rect rect, Sprite sprite)
@@ -258,6 +274,7 @@ public class QueenDialogue : MonoBehaviour
                 wordWrap = false,
             };
             nameStyle.normal.textColor = nameColor;
+            LockTextColor(nameStyle);
         }
         if (bodyStyle == null || bodyStyle.fontSize != bodyFontSize)
         {
@@ -269,6 +286,7 @@ public class QueenDialogue : MonoBehaviour
                 richText = true,
             };
             bodyStyle.normal.textColor = bodyColor;
+            LockTextColor(bodyStyle);
         }
         if (hintStyle == null || hintStyle.fontSize != hintFontSize)
         {
@@ -279,6 +297,7 @@ public class QueenDialogue : MonoBehaviour
                 alignment = TextAnchor.MiddleRight,
             };
             hintStyle.normal.textColor = new Color(1f, 1f, 1f, 0.7f);
+            LockTextColor(hintStyle);
         }
 
         if (font != null)

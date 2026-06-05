@@ -25,7 +25,7 @@ public class QueenInteract : MonoBehaviour
 
     private void Update()
     {
-        if (!StartMenu.GameStarted) return;
+        if (!StartMenu.GameStarted || PauseMenu.IsPaused) return;
         if (player == null || QueenDialogue.Instance == null) return;
 
         Keyboard kb = Keyboard.current;

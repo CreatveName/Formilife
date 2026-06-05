@@ -17,6 +17,8 @@ public class PheromoneDrawer : MonoBehaviour
 
     private void Update()
     {
+        if (!StartMenu.GameStarted || PauseMenu.IsPaused) return;
+
         bool inPheromoneMode =
             Keyboard.current != null &&
             Keyboard.current.zKey.isPressed;

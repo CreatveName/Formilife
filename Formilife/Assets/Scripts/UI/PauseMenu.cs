@@ -1,39 +1,18 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-public class StartMenu : MonoBehaviour
+// In-game pause overlay. Toggled with Esc once the game has started. Freezes
+// gameplay with Time.timeScale = 0 (movement lives in FixedUpdate and the camera
+// uses Time.deltaTime, so both stop on their own); discrete key actions are gated
+// elsewhere via PauseMenu.IsPaused. Mirrors StartMenu's plank/board styling.
+public class PauseMenu : MonoBehaviour
 {
-    public static StartMenu Instance { get; private set; }
-    public static bool GameStarted { get; private set; } = true;
-
-    // Set by RestartGame() before a scene reload so the fresh StartMenu jumps
-    // straight back into gameplay instead of showing the menu.
-    private static bool autoStartAfterReload;
-
-    // True once the player has started a game in this session. Drives the menu's
-    // Resume / Restart buttons when they return to the menu without resetting.
-    private bool hasStartedBefore;
-
-
-    [Header("Refs")]
-    [SerializeField] private TopDownCamera topDownCamera;
-    [SerializeField] private Camera gameCamera;
-    [SerializeField] private Transform menuFocusTarget;
-
-    [Header("Menu Camera")]
-    [SerializeField] private float menuOrthoSize = 40f;
-    [SerializeField] private Vector2 menuFocusOffset = Vector2.zero;
-
-    [Header("Gameplay Camera")]
-    [SerializeField] private float gameStartZoom = 8f;
+    public static bool IsPaused { get; private set; }
 
     [Header("Title")]
-    [Tooltip("If set, this image is shown instead of the title text (FormilifeTitle.png).")]
-    [SerializeField] private Texture2D titleImage;
-    [Tooltip("Width of the title image in pixels; height keeps the image's aspect ratio.")]
-    [SerializeField] private float titleImageWidth = 380f;
-    [SerializeField] private string titleText = "Formilife";
-    [SerializeField] private int titleFontSize = 72;
+    [SerializeField] private string titleText = "Paused";
+    [SerializeField] private int titleFontSize = 56;
 
     [Header("Font")]
     [Tooltip("If set, all menu text uses this font (Itim-Regular).")]
@@ -70,12 +49,8 @@ public class StartMenu : MonoBehaviour
     [TextArea(3, 12)]
     [SerializeField] private string creditsText = "";
 
-    // Lets other menus (e.g. PauseMenu) reuse the same credits without retyping them.
-    public string CreditsText => creditsText;
-
     private enum Panel { Main, Options, Controls, Credits }
     private Panel currentPanel = Panel.Main;
-    private bool isOpen = true;
 
     private GUIStyle titleStyle;
     private GUIStyle headerStyle;
@@ -84,128 +59,104 @@ public class StartMenu : MonoBehaviour
     private GUIStyle bodyStyle;
     private GUIStyle creditsBodyStyle;
     private GUIStyle backLabelStyle;
-    private GUIStyle panelStyle;
     private Texture2D dimTex;
     private Texture2D panelTex;
 
-    private void Awake()
+    private void Update()
     {
-        Instance = this;
-        if (gameCamera == null) gameCamera = Camera.main;
-        if (topDownCamera == null && gameCamera != null) topDownCamera = gameCamera.GetComponent<TopDownCamera>();
-    }
+        // Only allow pausing once the start menu has handed off to gameplay.
+        if (!StartMenu.GameStarted) return;
 
-    private void OnDestroy()
-    {
-        if (Instance == this) Instance = null;
-    }
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null) return;
 
-    private void Start()
-    {
-        if (autoStartAfterReload)
+        if (keyboard.escapeKey.wasPressedThisFrame)
         {
-            autoStartAfterReload = false;
-            StartGame();   // fresh game after a Restart
-        }
-        else
-        {
-            OpenMenu();
+            if (IsPaused && currentPanel != Panel.Main)
+                currentPanel = Panel.Main;   // back out of a sub-panel first
+            else if (IsPaused)
+                Resume();
+            else
+                Pause();
         }
     }
 
-    // Re-opens the menu over the current game without resetting it (used by the
-    // pause menu's "Quit to Menu"). Gameplay freezes because GameStarted is false.
-    public void ReturnToMenu()
+    private void Pause()
     {
-        OpenMenu();
-    }
-
-    // Full reset: reload the scene and drop straight back into a new game.
-    public static void RestartGame()
-    {
-        Time.timeScale = 1f;
-        autoStartAfterReload = true;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    private void OpenMenu()
-    {
-        isOpen = true;
+        IsPaused = true;
         currentPanel = Panel.Main;
-        GameStarted = false;
-
-        if (topDownCamera != null) topDownCamera.enabled = false;
-
-        if (gameCamera != null)
-        {
-            if (gameCamera.orthographic) gameCamera.orthographicSize = menuOrthoSize;
-            if (menuFocusTarget != null)
-            {
-                Vector3 t = menuFocusTarget.position;
-                gameCamera.transform.position = new Vector3(t.x + menuFocusOffset.x, t.y + menuFocusOffset.y, gameCamera.transform.position.z);
-            }
-        }
+        Time.timeScale = 0f;
     }
 
-    private void StartGame()
+    private void Resume()
     {
-        bool firstStart = !hasStartedBefore;
-        hasStartedBefore = true;
+        IsPaused = false;
+        Time.timeScale = 1f;
+    }
 
-        isOpen = false;
-        GameStarted = true;
-        if (topDownCamera != null)
+    private void RestartGame()
+    {
+        // Full reset; StartMenu reloads the scene and drops back into a fresh game.
+        IsPaused = false;
+        StartMenu.RestartGame();
+    }
+
+    private void QuitToMainMenu()
+    {
+        // Return to the menu without resetting; the game stays loaded (and frozen
+        // via StartMenu.GameStarted) so the player can Resume from the menu.
+        IsPaused = false;
+        Time.timeScale = 1f;
+        currentPanel = Panel.Main;
+        if (StartMenu.Instance != null)
+            StartMenu.Instance.ReturnToMenu();
+        else
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);   // fallback
+    }
+
+    private void OnDisable()
+    {
+        // Don't leave the game frozen if this object is disabled while paused.
+        if (IsPaused)
         {
-            topDownCamera.SetFov(gameStartZoom, allowBeyondMax: true);
-            topDownCamera.setCameraType(false);
-            topDownCamera.enabled = true;
+            IsPaused = false;
+            Time.timeScale = 1f;
         }
-        // Only greet the player the first time; resuming shouldn't replay the intro.
-        if (firstStart && QueenDialogue.Instance != null) QueenDialogue.Instance.PlayIntro();
     }
 
     private void OnGUI()
     {
-        if (!isOpen) return;
+        if (!IsPaused) return;
         EnsureStyles();
 
-        GUI.depth = -1000;
+        // Lower depth draws on top in IMGUI; sit below QueenDialogue (-2000) so the
+        // pause menu and its dim overlay cover the dialogue box too.
+        GUI.depth = -3000;
+
+        // Dim the whole screen behind the menu.
+        GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), dimTex);
 
         switch (currentPanel)
         {
             case Panel.Main: DrawMain(); break;
-            case Panel.Options: DrawOptions(); break;
-            case Panel.Controls: DrawControls(); break;
-            case Panel.Credits: DrawCredits(); break;
+            case Panel.Options: DrawSubPanel("Options", "Coming in a future update!"); break;
+            case Panel.Controls: DrawSubPanel("Controls", ControlsBody()); break;
+            case Panel.Credits: DrawSubPanel("Credits", ResolveCreditsText(), creditsBodyStyle); break;
         }
     }
 
     private void DrawMain()
     {
-        float cx = Screen.width * 0.25f;
-        float titleY = Screen.height * 0.18f;
+        float cx = Screen.width * 0.5f;
+        float titleY = Screen.height * 0.22f;
 
-        float titleH;
-        if (titleImage != null)
-        {
-            float titleW = titleImageWidth;
-            titleH = titleImage.width > 0
-                ? titleW * ((float)titleImage.height / titleImage.width)
-                : titleImageWidth;
-            GUI.DrawTexture(new Rect(cx - titleW * 0.5f, titleY, titleW, titleH), titleImage, ScaleMode.ScaleToFit);
-        }
-        else
-        {
-            Vector2 titleSize = titleStyle.CalcSize(new GUIContent(titleText));
-            GUI.Label(new Rect(cx - titleSize.x * 0.5f, titleY, titleSize.x, titleSize.y), titleText, titleStyle);
-            titleH = titleSize.y;
-        }
+        Vector2 titleSize = titleStyle.CalcSize(new GUIContent(titleText));
+        GUI.Label(new Rect(cx - titleSize.x * 0.5f, titleY, titleSize.x, titleSize.y), titleText, titleStyle);
 
         float bx = cx - buttonSize.x * 0.5f;
-        float by = titleY + titleH + 60f;
+        float by = titleY + titleSize.y + 50f;
 
-        // After a game has been started, the first button resumes the preserved game.
-        if (PlankButton(new Rect(bx, by, buttonSize.x, buttonSize.y), hasStartedBefore ? "Resume" : "Start")) StartGame();
+        if (PlankButton(new Rect(bx, by, buttonSize.x, buttonSize.y), "Resume")) Resume();
         by += buttonSize.y + buttonSpacing;
         if (PlankButton(new Rect(bx, by, buttonSize.x, buttonSize.y), "Options")) currentPanel = Panel.Options;
         by += buttonSize.y + buttonSpacing;
@@ -213,28 +164,19 @@ public class StartMenu : MonoBehaviour
         by += buttonSize.y + buttonSpacing;
         if (PlankButton(new Rect(bx, by, buttonSize.x, buttonSize.y), "Credits")) currentPanel = Panel.Credits;
         by += buttonSize.y + buttonSpacing;
-        // Restart (full reset) sits just above Quit, once a game has been started.
-        if (hasStartedBefore)
-        {
-            if (PlankButton(new Rect(bx, by, buttonSize.x, buttonSize.y), "Restart Game")) RestartGame();
-            by += buttonSize.y + buttonSpacing;
-        }
-        if (PlankButton(new Rect(bx, by, buttonSize.x, buttonSize.y), "Quit")) QuitGame();
+        if (PlankButton(new Rect(bx, by, buttonSize.x, buttonSize.y), "Restart Game")) RestartGame();
+        by += buttonSize.y + buttonSpacing;
+        if (PlankButton(new Rect(bx, by, buttonSize.x, buttonSize.y), "Quit to Menu")) QuitToMainMenu();
     }
 
-    private void DrawOptions()
+    // Use this menu's own credits if set; otherwise fall back to StartMenu's so
+    // the text only has to be maintained in one place.
+    private StartMenu cachedStartMenu;
+    private string ResolveCreditsText()
     {
-        DrawSubPanel("Options", "Coming in a future update!");
-    }
-
-    private void DrawControls()
-    {
-        DrawSubPanel("Controls", ControlsBody());
-    }
-
-    private void DrawCredits()
-    {
-        DrawSubPanel("Credits", creditsText, creditsBodyStyle);
+        if (!string.IsNullOrWhiteSpace(creditsText)) return creditsText;
+        if (cachedStartMenu == null) cachedStartMenu = FindFirstObjectByType<StartMenu>(FindObjectsInactive.Include);
+        return cachedStartMenu != null ? cachedStartMenu.CreditsText : creditsText;
     }
 
     private static string ControlsBody()
@@ -268,8 +210,7 @@ public class StartMenu : MonoBehaviour
         const float pad = 24f;
         const float gap = 18f;
 
-        float halfW = Screen.width * 0.5f;
-        float w = Mathf.Min(560f, halfW - 80f);
+        float w = Mathf.Min(560f, Screen.width - 80f);
         float bodyW = w - 2f * pad;
 
         Vector2 headerSize = headerStyle.CalcSize(new GUIContent(header));
@@ -293,12 +234,10 @@ public class StartMenu : MonoBehaviour
         float backH = backSprite != null ? backButtonHeight : 48f;
         float bottomSpace = backSprite != null ? backH * 0.5f + pad : backH + pad;
 
-        // Size the panel to its contents (clamped to the screen) so longer
-        // lists don't clip.
         float h = headerSpace + gap + bodyH + gap + bottomSpace;
         h = Mathf.Min(h, Screen.height - 80f);
 
-        float x = (halfW - w) * 0.5f;
+        float x = (Screen.width - w) * 0.5f;
         float y = (Screen.height - h) * 0.5f;
 
         Rect panelRect = new Rect(x, y, w, h);
@@ -359,8 +298,6 @@ public class StartMenu : MonoBehaviour
         GUI.DrawTextureWithTexCoords(rect, tex, coords);
     }
 
-    // Button with the Plank Medium sprite as a background and a transparent
-    // GUI.Button on top so the label still renders and clicks still register.
     private bool PlankButton(Rect rect, string label)
     {
         if (buttonBackground == null)
@@ -375,19 +312,8 @@ public class StartMenu : MonoBehaviour
             tr.height / tex.height);
         GUI.DrawTextureWithTexCoords(rect, tex, coords);
 
-        // Label on top of the plank (label-style, no background), then an invisible
-        // button on the same rect for clicks.
         GUI.Label(rect, label, plankLabelStyle);
         return GUI.Button(rect, GUIContent.none, GUIStyle.none);
-    }
-
-    private void QuitGame()
-    {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
     }
 
     private void EnsureStyles()
@@ -418,6 +344,7 @@ public class StartMenu : MonoBehaviour
             plankLabelStyle.fontStyle = FontStyle.Bold;
             plankLabelStyle.alignment = TextAnchor.MiddleCenter;
             plankLabelStyle.normal.textColor = Color.white;
+            LockTextColor(plankLabelStyle);
         }
         if (headerStyle == null || headerStyle.fontSize != 34)
         {
@@ -453,10 +380,6 @@ public class StartMenu : MonoBehaviour
             backLabelStyle.alignment = TextAnchor.MiddleCenter;
             backLabelStyle.normal.textColor = Color.white;
             LockTextColor(backLabelStyle);
-        }
-        if (panelStyle == null)
-        {
-            panelStyle = new GUIStyle(GUI.skin.box);
         }
 
         if (font != null)

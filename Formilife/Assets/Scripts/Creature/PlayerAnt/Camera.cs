@@ -97,6 +97,8 @@ public class TopDownCamera : MonoBehaviour
     }
 void Update()
 {
+    if (PauseMenu.IsPaused) return;
+
     if (Keyboard.current.cKey.wasPressedThisFrame)
     {
         setCameraType(!isOrthographic);
@@ -133,6 +135,8 @@ void HandleZoomKeys()
 
     void LateUpdate()
     {
+        if (PauseMenu.IsPaused) return;
+
         if (isOrthographic) {
             HandleZoomOrthographic();
             ApplyTransformOrthographic();

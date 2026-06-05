@@ -209,7 +209,7 @@ public class QuestButton : MonoBehaviour
 
     private void Update()
     {
-        if (!StartMenu.GameStarted) return;
+        if (!StartMenu.GameStarted || PauseMenu.IsPaused) return;
 
         Keyboard keyboard = Keyboard.current;
         if (keyboard != null && keyboard.tabKey.wasPressedThisFrame)

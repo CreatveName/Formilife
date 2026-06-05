@@ -31,6 +31,8 @@ public class PlayerPickup : MonoBehaviour
 
     private void Update()
     {
+        if (!StartMenu.GameStarted || PauseMenu.IsPaused) return;
+
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             if (heldItem != null)

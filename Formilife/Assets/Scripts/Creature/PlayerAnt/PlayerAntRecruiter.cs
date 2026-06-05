@@ -49,7 +49,7 @@ public class PlayerAntRecruiter : MonoBehaviour
 
     private void Update()
     {
-        if (!StartMenu.GameStarted)
+        if (!StartMenu.GameStarted || PauseMenu.IsPaused)
             return;
 
         Keyboard keyboard = Keyboard.current;

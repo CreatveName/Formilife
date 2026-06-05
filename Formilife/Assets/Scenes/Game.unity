@@ -2537,6 +2537,17 @@ MonoBehaviour:
   buttonSize: {x: 260, y: 56}
   buttonSpacing: 14
   buttonBackground: {fileID: -2073688876870321323, guid: 0d3324fdac325a9428a3a7e13bb68339, type: 3}
+  panelBackground: {fileID: 9136426293655837572, guid: a1af986d93a46664ca34caf67c7605b3, type: 3}
+  titleBarSprite: {fileID: -2073688876870321323, guid: 0d3324fdac325a9428a3a7e13bb68339, type: 3}
+  titleBarWidth: 0.6
+  backSprite: {fileID: 7647240639167449756, guid: 7ac252f4202228b458834c2ba93d1a94, type: 3}
+  backButtonHeight: 160
+  backButtonOffset: {x: 186, y: -50}
+  backFontSize: 34
+  backTextOffset: {x: 17, y: 42}
+  creditsText: "  <b><size=30>Art/Lead</size></b>\r\n  Kirill Volynsky\r\n\r\n  <b><size=30>Programming</size></b>\r\n 
+    Hailey Chen\r\n  Zoey Chen\r\n  Trent Ku\r\n  Kathryn Stanford\r\n\r\n  <b><size=30>UI/UX</size></b>\r\n 
+    Tuyet Kha Bui\r\n  Anqi Zhou\n\n  <b><size=30>Audio</size></b>\r\n  Daron Kaloustian"
 --- !u!4 &692565307
 Transform:
   m_ObjectHideFlags: 0
@@ -3774,6 +3785,66 @@ MonoBehaviour:
   interactRange: 2.5
   talkKey: 19
   player: {fileID: 0}
+--- !u!1 &1176619440
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1176619442}
+  - component: {fileID: 1176619441}
+  m_Layer: 0
+  m_Name: PauseMenu
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1176619441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1176619440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 698e3ca8c43d74a45888a3dca4ebf727, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PauseMenu
+  titleText: Paused
+  titleFontSize: 56
+  font: {fileID: 12800000, guid: 6c56daccdf24bac48931b69b61f59a70, type: 3}
+  buttonFontSize: 24
+  buttonSize: {x: 260, y: 56}
+  buttonSpacing: 14
+  buttonBackground: {fileID: -2073688876870321323, guid: 0d3324fdac325a9428a3a7e13bb68339, type: 3}
+  panelBackground: {fileID: 9136426293655837572, guid: a1af986d93a46664ca34caf67c7605b3, type: 3}
+  titleBarSprite: {fileID: -2073688876870321323, guid: 0d3324fdac325a9428a3a7e13bb68339, type: 3}
+  titleBarWidth: 0.6
+  backSprite: {fileID: 7647240639167449756, guid: 7ac252f4202228b458834c2ba93d1a94, type: 3}
+  backButtonHeight: 160
+  backButtonOffset: {x: 186, y: -50}
+  backFontSize: 34
+  backTextOffset: {x: 17, y: 42}
+  creditsText: 
+--- !u!4 &1176619442
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1176619440}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 201.4226, y: 1031.7307, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1217317687 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 934439360892739704, guid: 470f36377921641e48787e9cb3152e69, type: 3}
@@ -7547,3 +7618,4 @@ SceneRoots:
   - {fileID: 981119458}
   - {fileID: 1109694324}
   - {fileID: 498125793}
+  - {fileID: 1176619442}
