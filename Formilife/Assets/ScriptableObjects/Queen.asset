@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Queen
   m_EditorClassIdentifier: Assembly-CSharp::AntNPCDefinition
   role: 2
-  wanderRadius: 1.5
+  wanderRadius: 0
   minIdleTime: 1.5
   maxIdleTime: 3
   collectsSeeds: 0

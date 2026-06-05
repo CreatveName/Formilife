@@ -51,6 +51,7 @@ public class AntNPC : MonoBehaviour
     private NavMeshAgent agent;
     private AntPerception perception;
     private NPCAntPickup pickup;
+    private Animator anim;
     private PickupReservation currentReservation;
     private Transform recruitedLeader;
     private Transform recruitedCarryTarget;
@@ -74,6 +75,7 @@ public class AntNPC : MonoBehaviour
         pickup = GetComponent<NPCAntPickup>();
         needs = GetComponent<AntNeeds>();
         antColliders = GetComponentsInChildren<Collider2D>();
+        anim = GetComponent<Animator>();
 
         agent.updateRotation = false;
         agent.updateUpAxis = false;
@@ -107,20 +109,12 @@ public class AntNPC : MonoBehaviour
 
         if (npcDefinition.role == AntRole.Queen)
         {
-            bool insideThrone =
-                PheromoneManager.Instance != null &&
-                PheromoneManager.Instance.IsInsideThroneRoom(transform.position);
-
-            if (!insideThrone && !IsBeingCarried())
-            {
-                agent.ResetPath();
-                currentTarget = null;
-                currentState = AntState.Idle;
-                return;
-            }
+            HandleStationaryQueen();
+            return;
         }
         
         FaceMovementDirection();
+        UpdateAnimations();
         
         if (isRecruited)
         {
@@ -159,6 +153,16 @@ public class AntNPC : MonoBehaviour
         }
     }
 
+    private void UpdateAnimations()
+    {
+        if (anim == null)
+            return;
+
+        bool isMoving = agent.velocity.sqrMagnitude > 0.01f;
+
+        anim.SetBool("IsMoving", isMoving);
+    }
+
     private void HandleIdle()
     {
         idleTimer -= Time.deltaTime;
@@ -171,7 +175,7 @@ public class AntNPC : MonoBehaviour
             BeginIdle();
             return;
         }
-
+        /*
         if (npcDefinition.role == AntRole.Queen)
         {
             if (needs != null && needs.IsHungry())
@@ -184,6 +188,7 @@ public class AntNPC : MonoBehaviour
 
             return;
         }
+        */
 
         if (npcDefinition.role == AntRole.Soldier)
         {
@@ -639,6 +644,24 @@ public class AntNPC : MonoBehaviour
         }
     }
     /////////QUEEEN
+    private void HandleStationaryQueen()
+    {
+        // Queen can be carried by the player, but never moves herself.
+        if (agent != null)
+        {
+            agent.ResetPath();
+            agent.velocity = Vector3.zero;
+        }
+
+        currentTarget = null;
+        currentState = AntState.Idle;
+
+        // Do not lay eggs while being carried.
+        if (IsBeingCarried())
+            return;
+
+        HandleQueenEggLaying();
+    }
     private void HandleQueenEggLaying()
     {
         if (npcDefinition.role != AntRole.Queen)
@@ -648,10 +671,6 @@ public class AntNPC : MonoBehaviour
             return;
 
         if (eggPrefab == null)
-            return;
-
-        // Optional: queen should not lay eggs while hungry
-        if (needs != null && needs.IsHungry())
             return;
 
         bool insideThrone =
@@ -830,7 +849,7 @@ public class AntNPC : MonoBehaviour
         Debug.Log($"{name} dismissed.");
     }
     private void FaceMovementDirection()
-    {
+    {  
         Vector2 velocity = agent.velocity;
 
         if (velocity.sqrMagnitude < 0.01f)

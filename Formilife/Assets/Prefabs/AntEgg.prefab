@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8801234500000000001}
   - component: {fileID: 8801234500000000002}
   - component: {fileID: 8801234500000000003}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: AntEgg
   m_TagString: Untagged
   m_Icon: {fileID: 0}

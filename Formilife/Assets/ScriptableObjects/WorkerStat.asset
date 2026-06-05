@@ -20,7 +20,7 @@ MonoBehaviour:
   thirstDecayRate: 0.66
   lowHungerThreshold: 40
   lowThirstThreshold: 40
-  maxHealth: 100
-  starvationDamageRate: 5
-  dehydrationDamageRate: 8
+  maxHealth: 1e+20
+  starvationDamageRate: 0
+  dehydrationDamageRate: 0
   corpsePrefab: {fileID: 0}

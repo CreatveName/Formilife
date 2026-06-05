@@ -185,7 +185,7 @@ Rigidbody2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 16
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -203,20 +203,20 @@ CapsuleCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 16
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4079
   m_ForceReceiveLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4079
   m_ContactCaptureLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4079
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -325,6 +325,7 @@ MonoBehaviour:
   healthColor: {r: 1, g: 0, b: 0, a: 1}
   hungerColor: {r: 1, g: 0.6, b: 0.1, a: 1}
   thirstColor: {r: 0.2, g: 0.6, b: 1, a: 1}
+  font: {fileID: 0}
 --- !u!114 &2556413853979204713
 MonoBehaviour:
   m_ObjectHideFlags: 0
