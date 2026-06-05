@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6720864879468888936}
   - component: {fileID: 3986642066508695340}
   - component: {fileID: 1293265713577123731}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Drinkable
   m_TagString: Untagged
   m_Icon: {fileID: 0}

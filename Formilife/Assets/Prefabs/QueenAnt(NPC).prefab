@@ -124,7 +124,7 @@ Rigidbody2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 16
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -153,10 +153,10 @@ MonoBehaviour:
   eatDistance: 0.35
   eggPrefab: {fileID: 9029590545799396793, guid: 04824205ffb3cdd41be693dfdf414445, type: 3}
   eggSpawnPoint: {fileID: 2958096359720226479}
-  eggLayInterval: 10
+  eggLayInterval: 45
   eggSpawnRadius: 0.5
   throneRoom: {fileID: 0}
-  throneRoomWanderRadius: 2
+  throneRoomWanderRadius: 0
 --- !u!114 &5965569254821295644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,20 +224,20 @@ CircleCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 3839
+    m_Bits: 3823
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 256
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
-    m_Bits: 3839
+    m_Bits: 3823
   m_ForceReceiveLayers:
     serializedVersion: 2
-    m_Bits: 3839
+    m_Bits: 3823
   m_ContactCaptureLayers:
     serializedVersion: 2
-    m_Bits: 3839
+    m_Bits: 3823
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295

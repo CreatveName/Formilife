@@ -121,7 +121,7 @@ Rigidbody2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 16
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -221,20 +221,20 @@ CircleCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 3839
+    m_Bits: 3823
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 256
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
-    m_Bits: 3839
+    m_Bits: 3823
   m_ForceReceiveLayers:
     serializedVersion: 2
-    m_Bits: 3839
+    m_Bits: 3823
   m_ContactCaptureLayers:
     serializedVersion: 2
-    m_Bits: 3839
+    m_Bits: 3823
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
