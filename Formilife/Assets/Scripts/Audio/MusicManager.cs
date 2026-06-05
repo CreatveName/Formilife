@@ -12,18 +12,28 @@ public class MusicManager : MonoBehaviour
     [SerializeField] private bool playOnStart = true;
     [SerializeField] private float fadeInSeconds = 1.5f;
 
-    private static MusicManager instance;
+    [Header("Eating SFX")]
+    [SerializeField] private AudioClip eatSound;
+    [Range(0f, 1f)]
+    [SerializeField] private float eatVolume = 1f;
+
+    [Header("Drinking SFX")]
+    [SerializeField] private AudioClip drinkSound;
+    [Range(0f, 1f)]
+    [SerializeField] private float drinkVolume = 1f;
+
+    public static MusicManager Instance { get; private set; }
     private AudioSource source;
 
     private void Awake()
     {
         // Only one music player should exist; destroy duplicates from scene reloads.
-        if (instance != null && instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
-        instance = this;
+        Instance = this;
         DontDestroyOnLoad(gameObject);
 
         source = GetComponent<AudioSource>();
@@ -47,6 +57,18 @@ public class MusicManager : MonoBehaviour
     public void SetVolume(float v) => volume = Mathf.Clamp01(v);
 
     public void Stop() => source.Stop();
+
+    public void PlayEat(Vector3 position)
+    {
+        if (eatSound != null)
+            source.PlayOneShot(eatSound, eatVolume);
+    }
+
+    public void PlayDrink(Vector3 position)
+    {
+        if (drinkSound != null)
+            source.PlayOneShot(drinkSound, drinkVolume);
+    }
 
     private void Update()
     {

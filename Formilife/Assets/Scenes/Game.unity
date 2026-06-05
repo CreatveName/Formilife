@@ -3088,7 +3088,7 @@ MonoBehaviour:
   speakerName: Queen
   nameFontSize: 30
   bodyFontSize: 35
-  hintFontSize: 14
+  hintFontSize: 26
   backgroundSprite: {fileID: -5530199676054787688, guid: ccce34cb8d316084fac25391927e7f63, type: 3}
   nameBarSprite: {fileID: -6413829231878002347, guid: 95face5ff2cc7bc4286b2749c536ffe2, type: 3}
   nameBarWidth: 220
@@ -4226,6 +4226,10 @@ MonoBehaviour:
   volume: 1
   playOnStart: 1
   fadeInSeconds: 1.5
+  eatSound: {fileID: 8300000, guid: 586698340b8f5644e9e5f3d5bea85603, type: 3}
+  eatVolume: 1
+  drinkSound: {fileID: 8300000, guid: 586698340b8f5644e9e5f3d5bea85603, type: 3}
+  drinkVolume: 1
 --- !u!82 &1404235852
 AudioSource:
   m_ObjectHideFlags: 0

@@ -23,6 +23,8 @@ public class DrinkEffect : MonoBehaviour
                 if (countsTowardFormicaryWater)
                     Formicary.currNumWater--;
             }
+            if (MusicManager.Instance != null)
+                MusicManager.Instance.PlayDrink(transform.position);
             Destroy(gameObject);
         }
         else

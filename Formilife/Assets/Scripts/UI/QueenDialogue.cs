@@ -22,7 +22,7 @@ public class QueenDialogue : MonoBehaviour
     [SerializeField] private string speakerName = "Queen";
     [SerializeField] private int nameFontSize = 26;
     [SerializeField] private int bodyFontSize = 20;
-    [SerializeField] private int hintFontSize = 14;
+    [SerializeField] private int hintFontSize = 22;
 
     [Header("Background")]
     [Tooltip("Sprite drawn as the dialogue box background (Long board.png).")]
@@ -220,7 +220,8 @@ public class QueenDialogue : MonoBehaviour
         GUI.Label(bodyRect, currentLine, bodyStyle);
 
         string hint = queue.Count > 0 ? "Click to continue ▼" : "Click to close ▼";
-        Rect hintRect = new Rect(x + w - 240f - padding, y + h - hintFontSize - padding * 0.5f, 240f, hintFontSize + 4f);
+        Vector2 hintSize = hintStyle.CalcSize(new GUIContent(hint));
+        Rect hintRect = new Rect(x + w - hintSize.x - padding, y + h - hintSize.y - padding * 0.5f, hintSize.x, hintSize.y);
         GUI.Label(hintRect, hint, hintStyle);
 
         if (!PauseMenu.IsPaused && Event.current.type == EventType.MouseDown && box.Contains(Event.current.mousePosition))
