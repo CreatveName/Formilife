@@ -51,6 +51,7 @@ public class AntNPC : MonoBehaviour
     private NavMeshAgent agent;
     private AntPerception perception;
     private NPCAntPickup pickup;
+    private Animator anim;
     private PickupReservation currentReservation;
     private Transform recruitedLeader;
     private Transform recruitedCarryTarget;
@@ -74,6 +75,7 @@ public class AntNPC : MonoBehaviour
         pickup = GetComponent<NPCAntPickup>();
         needs = GetComponent<AntNeeds>();
         antColliders = GetComponentsInChildren<Collider2D>();
+        anim = GetComponent<Animator>();
 
         agent.updateRotation = false;
         agent.updateUpAxis = false;
@@ -112,6 +114,7 @@ public class AntNPC : MonoBehaviour
         }
         
         FaceMovementDirection();
+        UpdateAnimations();
         
         if (isRecruited)
         {
@@ -148,6 +151,16 @@ public class AntNPC : MonoBehaviour
                 HandleGoingToCrackSeed();
                 break;
         }
+    }
+
+    private void UpdateAnimations()
+    {
+        if (anim == null)
+            return;
+
+        bool isMoving = agent.velocity.sqrMagnitude > 0.01f;
+
+        anim.SetBool("IsMoving", isMoving);
     }
 
     private void HandleIdle()
@@ -836,7 +849,7 @@ public class AntNPC : MonoBehaviour
         Debug.Log($"{name} dismissed.");
     }
     private void FaceMovementDirection()
-    {
+    {  
         Vector2 velocity = agent.velocity;
 
         if (velocity.sqrMagnitude < 0.01f)
