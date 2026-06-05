@@ -1,11 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Keeps a fixed number of water droplets alive across ALL humid chambers on the
-// map (4 total, not per chamber). Droplets are tracked by reference, so when one
-// is consumed (DrinkEffect destroys it) a replacement spawns in a random humid
-// chamber. Self-bootstrapping: a single instance is created automatically after
-// the scene loads, so nothing needs to be placed in the scene by hand.
 public class ChamberWaterManager : MonoBehaviour
 {
     public static ChamberWaterManager Instance { get; private set; }
@@ -27,6 +22,7 @@ public class ChamberWaterManager : MonoBehaviour
     private int wallMask;
     private readonly List<Chamber> humidChambers = new List<Chamber>();
     private readonly List<GameObject> droplets = new List<GameObject>();
+    private Collider2D[] playerColliders;
     private float refillTimer;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -83,10 +79,8 @@ public class ChamberWaterManager : MonoBehaviour
     {
         if (dropletPrefab == null) return;
 
-        // Forget droplets that were consumed/destroyed.
         droplets.RemoveAll(d => d == null);
 
-        // Re-scan if our chamber list went stale (e.g. chambers spawned late).
         humidChambers.RemoveAll(c => c == null);
         if (humidChambers.Count == 0)
         {
@@ -94,7 +88,6 @@ public class ChamberWaterManager : MonoBehaviour
             if (humidChambers.Count == 0) return;
         }
 
-        // Bounded attempts so we never loop forever if no valid point is found.
         int attempts = (totalCount - droplets.Count) * 5;
         while (droplets.Count < totalCount && attempts-- > 0)
         {
@@ -110,12 +103,36 @@ public class ChamberWaterManager : MonoBehaviour
     {
         GameObject droplet = Instantiate(dropletPrefab, position, Quaternion.identity);
 
-        // These droplets are managed here, so they must not feed into
-        // Formicary's separate global water count when drunk.
         if (droplet.TryGetComponent(out DrinkEffect drink))
             drink.countsTowardFormicaryWater = false;
 
+        IgnorePlayerCollision(droplet);
+
         return droplet;
+    }
+
+    private void IgnorePlayerCollision(GameObject droplet)
+    {
+        EnsurePlayerColliders();
+        if (playerColliders == null) return;
+
+        Collider2D[] dropletColliders = droplet.GetComponentsInChildren<Collider2D>();
+        foreach (Collider2D dc in dropletColliders)
+        {
+            if (dc == null) continue;
+            foreach (Collider2D pc in playerColliders)
+            {
+                if (pc != null) Physics2D.IgnoreCollision(dc, pc, true);
+            }
+        }
+    }
+
+    private void EnsurePlayerColliders()
+    {
+        if (playerColliders != null && playerColliders.Length > 0 && playerColliders[0] != null) return;
+
+        PlayerAntMovement player = FindFirstObjectByType<PlayerAntMovement>(FindObjectsInactive.Include);
+        playerColliders = player != null ? player.GetComponentsInChildren<Collider2D>() : null;
     }
 
     private bool TryGetPointInChamber(Chamber chamber, out Vector3 point)
@@ -135,10 +152,8 @@ public class ChamberWaterManager : MonoBehaviour
         {
             Vector2 candidate = new Vector2(Random.Range(minX, maxX), Random.Range(minY, maxY));
 
-            // Must be inside the chamber...
             if (!col.OverlapPoint(candidate)) continue;
 
-            // ...and clear of the formicary walls, or the player can't reach it.
             if (Physics2D.OverlapCircle(candidate, wallClearance, wallMask) != null) continue;
 
             point = new Vector3(candidate.x, candidate.y, chamber.transform.position.z);
